@@ -1,4 +1,4 @@
-package com.example.irondolphinmusicplayer;
+package de.codingforcelm.idmp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
