@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:elevation="100dp"
+    android:onClick="songSelect">
+
+    <!--android:background="#00bcd4"-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/play_pause"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/black"
+            android:foregroundGravity="center_vertical"
+            android:src="@android:drawable/ic_media_play" />
+
+        <LinearLayout
+            android:id="@+id/song"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center_horizontal"
+                android:text="@string/title"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold|italic" />
+
+            <TextView
+                android:id="@+id/artist"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center_horizontal"
+                android:text="@string/artist"
+                android:textSize="16sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
