@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent playIntent;
 
     // TODO add controls to layout
-    private ImageView playButton;
+    private ImageView playPauseButton;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -56,19 +56,8 @@ public class MainActivity extends AppCompatActivity {
         songView = (ListView)findViewById(R.id.songlist);
         bound = false;
 
-        playButton = findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(bound){
-                    if(service.isPlaying()){
-                        service.pauseSong();
-                    }else {
-                        service.playSong();
-                    }
-                }
-            }
-        });
+        playPauseButton = findViewById(R.id.playPauseButton);
+        playPauseButton.setOnClickListener(new PlayPauseOnClickListener());
         loadAudio();
         CardsAdapter adapter = new CardsAdapter(this, songList);
         songView.setAdapter(adapter);
@@ -141,8 +130,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());
-        service.setSong(pos);
-        service.playSong();
+        service.playSong(pos);
+        playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
     }
 
+    private class PlayPauseOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(bound){
+                if(service.isPlaying()){
+                    service.pauseSong();
+                    playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+                }else {
+                    service.resumeSong();
+                    playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+                }
+            }
+        }
+    }
 }

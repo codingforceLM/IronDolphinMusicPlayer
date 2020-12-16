@@ -57,6 +57,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        if(position != 0) {
+            mp.seekTo(position);
+        }
         mp.start();
     }
 
@@ -80,13 +83,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.stop();
     }
 
+    public void resumeSong() {
+        player.prepareAsync();
+    }
+
     public class MusicBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
         }
     }
 
-    public void playSong() {
+    public void playSong(int pos) {
+        this.setSong(pos);
         player.reset();
         position = 0;
         PhysicalSong song = songList.get(songPosition);
