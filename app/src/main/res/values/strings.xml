@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">IronDolphinMusicPlayer</string>
+    <string name="title">Title</string>
+    <string name="artist">Artist</string>
 </resources>
