@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO add controls to layout
     private ImageView playPauseButton;
+    private ImageView nextButton;
+    private ImageView prevButton;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -58,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
         playPauseButton = findViewById(R.id.playPauseButton);
         playPauseButton.setOnClickListener(new PlayPauseOnClickListener());
+        nextButton = findViewById(R.id.nextButton);
+        nextButton.setOnClickListener(new NextOnClickListener());
+        prevButton = findViewById(R.id.prevButton);
+        prevButton.setOnClickListener(new PrevOnClickListener());
+
         loadAudio();
         CardsAdapter adapter = new CardsAdapter(this, songList);
         songView.setAdapter(adapter);
@@ -134,6 +141,16 @@ public class MainActivity extends AppCompatActivity {
         playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
     }
 
+    private class NextOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(bound) {
+                service.nextSong();
+                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            }
+        }
+    }
+
     private class PlayPauseOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -145,6 +162,16 @@ public class MainActivity extends AppCompatActivity {
                     service.resumeSong();
                     playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
                 }
+            }
+        }
+    }
+
+    private class PrevOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(bound) {
+                service.prevSong();
+                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
             }
         }
     }

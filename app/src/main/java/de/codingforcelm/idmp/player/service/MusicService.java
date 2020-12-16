@@ -87,6 +87,22 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.prepareAsync();
     }
 
+    public void nextSong() {
+        int nextpos = songPosition + 1;
+        if(nextpos >= songList.size()) {
+            nextpos = 0;
+        }
+        this.playSong(nextpos);
+    }
+
+    public void prevSong() {
+        int nextpos = songPosition - 1;
+        if(nextpos < 0) {
+            nextpos = songList.size() - 1;
+        }
+        this.playSong(nextpos);
+    }
+
     public class MusicBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
