@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent playIntent;
 
     // TODO add controls to layout
-    private Button playButton;
+    private ImageView playButton;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -56,6 +56,19 @@ public class MainActivity extends AppCompatActivity {
         songView = (ListView)findViewById(R.id.songlist);
         bound = false;
 
+        playButton = findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bound){
+                    if(service.isPlaying()){
+                        service.pauseSong();
+                    }else {
+                        service.playSong();
+                    }
+                }
+            }
+        });
         loadAudio();
         CardsAdapter adapter = new CardsAdapter(this, songList);
         songView.setAdapter(adapter);
@@ -94,8 +107,6 @@ public class MainActivity extends AppCompatActivity {
             bound = true;
             Toast.makeText(MainActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
 
-            MainActivity.this.service.setSong(1);
-            MainActivity.this.service.playSong();
         }
 
         @Override
