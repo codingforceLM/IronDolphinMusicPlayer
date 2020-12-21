@@ -23,6 +23,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private List<PhysicalSong> songList;
     private int songPosition;
     private final IBinder binder = new MusicBinder();
+    private int position;
 
     @Override
     public void onCreate() {
@@ -56,6 +57,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        if(position != 0) {
+            mp.seekTo(position);
+        }
         mp.start();
     }
 
@@ -70,14 +74,45 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         this.songList = songList;
     }
 
+    public boolean isPlaying() {
+        return player.isPlaying();
+    }
+
+    public void pauseSong() {
+        position = player.getCurrentPosition();
+        player.stop();
+    }
+
+    public void resumeSong() {
+        player.prepareAsync();
+    }
+
+    public void nextSong() {
+        int nextpos = songPosition + 1;
+        if(nextpos >= songList.size()) {
+            nextpos = 0;
+        }
+        this.playSong(nextpos);
+    }
+
+    public void prevSong() {
+        int nextpos = songPosition - 1;
+        if(nextpos < 0) {
+            nextpos = songList.size() - 1;
+        }
+        this.playSong(nextpos);
+    }
+
     public class MusicBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
         }
     }
 
-    public void playSong() {
+    public void playSong(int pos) {
+        this.setSong(pos);
         player.reset();
+        position = 0;
         PhysicalSong song = songList.get(songPosition);
         long curr = song.getId();
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, curr);

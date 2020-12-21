@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private Intent playIntent;
 
     // TODO add controls to layout
-    private Button playButton;
+    private ImageView playPauseButton;
+    private ImageView nextButton;
+    private ImageView prevButton;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -55,6 +57,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         songView = (ListView)findViewById(R.id.songlist);
         bound = false;
+
+        playPauseButton = findViewById(R.id.playPauseButton);
+        playPauseButton.setOnClickListener(new PlayPauseOnClickListener());
+        nextButton = findViewById(R.id.nextButton);
+        nextButton.setOnClickListener(new NextOnClickListener());
+        prevButton = findViewById(R.id.prevButton);
+        prevButton.setOnClickListener(new PrevOnClickListener());
 
         loadAudio();
         CardsAdapter adapter = new CardsAdapter(this, songList);
@@ -94,8 +103,6 @@ public class MainActivity extends AppCompatActivity {
             bound = true;
             Toast.makeText(MainActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
 
-            MainActivity.this.service.setSong(1);
-            MainActivity.this.service.playSong();
         }
 
         @Override
@@ -130,8 +137,42 @@ public class MainActivity extends AppCompatActivity {
 
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());
-        service.setSong(pos);
-        service.playSong();
+        service.playSong(pos);
+        playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
     }
 
+    private class NextOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(bound) {
+                service.nextSong();
+                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            }
+        }
+    }
+
+    private class PlayPauseOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(bound){
+                if(service.isPlaying()){
+                    service.pauseSong();
+                    playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+                }else {
+                    service.resumeSong();
+                    playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+                }
+            }
+        }
+    }
+
+    private class PrevOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(bound) {
+                service.prevSong();
+                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            }
+        }
+    }
 }
