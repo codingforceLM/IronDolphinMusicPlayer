@@ -1,5 +1,7 @@
 package de.codingforcelm.idmp.player.service;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -10,20 +12,29 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import java.io.IOException;
 import java.util.List;
 
+import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
+
+    public static final String CHANNEL_ID = "idmp_player_notification";
+    private static final int NOTIFICATION_ID = 666;
+
+    public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
+    public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
+    public static final String ACTION_MUSIC_PREV = "de.codingforcelm.idmp.player.service.MUSIC_PREV";
 
     private MediaPlayer player;
     private List<PhysicalSong> songList;
     private int songPosition;
     private final IBinder binder = new MusicBinder();
     private int position;
+    private Notification notification;
 
     @Override
     public void onCreate() {
@@ -31,6 +42,42 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         songPosition = 0;
         player = new MediaPlayer();
         initMusicPlayer();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = intent.getAction();
+
+        if(action == null) {
+            return START_NOT_STICKY;
+        }
+
+        switch (action) {
+            case MusicService.ACTION_MUSIC_PLAY:
+                if(this.isPlaying()) {
+                    this.pauseSong();
+                    notification = buildNotification(true);
+                    startForeground(NOTIFICATION_ID, notification);
+                } else {
+                    this.resumeSong();
+                    notification = buildNotification(false);
+                    startForeground(NOTIFICATION_ID, notification);
+                }
+                break;
+            case MusicService.ACTION_MUSIC_NEXT:
+                this.nextSong();
+                break;
+            case MusicService.ACTION_MUSIC_PREV:
+                this.prevSong();
+                break;
+        }
+
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy()  {
+        stopForeground(true);
     }
 
     @Override
@@ -61,6 +108,50 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             mp.seekTo(position);
         }
         mp.start();
+
+        notification = buildNotification(false);
+        startForeground(NOTIFICATION_ID, notification);
+    }
+
+    private Notification buildNotification(boolean play) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Intent nextIntent = new Intent(this, MusicService.class);
+        nextIntent.setAction(MusicService.ACTION_MUSIC_NEXT);
+        PendingIntent nextPendingIntent = PendingIntent.getService(this, 0 , nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent playPauseIntent = new Intent(this, MusicService.class);
+        playPauseIntent.setAction(MusicService.ACTION_MUSIC_PLAY);
+        PendingIntent playPausePendingIntent = PendingIntent.getService(this, 0 , playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent prevIntent = new Intent(this, MusicService.class);
+        prevIntent.setAction(MusicService.ACTION_MUSIC_PREV);
+        PendingIntent prevPendingIntent = PendingIntent.getService(this, 0 , prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        builder.setSmallIcon(android.R.drawable.ic_media_play);
+        builder.setContentTitle(songList.get(songPosition).getTitle());
+        builder.setContentText(songList.get(songPosition).getArtist());
+        builder.setOngoing(true);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setContentIntent(pendingIntent);
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.setShowWhen(false);
+        builder.setOnlyAlertOnce(true);
+
+        builder.addAction(android.R.drawable.ic_media_previous, "Previous", prevPendingIntent);
+        builder.addAction(
+                play ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause,
+                "Play",
+                playPausePendingIntent);
+        builder.addAction(android.R.drawable.ic_media_next, "Next", nextPendingIntent);
+
+        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+
+        notification = builder.build();
+        return notification;
     }
 
     public void initMusicPlayer() {
