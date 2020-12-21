@@ -36,11 +36,18 @@ public class ListPlayer extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+    }
+
+    /**
+     * TODO doc
+     * @param service service
+     */
+    public void initializePlayer(MusicService service) {
+        this.service=service;
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.player_list_bot, new ControlsSmall(service), "CONTROLS_SMALL");
         ft.replace(R.id.player_list_top, new SongList(songList), "SONGLIST");
         ft.commit();
     }
-
-
 }

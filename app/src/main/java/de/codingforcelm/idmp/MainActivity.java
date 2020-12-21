@@ -56,7 +56,10 @@ public class MainActivity extends AppCompatActivity {
         bound = false;
 
         loadAudio();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
+        ft.replace(R.id.mainFrame, new ListPlayer(service,songList), "LISTPLAYER");
+        ft.commit();
     }
 
     @Override
@@ -89,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
             MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
             MainActivity.this.service = binder.getService();
             MainActivity.this.service.setSongList(songList);
-
             bound = true;
+            initializePlayer();
             Toast.makeText(MainActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
         }
 
@@ -99,6 +102,15 @@ public class MainActivity extends AppCompatActivity {
             bound = false;
         }
     };
+
+    /**
+     * gets called after the service is bound
+     * passes the service to player fragments
+     */
+    private void initializePlayer() {
+        ListPlayer lp = (ListPlayer)getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
+        lp.initializePlayer(service);
+    }
 
 
     private void loadAudio() {
@@ -124,14 +136,6 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
     }
 
-
-
-    public void setListPlayer(View view){
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-            ft.replace(R.id.mainFrame, new ListPlayer(service,songList), "LISTPLAYER");
-            ft.commit();
-    }
 
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());

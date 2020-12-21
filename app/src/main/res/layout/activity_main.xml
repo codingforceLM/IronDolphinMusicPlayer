@@ -10,8 +10,7 @@
         android:id="@+id/mainFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
-        android:onClick="setListPlayer">
+        android:clickable="true">
 
     </FrameLayout>
 
