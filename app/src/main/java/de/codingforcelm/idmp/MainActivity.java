@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -15,12 +16,12 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.fragment.ListPlayer;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,16 +29,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String Broadcast_PLAY_NEW_AUDIO = "de.codingforcelm.idmp.PlayNewAudio";
 
     private List<PhysicalSong> songList;
-    private ListView songView;
     private boolean bound;
 
     private MusicService service;
     private Intent playIntent;
 
-    // TODO add controls to layout
-    private ImageView playPauseButton;
-    private ImageView nextButton;
-    private ImageView prevButton;
+
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -55,19 +52,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        songView = (ListView)findViewById(R.id.songlist);
+
         bound = false;
 
-        playPauseButton = findViewById(R.id.playPauseButton);
-        playPauseButton.setOnClickListener(new PlayPauseOnClickListener());
-        nextButton = findViewById(R.id.nextButton);
-        nextButton.setOnClickListener(new NextOnClickListener());
-        prevButton = findViewById(R.id.prevButton);
-        prevButton.setOnClickListener(new PrevOnClickListener());
-
         loadAudio();
-        CardsAdapter adapter = new CardsAdapter(this, songList);
-        songView.setAdapter(adapter);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.replace(R.id.mainFrame, new ListPlayer(songList), "LISTPLAYER");
+        ft.commit();
     }
 
     @Override
@@ -101,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.service = binder.getService();
             MainActivity.this.service.setSongList(songList);
             bound = true;
+            initializePlayer();
             Toast.makeText(MainActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
-
         }
 
         @Override
@@ -110,6 +102,15 @@ public class MainActivity extends AppCompatActivity {
             bound = false;
         }
     };
+
+    /**
+     * gets called after the service is bound
+     * passes the service to player fragments
+     */
+    private void initializePlayer() {
+        ListPlayer lp = (ListPlayer)getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
+        lp.setService(service);
+    }
 
 
     private void loadAudio() {
@@ -135,44 +136,11 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
     }
 
+
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());
         service.playSong(pos);
+        ImageView playPauseButton = findViewById(R.id.playPauseButton);
         playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-    }
-
-    private class NextOnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if(bound) {
-                service.nextSong();
-                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-            }
-        }
-    }
-
-    private class PlayPauseOnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if(bound){
-                if(service.isPlaying()){
-                    service.pauseSong();
-                    playPauseButton.setImageResource(android.R.drawable.ic_media_play);
-                }else {
-                    service.resumeSong();
-                    playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-                }
-            }
-        }
-    }
-
-    private class PrevOnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if(bound) {
-                service.prevSong();
-                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-            }
-        }
     }
 }
