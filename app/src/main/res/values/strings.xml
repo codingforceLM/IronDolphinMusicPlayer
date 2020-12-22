@@ -2,4 +2,6 @@
     <string name="app_name">IronDolphinMusicPlayer</string>
     <string name="title">Title</string>
     <string name="artist">Artist</string>
+    <string name="channel_name">Iron Dolphin Music Player</string>
+    <string name="channel_desc">Playbacks local music files</string>
 </resources>

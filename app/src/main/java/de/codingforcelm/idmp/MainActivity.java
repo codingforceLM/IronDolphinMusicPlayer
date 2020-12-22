@@ -3,6 +3,8 @@ package de.codingforcelm.idmp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         ft.replace(R.id.mainFrame, new ListPlayer(songList), "LISTPLAYER");
         ft.commit();
+        this.createNotificationChannel();
     }
 
     @Override
@@ -84,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Intent stop = new Intent(this, MusicService.class);
+        stopService(stop);
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -142,5 +148,18 @@ public class MainActivity extends AppCompatActivity {
         service.playSong(pos);
         ImageView playPauseButton = findViewById(R.id.playPauseButton);
         playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+    }
+
+    private void createNotificationChannel() {
+        // Create a NotificationChannel for Systems running Android 8+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_desc);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(MusicService.CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
