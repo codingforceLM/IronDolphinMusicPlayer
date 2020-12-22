@@ -57,7 +57,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         switch (action) {
             case MusicService.ACTION_MUSIC_PLAY:
                 if(this.isPlaying()) {
-                    this.pauseSong();
+                    this.pauseSong(true);
                 } else {
                     this.resumeSong();
                 }
@@ -69,7 +69,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                 this.prevSong();
                 break;
             case MusicService.ACTION_CANCEL_NOTIFICATION:
-                this.pauseSong();
+                this.pauseSong(false);
 
         }
 
@@ -178,11 +178,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return player.isPlaying();
     }
 
-    public void pauseSong() {
+    public void pauseSong(boolean postNotification) {
         position = player.getCurrentPosition();
         player.stop();
-        notification = buildNotification(true);
-        startForeground(NOTIFICATION_ID, notification);
+        if(postNotification) {
+            notification = buildNotification(true);
+            startForeground(NOTIFICATION_ID, notification);
+        }
         stopForeground(false);
     }
 

@@ -69,7 +69,7 @@ public class ControlsSmall extends Fragment {
         public void onClick(View v) {
             if (service != null) {
                 if (service.isPlaying()) {
-                    service.pauseSong();
+                    service.pauseSong(true);
                     playPauseButton.setImageResource(android.R.drawable.ic_media_play);
                 } else {
                     service.resumeSong();
