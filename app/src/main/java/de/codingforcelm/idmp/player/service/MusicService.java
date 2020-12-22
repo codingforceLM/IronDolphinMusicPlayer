@@ -15,6 +15,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import java.io.IOException;
+import java.io.PipedWriter;
 import java.util.List;
 
 import de.codingforcelm.idmp.MainActivity;
@@ -28,6 +29,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
     public static final String ACTION_MUSIC_PREV = "de.codingforcelm.idmp.player.service.MUSIC_PREV";
+    private static final String ACTION_CANCEL_NOTIFICATION = "de.codingforcelm.idmp.player.service.CANCEL_NOTIFICATION";
 
     private MediaPlayer player;
     private List<PhysicalSong> songList;
@@ -56,12 +58,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             case MusicService.ACTION_MUSIC_PLAY:
                 if(this.isPlaying()) {
                     this.pauseSong();
-                    notification = buildNotification(true);
-                    startForeground(NOTIFICATION_ID, notification);
                 } else {
                     this.resumeSong();
-                    notification = buildNotification(false);
-                    startForeground(NOTIFICATION_ID, notification);
                 }
                 break;
             case MusicService.ACTION_MUSIC_NEXT:
@@ -70,6 +68,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             case MusicService.ACTION_MUSIC_PREV:
                 this.prevSong();
                 break;
+            case MusicService.ACTION_CANCEL_NOTIFICATION:
+                this.pauseSong();
+
         }
 
         return START_NOT_STICKY;
@@ -130,13 +131,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         prevIntent.setAction(MusicService.ACTION_MUSIC_PREV);
         PendingIntent prevPendingIntent = PendingIntent.getService(this, 0 , prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent cancelIntent = new Intent(this, MusicService.class);
+        cancelIntent.setAction(MusicService.ACTION_CANCEL_NOTIFICATION);
+        PendingIntent cancelPendingIntent = PendingIntent.getService(this, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
         builder.setContentTitle(songList.get(songPosition).getTitle());
         builder.setContentText(songList.get(songPosition).getArtist());
-        builder.setOngoing(true);
+        builder.setOngoing(false);
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setContentIntent(pendingIntent);
+        builder.setDeleteIntent(cancelPendingIntent);
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setShowWhen(false);
         builder.setOnlyAlertOnce(true);
@@ -148,7 +154,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                 playPausePendingIntent);
         builder.addAction(android.R.drawable.ic_media_next, "Next", nextPendingIntent);
 
-        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+        builder.setStyle(
+                new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0, 1, 2)
+        );
 
         notification = builder.build();
         return notification;
@@ -172,6 +181,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void pauseSong() {
         position = player.getCurrentPosition();
         player.stop();
+        notification = buildNotification(true);
+        startForeground(NOTIFICATION_ID, notification);
+        stopForeground(false);
     }
 
     public void resumeSong() {
