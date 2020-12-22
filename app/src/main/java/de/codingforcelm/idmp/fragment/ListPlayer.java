@@ -22,8 +22,7 @@ public class ListPlayer extends Fragment {
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
 
-    public ListPlayer(MusicService service, List<PhysicalSong> songList) {
-        this.service=service;
+    public ListPlayer(List<PhysicalSong> songList) {
         this.songList=songList;
     }
 
@@ -36,18 +35,18 @@ public class ListPlayer extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        ft.replace(R.id.player_list_bot, new ControlsSmall(service), "CONTROLS_SMALL");
+        ft.replace(R.id.player_list_top, new SongList(songList), "SONGLIST");
+        ft.commit();
     }
 
     /**
      * TODO doc
      * @param service service
      */
-    public void initializePlayer(MusicService service) {
-        this.service=service;
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        ft.replace(R.id.player_list_bot, new ControlsSmall(service), "CONTROLS_SMALL");
-        ft.replace(R.id.player_list_top, new SongList(songList), "SONGLIST");
-        ft.commit();
+    public void setService(MusicService service) {
+        ControlsSmall frag = (ControlsSmall)getChildFragmentManager().findFragmentByTag("CONTROLS_SMALL");
+        frag.setService(service);
     }
 }

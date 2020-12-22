@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         loadAudio();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        ft.replace(R.id.mainFrame, new ListPlayer(service,songList), "LISTPLAYER");
+        ft.replace(R.id.mainFrame, new ListPlayer(songList), "LISTPLAYER");
         ft.commit();
     }
 
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initializePlayer() {
         ListPlayer lp = (ListPlayer)getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
-        lp.initializePlayer(service);
+        lp.setService(service);
     }
 
 

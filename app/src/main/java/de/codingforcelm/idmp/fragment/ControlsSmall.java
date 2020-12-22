@@ -22,9 +22,13 @@ public class ControlsSmall extends Fragment {
 
     public ControlsSmall(MusicService service){
         this.service=service;
-
+    }
+    public ControlsSmall(){
     }
 
+    public void setService(MusicService service){
+        this.service=service;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -49,15 +53,13 @@ public class ControlsSmall extends Fragment {
     }
 
 
-    public void setPauseButton() {
-        playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-    }
-
     private class NextOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-                service.nextSong();
-                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+                if(service != null){
+                    service.nextSong();
+                    playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+                }
         }
     }
 
@@ -65,21 +67,25 @@ public class ControlsSmall extends Fragment {
 
         @Override
         public void onClick(View v) {
-                if(service.isPlaying()){
+            if (service != null) {
+                if (service.isPlaying()) {
                     service.pauseSong();
                     playPauseButton.setImageResource(android.R.drawable.ic_media_play);
-                }else {
+                } else {
                     service.resumeSong();
                     playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
                 }
+            }
         }
     }
 
     private class PrevOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            if(service != null){
                 service.prevSong();
                 playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            }
         }
     }
 
