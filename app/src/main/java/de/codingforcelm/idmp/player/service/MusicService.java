@@ -7,24 +7,39 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.media.MediaBrowserServiceCompat;
 
 import java.io.IOException;
 import java.io.PipedWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.audio.AudioLoader;
 
-public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
+public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
 
+    private static final String MY_MEDIA_ROOT_ID = "media_root_id";
+    private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public static final String CHANNEL_ID = "idmp_player_notification";
     private static final int NOTIFICATION_ID = 666;
+    private static final String LOG_TAG = "MusicService";
 
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
@@ -38,12 +53,22 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private int position;
     private Notification notification;
 
+    private MediaSessionCompat mediaSession;
+    private PlaybackStateCompat.Builder stateBuilder;
+
     @Override
     public void onCreate() {
         super.onCreate();
         songPosition = 0;
         player = new MediaPlayer();
         initMusicPlayer();
+
+        mediaSession = new MediaSessionCompat(this, LOG_TAG);
+        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        stateBuilder = new PlaybackStateCompat.Builder().setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PAUSE);
+        mediaSession.setPlaybackState(stateBuilder.build());
+        //mediaSession.setCallback();
+        setSessionToken(mediaSession.getSessionToken());
     }
 
     @Override
@@ -84,6 +109,34 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
+    }
+
+    @Nullable
+    @Override
+    public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid, @Nullable Bundle rootHints) {
+        return new BrowserRoot(MY_MEDIA_ROOT_ID, null);
+    }
+
+    @Override
+    public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
+        AudioLoader al = new AudioLoader(this);
+        List<PhysicalSong> l = al.getSongs();
+
+        List<MediaBrowserCompat.MediaItem> items = new ArrayList<>();
+        for(PhysicalSong s : l) {
+            items.add(
+                    new MediaBrowserCompat.MediaItem(
+                            new MediaDescriptionCompat.Builder()
+                                    .setMediaId(String.valueOf(s.getId()))
+                                    .setTitle(s.getTitle())
+                                    .setDescription(s.getArtist())
+                                    .build(),
+                            0
+                    )
+            );
+        }
+
+        result.sendResult(items);
     }
 
     @Override
@@ -168,6 +221,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.setOnErrorListener(this);
         player.setOnCompletionListener(this);
         player.setOnPreparedListener(this);
+
+        AudioLoader al = new AudioLoader(this);
+        this.setSongList(al.getSongs());
     }
 
     public void setSongList(List<PhysicalSong> songList) {
@@ -216,11 +272,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void playSong(int pos) {
         this.setSong(pos);
-        player.reset();
-        position = 0;
         PhysicalSong song = songList.get(songPosition);
         long curr = song.getId();
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, curr);
+
+        this.playSong(trackUri);
+    }
+
+    public void playSong(Uri trackUri) {
+        player.reset();
+        position = 0;
 
         try {
             player.setDataSource(getApplicationContext(), trackUri);
@@ -230,7 +291,61 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.prepareAsync();
     }
 
+    public void seekTo(long pos) {
+        position = (int)pos;
+        player.prepareAsync();
+    }
+
     public void setSong(int pos) {
         this.songPosition = pos;
+    }
+
+    private class MusicCallbackHandler extends MediaSessionCompat.Callback {
+        @Override
+        public void onPause() {
+            MusicService.this.pauseSong(true);
+        }
+
+        @Override
+        public void onPlay() {
+            MusicService.this.resumeSong();
+        }
+
+        @Override
+        public void onPlayFromMediaId(String mediaId, Bundle extras) {
+            Uri trackUri = null;
+            try {
+                trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.parseLong(mediaId));
+            } catch(NumberFormatException nfe) {
+                Log.e(LOG_TAG, "Couldnt parse MediaId");
+            }
+
+            MusicService.this.playSong(trackUri);
+        }
+
+        @Override
+        public void onPlayFromUri(Uri uri, Bundle extras) {
+            MusicService.this.playSong(uri);
+        }
+
+        @Override
+        public void onSeekTo(long pos) {
+            MusicService.this.seekTo(pos);
+        }
+
+        @Override
+        public void onSkipToNext() {
+            MusicService.this.nextSong();
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            MusicService.this.prevSong();
+        }
+
+        @Override
+        public void onStop() {
+            MusicService.this.pauseSong(true);
+        }
     }
 }
