@@ -22,11 +22,11 @@ import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.player.service.MusicService;
 
-public class SongList extends Fragment {
+public class SongListFragment extends Fragment {
     private ListView songView;
     private List<PhysicalSong> songList;
 
-    public SongList(List<PhysicalSong> songList) {
+    public SongListFragment(List<PhysicalSong> songList) {
         this.songList=songList;
     }
 
@@ -40,7 +40,6 @@ public class SongList extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         songView = (ListView)view.findViewById(R.id.songlist);
-       // loadAudio();
         CardsAdapter adapter = new CardsAdapter(this.getContext(), songList);
         songView.setAdapter(adapter);
     }
