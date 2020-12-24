@@ -107,6 +107,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         }
 
+        MediaButtonReceiver.handleIntent()
+
         return START_NOT_STICKY;
     }
 
