@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
-import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.player.service.MusicService;
 
@@ -34,7 +33,7 @@ public class ControlsSmallFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
 
-        return inflater.inflate(R.layout.controls_small, parent, false);
+        return inflater.inflate(R.layout.fragment_controls_small, parent, false);
     }
 
     // This event is triggered soon after onCreateView().
@@ -44,11 +43,11 @@ public class ControlsSmallFragment extends Fragment {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
-        playPauseButton = view.findViewById(R.id.playPauseButton);
+        playPauseButton = view.findViewById(R.id.lp_playPauseButton);
         playPauseButton.setOnClickListener(new PlayPauseOnClickListener());
-        nextButton = view.findViewById(R.id.nextButton);
+        nextButton = view.findViewById(R.id.lp_nextButton);
         nextButton.setOnClickListener(new NextOnClickListener());
-        prevButton = view.findViewById(R.id.prevButton);
+        prevButton = view.findViewById(R.id.lp_prevButton);
         prevButton.setOnClickListener(new PrevOnClickListener());
     }
 

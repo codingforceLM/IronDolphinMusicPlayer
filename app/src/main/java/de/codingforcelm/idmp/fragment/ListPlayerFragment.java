@@ -24,7 +24,7 @@ public class ListPlayerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.player_list, parent, false);
+        return inflater.inflate(R.layout.fragment_player_list, parent, false);
     }
 
     @Override
