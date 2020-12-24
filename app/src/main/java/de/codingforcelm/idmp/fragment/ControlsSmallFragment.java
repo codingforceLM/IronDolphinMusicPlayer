@@ -12,7 +12,7 @@ import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.player.service.MusicService;
 
-public class ControlsSmall extends Fragment {
+public class ControlsSmallFragment extends Fragment {
     private ImageView playPauseButton;
     private ImageView nextButton;
     private ImageView prevButton;
@@ -20,10 +20,10 @@ public class ControlsSmall extends Fragment {
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
 
-    public ControlsSmall(MusicService service){
+    public ControlsSmallFragment(MusicService service){
         this.service=service;
     }
-    public ControlsSmall(){
+    public ControlsSmallFragment(){
     }
 
     public void setService(MusicService service){
