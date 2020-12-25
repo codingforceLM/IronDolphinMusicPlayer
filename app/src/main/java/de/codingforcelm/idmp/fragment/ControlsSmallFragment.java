@@ -23,6 +23,7 @@ public class ControlsSmallFragment extends Fragment {
         this.service=service;
     }
     public ControlsSmallFragment(){
+        //needed default constructor
     }
 
     public void setService(MusicService service){
