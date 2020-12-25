@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.icu.text.Transliterator;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.session.MediaSession;
@@ -38,7 +39,7 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
 
-    private static final String MY_MEDIA_ROOT_ID = "media_root_id";
+    private static final String MY_MEDIA_ROOT_ID = "My_Unique_Service";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public static final String CHANNEL_ID = "idmp_player_notification";
     private static final int NOTIFICATION_ID = 666;
@@ -61,6 +62,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
     @Override
     public void onCreate() {
+        Log.e(LOG_TAG, "Create MusicService");
         super.onCreate();
         songPosition = 0;
         player = new MediaPlayer();
@@ -68,6 +70,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         mediaSession = new MediaSessionCompat(this, LOG_TAG);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        /*
         stateBuilder = new PlaybackStateCompat.Builder().setActions(
                         PlaybackStateCompat.ACTION_PLAY |
                         PlaybackStateCompat.ACTION_PAUSE |
@@ -76,6 +80,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         PlaybackStateCompat.ACTION_STOP
         );
         mediaSession.setPlaybackState(stateBuilder.build());
+         */
+        updateSession();
         mediaSession.setCallback(new MusicCallbackHandler());
         setSessionToken(mediaSession.getSessionToken());
     }
@@ -107,9 +113,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         }
 
-        MediaButtonReceiver.handleIntent()
+        MediaButtonReceiver.handleIntent(mediaSession, intent);
 
-        return START_NOT_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -117,10 +123,12 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         stopForeground(true);
     }
 
+    /*
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
     }
+     */
 
     @Nullable
     @Override
@@ -206,9 +214,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
-        builder.setContentTitle(desc.getTitle());
-        builder.setContentText(desc.getSubtitle());
-        builder.setSubText(desc.getDescription());
+        builder.setContentTitle(mediaMetdata.getString("title"));
+        builder.setContentText(mediaMetdata.getString("artist"));
+        builder.setSubText(mediaMetdata.getString("album"));
         builder.setOngoing(false);
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setContentIntent(controller.getSessionActivity());
@@ -222,11 +230,21 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 "Previous",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
         ));
-        builder.addAction(new NotificationCompat.Action(
-                play ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause,
-                "Pause",
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PAUSE)
-        ));
+
+        if(!play) {
+            builder.addAction(new NotificationCompat.Action(
+                    android.R.drawable.ic_media_pause,
+                    "Pause",
+                    MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PAUSE)
+            ));
+        } else {
+            builder.addAction(new NotificationCompat.Action(
+                    android.R.drawable.ic_media_play,
+                    "Play",
+                    MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_PLAY)
+            ));
+        }
+
         builder.addAction(new NotificationCompat.Action(
                 android.R.drawable.ic_media_next,
                 "Previous",
@@ -253,7 +271,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     public void initMusicPlayer() {
-        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        //player.setAudioStreamType(AudioManager.STREAM_MUSIC);
         player.setOnErrorListener(this);
         player.setOnCompletionListener(this);
         player.setOnPreparedListener(this);
@@ -336,11 +354,39 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         this.songPosition = pos;
     }
 
+    private void updateSession() {
+        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
+
+        stateBuilder = new PlaybackStateCompat.Builder().setActions(
+                PlaybackStateCompat.ACTION_PLAY |
+                        PlaybackStateCompat.ACTION_PAUSE |
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
+                        PlaybackStateCompat.ACTION_STOP
+        );
+
+        if(player.isPlaying()) {
+            stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, player.getCurrentPosition(), 1.0f);
+        } else {
+            stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, player.getCurrentPosition(), 1.0f);
+        }
+
+        PhysicalSong song = songList.get(songPosition);
+
+        MediaMetadataCompat.Builder dataBuilder = new MediaMetadataCompat.Builder();
+        dataBuilder.putString("artist", song.getArtist());
+        dataBuilder.putString("album", song.getAlbum());
+        dataBuilder.putString("title", song.getTitle());
+
+        mediaSession.setPlaybackState(stateBuilder.build());
+        mediaSession.setMetadata(dataBuilder.build());
+    }
+
     private class MusicCallbackHandler extends MediaSessionCompat.Callback {
         @Override
         public void onPause() {
             MusicService.this.pauseSong(true);
-            MusicService.this.mediaSession.setPlaybackState(PlaybackStateCompat.fromPlaybackState(PlaybackStateCompat.ACTION_PAUSE));
+            updateSession();
         }
 
         @Override
@@ -348,7 +394,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             Intent intent = new Intent(MusicService.this, MusicService.class);
             startService(intent);
             MusicService.this.resumeSong();
-            MusicService.this.mediaSession.setPlaybackState(PlaybackStateCompat.fromPlaybackState(PlaybackStateCompat.ACTION_PLAY));
+            updateSession();
         }
 
         @Override
@@ -360,37 +406,44 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 Log.e(LOG_TAG, "Couldnt parse MediaId");
             }
 
+            if(extras.containsKey("position")) {
+                songPosition = extras.getInt("position");
+            } else {
+                throw new IllegalStateException("Missing songlist position");
+            }
+
             MusicService.this.playSong(trackUri);
-            MusicService.this.mediaSession.setPlaybackState(PlaybackStateCompat.fromPlaybackState(PlaybackStateCompat.ACTION_PLAY));
+            updateSession();
         }
 
         @Override
         public void onPlayFromUri(Uri uri, Bundle extras) {
             MusicService.this.playSong(uri);
-            MusicService.this.mediaSession.setPlaybackState(PlaybackStateCompat.fromPlaybackState(PlaybackStateCompat.ACTION_PLAY));
+            updateSession();
         }
 
         @Override
         public void onSeekTo(long pos) {
             MusicService.this.seekTo(pos);
+            updateSession();
         }
 
         @Override
         public void onSkipToNext() {
             MusicService.this.nextSong();
-            MusicService.this.mediaSession.setPlaybackState(PlaybackStateCompat.fromPlaybackState(PlaybackStateCompat.ACTION_PLAY));
+            updateSession();
         }
 
         @Override
         public void onSkipToPrevious() {
             MusicService.this.prevSong();
-            MusicService.this.mediaSession.setPlaybackState(PlaybackStateCompat.fromPlaybackState(PlaybackStateCompat.ACTION_PLAY));
+            updateSession();
         }
 
         @Override
         public void onStop() {
             MusicService.this.pauseSong(true);
-            MusicService.this.mediaSession.setPlaybackState(PlaybackStateCompat.fromPlaybackState(PlaybackStateCompat.ACTION_STOP));
+            updateSession();
             stopSelf();
         }
     }

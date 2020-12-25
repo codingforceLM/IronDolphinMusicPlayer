@@ -31,12 +31,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.ListPlayer;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String Broadcast_PLAY_NEW_AUDIO = "de.codingforcelm.idmp.PlayNewAudio";
+    public static final String LOG_TAG = "MainActivity";
 
     private List<PhysicalSong> songList;
     private boolean bound;
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private MusicService service;
     private Intent playIntent;
     private MediaBrowserCompat browser;
-
+    private MediaControllerCompat.TransportControls transportControls;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -72,20 +74,23 @@ public class MainActivity extends AppCompatActivity {
 
         bound = false;
 
-        loadAudio();
+        songList = new AudioLoader(this).getSongs();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ft.replace(R.id.mainFrame, new ListPlayer(songList), "LISTPLAYER");
         ft.commit();
         this.createNotificationChannel();
+
+        //browser.connect();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         playIntent = new Intent(this, MusicService.class);
-        bindService(playIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        startService(playIntent);
+        //bindService(playIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        //startService(playIntent);
+        Log.e(LOG_TAG,"Connect browser");
         browser.connect();
     }
 
@@ -108,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Intent stop = new Intent(this, MusicService.class);
         stopService(stop);
+        browser.disconnect();
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -127,18 +133,21 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+    private final MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
             MediaSessionCompat.Token token = browser.getSessionToken();
             MediaControllerCompat controller = new MediaControllerCompat(MainActivity.this, token);
             MediaControllerCompat.setMediaController(MainActivity.this, controller);
+            transportControls = controller.getTransportControls();
 
             // TODO utilize transport controls
 
             // TODO display initial state
 
             controller.registerCallback(controllerCallback);
+            Toast.makeText(MainActivity.this, "Browser connected", Toast.LENGTH_SHORT).show();
+            Log.e(LOG_TAG, "Browser connected");
         }
 
         @Override
@@ -210,9 +219,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());
-        service.playSong(pos);
-        ImageView playPauseButton = findViewById(R.id.playPauseButton);
-        playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+        PhysicalSong song = songList.get(pos);
+        String id = String.valueOf(song.getId());
+        Bundle b = new Bundle();
+        b.putInt("position", pos);
+        transportControls.playFromMediaId(id, b);
+        Log.e(LOG_TAG, "");
+        //service.playSong(pos);
     }
 
     private void createNotificationChannel() {
