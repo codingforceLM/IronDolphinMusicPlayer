@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,10 +34,10 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
-import de.codingforcelm.idmp.fragment.TestFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class MainActivity extends AppCompatActivity {
@@ -91,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ft.replace(R.id.mainFrame, new ListPlayerFragment(songList), "LISTPLAYER");
+
         ft.commit();
         this.createNotificationChannel();
     }
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());
         service.playSong(pos);
-        ImageView playPauseButton = findViewById(R.id.playPauseButton);
+        ImageView playPauseButton = findViewById(R.id.lp_playPauseButton);
         playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
     }
 
@@ -231,9 +231,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.nav_test:
-                fragment = getSupportFragmentManager().findFragmentByTag("STATISTICS");
+                fragment = getSupportFragmentManager().findFragmentByTag("STATIddddSTICS");
                 if(fragment == null){
-                    fragment = new TestFragment();
+                    fragment = new BigPlayerFragment();
                 }
                 break;
             default:

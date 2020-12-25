@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/bp_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="80"
+            android:src="@drawable/ic_baseline_outdoor_grill_24" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5" />
+
+        <TextView
+            android:id="@+id/bp_track"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:text="Track" />
+
+        <TextView
+            android:id="@+id/bp_albumArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:text="Album - Artist" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10" />
+
+        <SeekBar
+            android:id="@+id/bp_seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="7" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="7"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/bp_repeatButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="10"
+                android:src="?android:attr/listChoiceIndicatorMultiple"
+                tools:src="@android:drawable/ic_menu_rotate" />
+
+            <ImageView
+                android:id="@+id/bp_prevButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="20"
+                android:src="@android:drawable/ic_media_previous" />
+
+            <ImageView
+                android:id="@+id/bp_playPauseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="40"
+                android:src="@android:drawable/ic_media_play" />
+
+            <ImageView
+                android:id="@+id/bp_nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="20"
+                android:src="@android:drawable/ic_media_next" />
+
+            <ImageView
+                android:id="@+id/bp_shuffleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="10"
+                android:src="?android:attr/listChoiceIndicatorMultiple"
+                tools:src="?android:attr/listChoiceIndicatorMultiple" />
+
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
