@@ -17,16 +17,12 @@ import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class ListPlayerFragment extends Fragment {
-    private List<PhysicalSong> songList;
     private ImageView playPauseButton;
     private ImageView nextButton;
     private ImageView prevButton;
     private ImageView image;
     private MusicService service;
 
-    public ListPlayerFragment(List<PhysicalSong> songList) {
-        this.songList=songList;
-    }
     public ListPlayerFragment(){
         //needed default constructor
     }
@@ -39,7 +35,6 @@ public class ListPlayerFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-       // ft.replace(R.id.player_list_top, new SongListFragment(songList), "SONGLIST");
         ft.replace(R.id.player_list_top, new SongListFragment(), "SONGLIST");
         ft.commit();
         playPauseButton = view.findViewById(R.id.lp_playPauseButton);
