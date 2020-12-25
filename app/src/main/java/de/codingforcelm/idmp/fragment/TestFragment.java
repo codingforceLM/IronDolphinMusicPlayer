@@ -12,7 +12,7 @@ import de.codingforcelm.idmp.R;
 public class TestFragment extends Fragment {
 
     public TestFragment() {
-
+        //needed default constructor
     }
 
 

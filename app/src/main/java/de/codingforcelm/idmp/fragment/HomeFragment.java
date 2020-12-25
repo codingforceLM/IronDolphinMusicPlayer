@@ -15,7 +15,7 @@ import de.codingforcelm.idmp.R;
 public class HomeFragment extends Fragment {
 
     public HomeFragment() {
-
+        //needed default constructor
     }
 
 

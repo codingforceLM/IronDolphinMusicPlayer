@@ -21,7 +21,7 @@ public class BigPlayerFragment extends Fragment {
 
 
     public BigPlayerFragment() {
-
+        //needed default constructor
     }
 
 

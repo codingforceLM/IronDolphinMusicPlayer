@@ -20,7 +20,9 @@ public class ListPlayerFragment extends Fragment {
     public ListPlayerFragment(List<PhysicalSong> songList) {
         this.songList=songList;
     }
-
+    public ListPlayerFragment(){
+        //needed default constructor
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
