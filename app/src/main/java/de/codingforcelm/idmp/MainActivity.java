@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         loadAudio();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        ft.replace(R.id.mainFrame, new ListPlayerFragment(songList), "LISTPLAYER");
+        ft.replace(R.id.mainFrame, new ListPlayerFragment(), "LISTPLAYER");
 
         ft.commit();
         this.createNotificationChannel();
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO check service after mediaplayer rework
                 fragment = getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
                 if(fragment == null){
-                    fragment = new ListPlayerFragment(songList);
+                    fragment = new ListPlayerFragment();
                 }
                 break;
             case R.id.nav_statistics:
