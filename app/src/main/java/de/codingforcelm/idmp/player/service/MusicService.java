@@ -71,16 +71,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         mediaSession = new MediaSessionCompat(this, LOG_TAG);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-        /*
-        stateBuilder = new PlaybackStateCompat.Builder().setActions(
-                        PlaybackStateCompat.ACTION_PLAY |
-                        PlaybackStateCompat.ACTION_PAUSE |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
-                        PlaybackStateCompat.ACTION_STOP
-        );
-        mediaSession.setPlaybackState(stateBuilder.build());
-         */
         updateSession();
         mediaSession.setCallback(new MusicCallbackHandler());
         setSessionToken(mediaSession.getSessionToken());
@@ -122,13 +112,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public void onDestroy()  {
         stopForeground(true);
     }
-
-    /*
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-     */
 
     @Nullable
     @Override
@@ -191,23 +174,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         MediaMetadataCompat mediaMetdata = controller.getMetadata();
         MediaDescriptionCompat desc = mediaMetdata.getDescription();
 
-        /*
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        Intent nextIntent = new Intent(this, MusicService.class);
-        nextIntent.setAction(MusicService.ACTION_MUSIC_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getService(this, 0 , nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent playPauseIntent = new Intent(this, MusicService.class);
-        playPauseIntent.setAction(MusicService.ACTION_MUSIC_PLAY);
-        PendingIntent playPausePendingIntent = PendingIntent.getService(this, 0 , playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent prevIntent = new Intent(this, MusicService.class);
-        prevIntent.setAction(MusicService.ACTION_MUSIC_PREV);
-        PendingIntent prevPendingIntent = PendingIntent.getService(this, 0 , prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-         */
         Intent cancelIntent = new Intent(this, MusicService.class);
         cancelIntent.setAction(MusicService.ACTION_CANCEL_NOTIFICATION);
         PendingIntent cancelPendingIntent = PendingIntent.getService(this, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -251,15 +217,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
         ));
 
-        /*
-        builder.addAction(android.R.drawable.ic_media_previous, "Previous", prevPendingIntent);
-        builder.addAction(
-                play ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause,
-                "Play",
-                playPausePendingIntent);
-        builder.addAction(android.R.drawable.ic_media_next, "Next", nextPendingIntent);
-         */
-
         builder.setStyle(
                 new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0, 1, 2)
@@ -271,7 +228,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     public void initMusicPlayer() {
-        //player.setAudioStreamType(AudioManager.STREAM_MUSIC);
         player.setOnErrorListener(this);
         player.setOnCompletionListener(this);
         player.setOnPreparedListener(this);

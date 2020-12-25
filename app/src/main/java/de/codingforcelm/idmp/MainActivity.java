@@ -88,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         playIntent = new Intent(this, MusicService.class);
-        //bindService(playIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        //startService(playIntent);
         Log.e(LOG_TAG,"Connect browser");
         browser.connect();
     }
@@ -225,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
         b.putInt("position", pos);
         transportControls.playFromMediaId(id, b);
         Log.e(LOG_TAG, "");
-        //service.playSong(pos);
     }
 
     private void createNotificationChannel() {
