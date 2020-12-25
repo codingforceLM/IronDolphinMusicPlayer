@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         int pos = Integer.parseInt(view.getTag().toString());
         service.playSong(pos);
         ImageView playPauseButton = findViewById(R.id.lp_playPauseButton);
-        playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+        playPauseButton.setImageResource(R.drawable.ic_control_pause);
     }
 
     private void createNotificationChannel() {

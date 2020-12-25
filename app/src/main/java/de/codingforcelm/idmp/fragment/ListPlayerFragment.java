@@ -63,7 +63,7 @@ public class ListPlayerFragment extends Fragment {
         public void onClick(View v) {
             if(service != null){
                 service.nextSong();
-                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+                playPauseButton.setImageResource(R.drawable.ic_control_pause);
             }
         }
     }
@@ -75,10 +75,10 @@ public class ListPlayerFragment extends Fragment {
             if (service != null) {
                 if (service.isPlaying()) {
                     service.pauseSong(true);
-                    playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+                    playPauseButton.setImageResource(R.drawable.ic_control_play);
                 } else {
                     service.resumeSong();
-                    playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+                    playPauseButton.setImageResource(R.drawable.ic_control_pause);
                 }
             }
         }
@@ -89,7 +89,7 @@ public class ListPlayerFragment extends Fragment {
         public void onClick(View v) {
             if(service != null){
                 service.prevSong();
-                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+                playPauseButton.setImageResource(R.drawable.ic_control_pause);
             }
         }
     }
