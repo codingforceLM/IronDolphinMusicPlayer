@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
 
+import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.player.service.MusicService;
@@ -20,6 +21,7 @@ public class ListPlayerFragment extends Fragment {
     private ImageView playPauseButton;
     private ImageView nextButton;
     private ImageView prevButton;
+    private ImageView image;
     private MusicService service;
 
     public ListPlayerFragment(List<PhysicalSong> songList) {
@@ -37,15 +39,17 @@ public class ListPlayerFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        ft.replace(R.id.player_list_top, new SongListFragment(songList), "SONGLIST");
+       // ft.replace(R.id.player_list_top, new SongListFragment(songList), "SONGLIST");
+        ft.replace(R.id.player_list_top, new SongListFragment(), "SONGLIST");
         ft.commit();
-
         playPauseButton = view.findViewById(R.id.lp_playPauseButton);
         playPauseButton.setOnClickListener(new ListPlayerFragment.PlayPauseOnClickListener());
         nextButton = view.findViewById(R.id.lp_nextButton);
         nextButton.setOnClickListener(new ListPlayerFragment.NextOnClickListener());
         prevButton = view.findViewById(R.id.lp_prevButton);
         prevButton.setOnClickListener(new ListPlayerFragment.PrevOnClickListener());
+        image = view.findViewById(R.id.lp_image);
+        image.setOnClickListener(new ListPlayerFragment.ImageOnClickListener());
     }
 
 
@@ -93,4 +97,13 @@ public class ListPlayerFragment extends Fragment {
             }
         }
     }
+
+    private class ImageOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+                ((MainActivity) getActivity()).replaceFragments(BigPlayerFragment.class);
+        }
+    }
+
+
 }
