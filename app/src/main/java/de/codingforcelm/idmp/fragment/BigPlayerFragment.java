@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,12 +59,24 @@ public class BigPlayerFragment extends Fragment {
         bp_seekBar.setOnClickListener(new BigPlayerFragment.PrevOnClickListener());
         bp_image = view.findViewById(R.id.bp_image);
         bp_image.setOnClickListener(new BigPlayerFragment.ImageOnClickListener());
+
+        ((MainActivity)getActivity()).setView(false);
     }
 
     private class PlayPauseOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            //TODO implement
+            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+            if(controller != null) {
+                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
+                if(tc != null) {
+                    if(((MainActivity)getActivity()).isPlaying()) {
+                        tc.pause();
+                    } else {
+                        tc.play();
+                    }
+                }
+            }
         }
     }
 
@@ -77,14 +90,26 @@ public class BigPlayerFragment extends Fragment {
     private class NextOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            //TODO implement
+            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+            if(controller != null) {
+                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
+                if(tc != null) {
+                    tc.skipToNext();
+                }
+            }
         }
     }
 
     private class PrevOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            //TODO implement
+            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+            if(controller != null) {
+                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
+                if(tc != null) {
+                    tc.skipToPrevious();
+                }
+            }
         }
     }
 

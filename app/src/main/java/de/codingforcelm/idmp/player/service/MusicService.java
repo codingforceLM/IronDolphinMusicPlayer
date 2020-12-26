@@ -160,15 +160,19 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        Log.e(LOG_TAG, "onPrepared");
         if(position != 0) {
             mp.seekTo(position);
         }
         mp.start();
 
-        notification = buildNotification(false);
-        startForeground(NOTIFICATION_ID, notification);
-
+        Log.e(LOG_TAG, "update session");
         updateSession();
+
+        Log.e(LOG_TAG, "build new notification");
+        notification = buildNotification(false);
+        Log.e(LOG_TAG, "update notification");
+        startForeground(NOTIFICATION_ID, notification);
     }
 
     private Notification buildNotification(boolean play) {
@@ -289,6 +293,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         long curr = song.getId();
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, curr);
 
+        Log.e(LOG_TAG, "Play song");
         this.playSong(trackUri);
     }
 
@@ -374,27 +379,32 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         @Override
         public void onPlayFromUri(Uri uri, Bundle extras) {
+            Log.e(LOG_TAG, "onPlayFromUri");
             MusicService.this.playSong(uri);
         }
 
         @Override
         public void onSeekTo(long pos) {
+            Log.e(LOG_TAG, "onSeekTo");
             MusicService.this.seekTo(pos);
         }
 
         @Override
         public void onSkipToNext() {
+            Log.e(LOG_TAG, "onSkipToNext");
             MusicService.this.nextSong();
         }
 
         @Override
         public void onSkipToPrevious() {
+            Log.e(LOG_TAG, "OnSkipToPrevious");
             MusicService.this.prevSong();
         }
 
         @Override
         public void onStop() {
             MusicService.this.pauseSong(true);
+            Log.e(LOG_TAG, "onStop");
             stopSelf();
         }
     }

@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navDrawer;
     private ActionBarDrawerToggle drawerToggle;
+    private boolean listview;
+    private boolean playstatus;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -108,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ft.replace(R.id.mainFrame, new ListPlayerFragment(), "LISTPLAYER");
+        listview = true;
+
+        playstatus = false;
 
         ft.commit();
         this.createNotificationChannel();
@@ -209,15 +214,28 @@ public class MainActivity extends AppCompatActivity {
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             ImageView il = findViewById(R.id.lp_playPauseButton);
             ImageView ib = findViewById(R.id.bp_playPauseButton);
+
+            int res = -1;
+
             switch(state.getState()) {
                 case PlaybackStateCompat.STATE_PLAYING:
                     Log.e(LOG_TAG, "Playbackstate changed to play");
-                    il.setImageResource(R.drawable.ic_control_pause);
+                    res = R.drawable.ic_control_pause;
+                    playstatus = true;
                     break;
                 case PlaybackStateCompat.STATE_PAUSED:
                     Log.e(LOG_TAG, "Playbackstate changed to pause");
-                    il.setImageResource(R.drawable.ic_control_play);
+                    res = R.drawable.ic_control_play;
+                    playstatus = false;
                     break;
+            }
+
+            if(res != -1) {
+                if(listview) {
+                    il.setImageResource(res);
+                } else {
+                    ib.setImageResource(res);
+                }
             }
         }
 
@@ -370,5 +388,13 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.mainFrame, fragment)
                 .commit();
+    }
+
+    public void setView(boolean view) {
+        this.listview = view;
+    }
+
+    public boolean isPlaying() {
+        return playstatus;
     }
 }
