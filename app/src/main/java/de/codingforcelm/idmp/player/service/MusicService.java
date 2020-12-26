@@ -167,6 +167,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         notification = buildNotification(false);
         startForeground(NOTIFICATION_ID, notification);
+
+        updateSession();
     }
 
     private Notification buildNotification(boolean play) {
@@ -252,6 +254,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             startForeground(NOTIFICATION_ID, notification);
         }
         stopForeground(false);
+        updateSession();
     }
 
     public void resumeSong() {
@@ -342,7 +345,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         @Override
         public void onPause() {
             MusicService.this.pauseSong(true);
-            updateSession();
         }
 
         @Override
@@ -350,7 +352,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             Intent intent = new Intent(MusicService.this, MusicService.class);
             startService(intent);
             MusicService.this.resumeSong();
-            updateSession();
         }
 
         @Override
@@ -369,37 +370,31 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             }
 
             MusicService.this.playSong(trackUri);
-            updateSession();
         }
 
         @Override
         public void onPlayFromUri(Uri uri, Bundle extras) {
             MusicService.this.playSong(uri);
-            updateSession();
         }
 
         @Override
         public void onSeekTo(long pos) {
             MusicService.this.seekTo(pos);
-            updateSession();
         }
 
         @Override
         public void onSkipToNext() {
             MusicService.this.nextSong();
-            updateSession();
         }
 
         @Override
         public void onSkipToPrevious() {
             MusicService.this.prevSong();
-            updateSession();
         }
 
         @Override
         public void onStop() {
             MusicService.this.pauseSong(true);
-            updateSession();
             stopSelf();
         }
     }

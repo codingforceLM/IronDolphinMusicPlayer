@@ -210,13 +210,13 @@ public class MainActivity extends AppCompatActivity {
             ImageView il = findViewById(R.id.lp_playPauseButton);
             ImageView ib = findViewById(R.id.bp_playPauseButton);
             switch(state.getState()) {
-                case (int)PlaybackStateCompat.ACTION_PLAY:
+                case PlaybackStateCompat.STATE_PLAYING:
+                    Log.e(LOG_TAG, "Playbackstate changed to play");
                     il.setImageResource(R.drawable.ic_control_pause);
-                    ib.setImageResource(R.drawable.ic_control_pause);
                     break;
-                case (int)PlaybackStateCompat.ACTION_PAUSE:
+                case PlaybackStateCompat.STATE_PAUSED:
+                    Log.e(LOG_TAG, "Playbackstate changed to pause");
                     il.setImageResource(R.drawable.ic_control_play);
-                    ib.setImageResource(R.drawable.ic_control_play);
                     break;
             }
         }
