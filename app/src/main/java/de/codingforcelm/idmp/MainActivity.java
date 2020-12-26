@@ -130,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        playIntent = new Intent(this, MusicService.class);
-        Log.e(LOG_TAG,"Connect browser");
-        browser.connect();
+        if(!browser.isConnected()) {
+            Log.e(LOG_TAG,"Connect browser");
+            browser.connect();
+        }
     }
 
     @Override
