@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 
 public class BigPlayerFragment extends Fragment {
@@ -18,6 +20,7 @@ public class BigPlayerFragment extends Fragment {
     private ImageView bp_nextButton;
     private ImageView bp_shuffleButton;
     private SeekBar bp_seekBar;
+    private ImageView bp_image;
 
 
     public BigPlayerFragment() {
@@ -53,6 +56,8 @@ public class BigPlayerFragment extends Fragment {
         bp_shuffleButton.setOnClickListener(new BigPlayerFragment.ShuffleOnClickListener());
         bp_seekBar = view.findViewById(R.id.bp_seekBar);
         bp_seekBar.setOnClickListener(new BigPlayerFragment.PrevOnClickListener());
+        bp_image = view.findViewById(R.id.bp_image);
+        bp_image.setOnClickListener(new BigPlayerFragment.ImageOnClickListener());
     }
 
     private class PlayPauseOnClickListener implements View.OnClickListener {
@@ -87,6 +92,13 @@ public class BigPlayerFragment extends Fragment {
         @Override
         public void onClick(View v) {
             //TODO implement
+        }
+    }
+
+    private class ImageOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+               ((MainActivity) getActivity()).replaceFragments(ListPlayerFragment.class);
         }
     }
 

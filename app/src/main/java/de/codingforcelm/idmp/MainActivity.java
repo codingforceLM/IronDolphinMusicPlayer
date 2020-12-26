@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         songList = new AudioLoader(this).getSongs();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        ft.replace(R.id.mainFrame, new ListPlayerFragment(songList), "LISTPLAYER");
+        ft.replace(R.id.mainFrame, new ListPlayerFragment(), "LISTPLAYER");
 
         ft.commit();
         this.createNotificationChannel();
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO check service after mediaplayer rework
                 fragment = getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
                 if(fragment == null){
-                    fragment = new ListPlayerFragment(songList);
+                    fragment = new ListPlayerFragment();
                 }
                 break;
             case R.id.nav_statistics:
@@ -357,5 +357,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    public void replaceFragments(Class fragmentClass) {
+        Fragment fragment = null;
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.mainFrame, fragment)
+                .commit();
+    }
 }
