@@ -7,59 +7,64 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import de.codingforcelm.idmp.MainActivity;
+import java.util.List;
+
+import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.player.service.MusicService;
 
-public class ControlsSmall extends Fragment {
+public class ListPlayerFragment extends Fragment {
+    private List<PhysicalSong> songList;
     private ImageView playPauseButton;
     private ImageView nextButton;
     private ImageView prevButton;
     private MusicService service;
-    // The onCreateView method is called when Fragment should create its View object hierarchy,
-    // either dynamically or via XML layout inflation.
 
-    public ControlsSmall(MusicService service){
-        this.service=service;
+    public ListPlayerFragment(List<PhysicalSong> songList) {
+        this.songList=songList;
     }
-    public ControlsSmall(){
-    }
-
-    public void setService(MusicService service){
-        this.service=service;
+    public ListPlayerFragment(){
+        //needed default constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        // Defines the xml file for the fragment
-
-        return inflater.inflate(R.layout.controls_small, parent, false);
+        return inflater.inflate(R.layout.fragment_player_list, parent, false);
     }
 
-    // This event is triggered soon after onCreateView().
-    // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        // Setup any handles to view objects here
-        // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        ft.replace(R.id.player_list_top, new SongListFragment(songList), "SONGLIST");
+        ft.commit();
 
-        playPauseButton = view.findViewById(R.id.playPauseButton);
-        playPauseButton.setOnClickListener(new PlayPauseOnClickListener());
-        nextButton = view.findViewById(R.id.nextButton);
-        nextButton.setOnClickListener(new NextOnClickListener());
-        prevButton = view.findViewById(R.id.prevButton);
-        prevButton.setOnClickListener(new PrevOnClickListener());
+        playPauseButton = view.findViewById(R.id.lp_playPauseButton);
+        playPauseButton.setOnClickListener(new ListPlayerFragment.PlayPauseOnClickListener());
+        nextButton = view.findViewById(R.id.lp_nextButton);
+        nextButton.setOnClickListener(new ListPlayerFragment.NextOnClickListener());
+        prevButton = view.findViewById(R.id.lp_prevButton);
+        prevButton.setOnClickListener(new ListPlayerFragment.PrevOnClickListener());
+    }
+
+
+    /**
+     * TODO doc
+     * @param service service
+     */
+    public void setService(MusicService service) {
+        this.service=service;
     }
 
 
     private class NextOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-                if(service != null){
-                    service.nextSong();
-                    playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-                }
+            if(service != null){
+                service.nextSong();
+                playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            }
         }
     }
 
@@ -88,5 +93,4 @@ public class ControlsSmall extends Fragment {
             }
         }
     }
-
 }

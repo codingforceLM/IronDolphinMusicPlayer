@@ -1,6 +1,12 @@
 package de.codingforcelm.idmp;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.NotificationChannel;
@@ -10,6 +16,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -24,15 +31,22 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.ListPlayer;
+import de.codingforcelm.idmp.fragment.BigPlayerFragment;
+import de.codingforcelm.idmp.fragment.HomeFragment;
+import de.codingforcelm.idmp.fragment.ListPlayerFragment;
+import de.codingforcelm.idmp.fragment.StatisticsFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
     private Intent playIntent;
     private MediaBrowserCompat browser;
     private MediaControllerCompat.TransportControls transportControls;
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private NavigationView navDrawer;
+    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -72,18 +90,39 @@ public class MainActivity extends AppCompatActivity {
                 null
         );
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navDrawer = (NavigationView) findViewById(R.id.navView);
+        drawerToggle = setupDrawerToggle();
+        setupDrawerContent(navDrawer);
+        // Setup toggle to display hamburger icon with animation
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.syncState();
+
+        drawerLayout.addDrawerListener(drawerToggle);
+
         bound = false;
 
         songList = new AudioLoader(this).getSongs();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        ft.replace(R.id.mainFrame, new ListPlayer(songList), "LISTPLAYER");
+        ft.replace(R.id.mainFrame, new ListPlayerFragment(songList), "LISTPLAYER");
+
         ft.commit();
         this.createNotificationChannel();
 
         //browser.connect();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -187,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
      * passes the service to player fragments
      */
     private void initializePlayer() {
-        ListPlayer lp = (ListPlayer)getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
+        ListPlayerFragment lp = (ListPlayerFragment)getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
         lp.setService(service);
     }
 
@@ -237,4 +276,86 @@ public class MainActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
+                });
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        Fragment fragment = null;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        switch(menuItem.getItemId()) {
+            case R.id.nav_home:
+                fragment = getSupportFragmentManager().findFragmentByTag("HOME");
+                if(fragment == null){
+                    fragment = new HomeFragment();
+                }
+                break;
+            case R.id.nav_listPlayer:
+                //TODO check service after mediaplayer rework
+                fragment = getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
+                if(fragment == null){
+                    fragment = new ListPlayerFragment(songList);
+                }
+                break;
+            case R.id.nav_statistics:
+                fragment = getSupportFragmentManager().findFragmentByTag("STATISTICS");
+                if(fragment == null){
+                    fragment = new StatisticsFragment();
+                }
+                break;
+            case R.id.nav_test:
+                fragment = getSupportFragmentManager().findFragmentByTag("STATIddddSTICS");
+                if(fragment == null){
+                    fragment = new BigPlayerFragment();
+                }
+                break;
+            default:
+                fragment = new HomeFragment();
+        }
+
+
+        fragmentManager.beginTransaction().replace(R.id.mainFrame, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        menuItem.setChecked(true);
+        // Set action bar title
+        setTitle(menuItem.getTitle());
+
+        drawerLayout.closeDrawers();
+    }
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,  R.string.drawer_close);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggles
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout layout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        if (layout.isDrawerOpen(GravityCompat.START)) {
+            layout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
 }
