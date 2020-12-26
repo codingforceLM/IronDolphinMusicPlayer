@@ -24,6 +24,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +41,8 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.fragment.ListPlayer;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
@@ -43,12 +52,15 @@ import de.codingforcelm.idmp.player.service.MusicService;
 public class MainActivity extends AppCompatActivity {
 
     public static final String Broadcast_PLAY_NEW_AUDIO = "de.codingforcelm.idmp.PlayNewAudio";
+    public static final String LOG_TAG = "MainActivity";
 
     private List<PhysicalSong> songList;
     private boolean bound;
 
     private MusicService service;
     private Intent playIntent;
+    private MediaBrowserCompat browser;
+    private MediaControllerCompat.TransportControls transportControls;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private NavigationView navDrawer;
@@ -71,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        browser = new MediaBrowserCompat(
+                this,
+                new ComponentName(this, MusicService.class),
+                connectionCallback,
+                null
+        );
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,16 +102,18 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
 
         drawerLayout.addDrawerListener(drawerToggle);
-        
+
         bound = false;
 
-        loadAudio();
+        songList = new AudioLoader(this).getSongs();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ft.replace(R.id.mainFrame, new ListPlayerFragment(songList), "LISTPLAYER");
 
         ft.commit();
         this.createNotificationChannel();
+
+        //browser.connect();
     }
 
     @Override
@@ -106,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         playIntent = new Intent(this, MusicService.class);
-        bindService(playIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        startService(playIntent);
+        Log.e(LOG_TAG,"Connect browser");
+        browser.connect();
     }
 
     @Override
@@ -119,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        if(MediaControllerCompat.getMediaController(this) != null) {
+            MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback);
+        }
     }
 
     @Override
@@ -126,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Intent stop = new Intent(this, MusicService.class);
         stopService(stop);
+        browser.disconnect();
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -145,6 +170,57 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private final MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+        @Override
+        public void onConnected() {
+            MediaSessionCompat.Token token = browser.getSessionToken();
+            MediaControllerCompat controller = new MediaControllerCompat(MainActivity.this, token);
+            MediaControllerCompat.setMediaController(MainActivity.this, controller);
+            transportControls = controller.getTransportControls();
+
+            // TODO utilize transport controls
+
+            // TODO display initial state
+
+            controller.registerCallback(controllerCallback);
+            Toast.makeText(MainActivity.this, "Browser connected", Toast.LENGTH_SHORT).show();
+            Log.e(LOG_TAG, "Browser connected");
+        }
+
+        @Override
+        public void onConnectionFailed() {
+            Log.e("MainActivity", "Service crashed");
+        }
+
+        @Override
+        public void onConnectionSuspended() {
+            Log.e("MainActivity", "Connection refused");
+        }
+    };
+
+    private MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
+
+        @Override
+        public void onMetadataChanged(MediaMetadataCompat metadata) {
+            MediaDescriptionCompat desc = metadata.getDescription();
+            // TODO change Metadata once we have some shit to do so
+        }
+
+        @Override
+        public void onPlaybackStateChanged(PlaybackStateCompat state) {
+            ImageView i = findViewById(R.id.playPauseButton);
+            switch(state.getState()) {
+                case (int)PlaybackStateCompat.ACTION_PLAY:
+                    i.setImageResource(android.R.drawable.ic_media_pause);
+                    break;
+                case (int)PlaybackStateCompat.ACTION_PAUSE:
+                    i.setImageResource(android.R.drawable.ic_media_play);
+                    break;
+            }
+        }
+
+    };
+
     /**
      * gets called after the service is bound
      * passes the service to player fragments
@@ -153,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
         ListPlayerFragment lp = (ListPlayerFragment)getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
         lp.setService(service);
     }
-
 
     private void loadAudio() {
         ContentResolver contentResolver = getContentResolver();
@@ -181,9 +256,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());
-        service.playSong(pos);
-        ImageView playPauseButton = findViewById(R.id.lp_playPauseButton);
-        playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+        PhysicalSong song = songList.get(pos);
+        String id = String.valueOf(song.getId());
+        Bundle b = new Bundle();
+        b.putInt("position", pos);
+        transportControls.playFromMediaId(id, b);
+        Log.e(LOG_TAG, "");
     }
 
     private void createNotificationChannel() {
