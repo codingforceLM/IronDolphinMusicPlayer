@@ -61,6 +61,11 @@ public class BigPlayerFragment extends Fragment {
         bp_image.setOnClickListener(new BigPlayerFragment.ImageOnClickListener());
 
         ((MainActivity)getActivity()).setView(false);
+        if(((MainActivity)getActivity()).isPlaying()) {
+            bp_playPauseButton.setImageResource(R.drawable.ic_control_pause);
+        } else {
+            bp_playPauseButton.setImageResource(R.drawable.ic_control_play);
+        }
     }
 
     private class PlayPauseOnClickListener implements View.OnClickListener {
