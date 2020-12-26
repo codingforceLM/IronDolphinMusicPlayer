@@ -48,7 +48,6 @@ public class ListPlayerFragment extends Fragment {
         image.setOnClickListener(new ListPlayerFragment.ImageOnClickListener());
 
         ((MainActivity)getActivity()).setView(true);
-
         if(((MainActivity)getActivity()).isPlaying()) {
             playPauseButton.setImageResource(R.drawable.ic_control_pause);
         } else {
@@ -86,7 +85,11 @@ public class ListPlayerFragment extends Fragment {
             if(controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
                 if(tc != null) {
-                    tc.pause();
+                    if(((MainActivity)getActivity()).isPlaying()) {
+                        tc.pause();
+                    } else {
+                        tc.play();
+                    }
                 }
             }
         }
