@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.audio.AudioLoader;
-import de.codingforcelm.idmp.fragment.ListPlayer;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
@@ -208,13 +207,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
-            ImageView i = findViewById(R.id.playPauseButton);
+            ImageView il = findViewById(R.id.lp_playPauseButton);
+            ImageView ib = findViewById(R.id.bp_playPauseButton);
             switch(state.getState()) {
                 case (int)PlaybackStateCompat.ACTION_PLAY:
-                    i.setImageResource(android.R.drawable.ic_media_pause);
+                    il.setImageResource(R.drawable.ic_control_pause);
+                    ib.setImageResource(R.drawable.ic_control_pause);
                     break;
                 case (int)PlaybackStateCompat.ACTION_PAUSE:
-                    i.setImageResource(android.R.drawable.ic_media_play);
+                    il.setImageResource(R.drawable.ic_control_play);
+                    ib.setImageResource(R.drawable.ic_control_play);
                     break;
             }
         }
