@@ -276,7 +276,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     public void resumeSong() {
-        player.prepareAsync();
+        if(!player.isPlaying()) {
+            player.prepareAsync();
+        }
     }
 
     public void nextSong() {
@@ -454,17 +456,22 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private class AudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener {
         @Override
         public void onAudioFocusChange(int focusChange) {
+            Log.e(LOG_TAG, "onAudioFocusChange");
             switch(focusChange) {
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    Log.e(LOG_TAG, "Audio Focus loss transient");
                     MusicService.this.pauseSong(false);
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    Log.e(LOG_TAG, "Audio Focus loss transient can duck");
                     player.setVolume(0.5f, 0.5f);
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS:
+                    Log.e(LOG_TAG, "Audio Focus loss");
                     mediaSession.getController().getTransportControls().stop();
                     break;
                 case AudioManager.AUDIOFOCUS_GAIN:
+                    Log.e(LOG_TAG, "Audio Focus gain");
                     player.setVolume(1.0f, 1.0f);
                     MusicService.this.resumeSong();
             }
