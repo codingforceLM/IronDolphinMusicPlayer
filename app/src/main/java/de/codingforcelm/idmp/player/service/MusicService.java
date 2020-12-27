@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.icu.text.Transliterator;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.session.MediaSession;
@@ -59,6 +61,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
     private MediaSessionCompat mediaSession;
     private PlaybackStateCompat.Builder stateBuilder;
+    private AudioManager audioManager;
+    private AudioFocusChangeListener afcl;
+    private AudioFocusRequest audioFocusRequest;
 
     @Override
     public void onCreate() {
@@ -70,6 +75,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         mediaSession = new MediaSessionCompat(this, LOG_TAG);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        afcl = new AudioFocusChangeListener();
 
         updateSession();
         mediaSession.setCallback(new MusicCallbackHandler());
@@ -161,6 +169,12 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e(LOG_TAG, "onPrepared");
+
+        if(!requestAudioFocus()) {
+            Log.e(LOG_TAG, "Audio Focus not granted - return");
+            return;
+        }
+
         if(position != 0) {
             mp.seekTo(position);
         }
@@ -346,6 +360,33 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         mediaSession.setMetadata(dataBuilder.build());
     }
 
+    private boolean requestAudioFocus() {
+        int res = -1;
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            AudioFocusRequest.Builder builder = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN);
+            builder.setFocusGain(AudioManager.AUDIOFOCUS_GAIN);
+            builder.setWillPauseWhenDucked(false);
+            builder.setAcceptsDelayedFocusGain(false);
+            builder.setOnAudioFocusChangeListener(afcl);
+
+            final Object focusLock = new Object();
+            res = audioManager.requestAudioFocus(builder.build());
+
+        } else {
+            res = audioManager.requestAudioFocus(afcl, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
+
+        return res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+    }
+
+    private void abondonAudioFocus() {
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+        } else {
+            audioManager.abandonAudioFocus(afcl);
+        }
+    }
+
     private class MusicCallbackHandler extends MediaSessionCompat.Callback {
         @Override
         public void onPause() {
@@ -405,7 +446,28 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         public void onStop() {
             MusicService.this.pauseSong(true);
             Log.e(LOG_TAG, "onStop");
+            abondonAudioFocus();
             stopSelf();
+        }
+    }
+
+    private class AudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch(focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    MusicService.this.pauseSong(false);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    player.setVolume(0.5f, 0.5f);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    mediaSession.getController().getTransportControls().stop();
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    player.setVolume(1.0f, 1.0f);
+                    MusicService.this.resumeSong();
+            }
         }
     }
 }
