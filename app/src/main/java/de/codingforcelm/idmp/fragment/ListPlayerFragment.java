@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +46,14 @@ public class ListPlayerFragment extends Fragment {
         prevButton.setOnClickListener(new ListPlayerFragment.PrevOnClickListener());
         image = view.findViewById(R.id.lp_image);
         image.setOnClickListener(new ListPlayerFragment.ImageOnClickListener());
-    }
 
+        ((MainActivity)getActivity()).setView(true);
+        if(((MainActivity)getActivity()).isPlaying()) {
+            playPauseButton.setImageResource(R.drawable.ic_control_pause);
+        } else {
+            playPauseButton.setImageResource(R.drawable.ic_control_play);
+        }
+    }
 
     /**
      * TODO doc
@@ -60,9 +67,12 @@ public class ListPlayerFragment extends Fragment {
     private class NextOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            if(service != null){
-                service.nextSong();
-                playPauseButton.setImageResource(R.drawable.ic_control_pause);
+            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+            if(controller != null) {
+                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
+                if(tc != null) {
+                    tc.skipToNext();
+                }
             }
         }
     }
@@ -71,13 +81,15 @@ public class ListPlayerFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            if (service != null) {
-                if (service.isPlaying()) {
-                    service.pauseSong(true);
-                    playPauseButton.setImageResource(R.drawable.ic_control_play);
-                } else {
-                    service.resumeSong();
-                    playPauseButton.setImageResource(R.drawable.ic_control_pause);
+            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+            if(controller != null) {
+                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
+                if(tc != null) {
+                    if(((MainActivity)getActivity()).isPlaying()) {
+                        tc.pause();
+                    } else {
+                        tc.play();
+                    }
                 }
             }
         }
@@ -86,9 +98,12 @@ public class ListPlayerFragment extends Fragment {
     private class PrevOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            if(service != null){
-                service.prevSong();
-                playPauseButton.setImageResource(R.drawable.ic_control_pause);
+            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+            if(controller != null) {
+                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
+                if(tc != null) {
+                    tc.skipToPrevious();
+                }
             }
         }
     }
