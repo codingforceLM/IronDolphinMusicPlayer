@@ -251,29 +251,6 @@ public class MainActivity extends AppCompatActivity {
         lp.setService(service);
     }
 
-    private void loadAudio() {
-        ContentResolver contentResolver = getContentResolver();
-
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        Cursor cursor = contentResolver.query(uri, null, selection, null, sortOrder);
-
-        songList = new ArrayList<>();
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                songList.add(new PhysicalSong(id, data, title, album, artist));
-            }
-        }
-        cursor.close();
-    }
-
 
     public void songSelect(View view) {
         int pos = Integer.parseInt(view.getTag().toString());
