@@ -45,7 +45,9 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
+import de.codingforcelm.idmp.fragment.SongListFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
+import de.codingforcelm.idmp.fragment.TestFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class MainActivity extends AppCompatActivity {
@@ -107,11 +109,11 @@ public class MainActivity extends AppCompatActivity {
         bound = false;
 
         songList = new AudioLoader(this).getSongs();
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.mainFrame, new ListPlayerFragment(songList), ListPlayerFragment.class.getSimpleName());
 
-        ft.replace(R.id.mainFrame, new ListPlayerFragment(), "LISTPLAYER");
         listview = true;
-
         playstatus = false;
 
         ft.commit();
@@ -284,40 +286,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-        Fragment fragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        hideVisibleFragments(fragmentManager,fragmentTransaction);
         switch(menuItem.getItemId()) {
             case R.id.nav_home:
-                fragment = getSupportFragmentManager().findFragmentByTag("HOME");
-                if(fragment == null){
-                    fragment = new HomeFragment();
+                if(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
+                    fragmentTransaction.show(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()));
+                } else {
+                    fragmentTransaction.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_listPlayer:
-                //TODO check service after mediaplayer rework
-                fragment = getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
-                if(fragment == null){
-                    fragment = new ListPlayerFragment();
+                if(fragmentManager.findFragmentByTag(ListPlayerFragment.class.getSimpleName()) != null) {
+                    fragmentTransaction.show(fragmentManager.findFragmentByTag(ListPlayerFragment.class.getSimpleName()));
+                } else {
+                    fragmentTransaction.add(R.id.mainFrame, new ListPlayerFragment(), ListPlayerFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_statistics:
-                fragment = getSupportFragmentManager().findFragmentByTag("STATISTICS");
-                if(fragment == null){
-                    fragment = new StatisticsFragment();
+                if(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()) != null) {
+                    fragmentTransaction.show(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()));
+                } else {
+                    fragmentTransaction.add(R.id.mainFrame, new StatisticsFragment(), StatisticsFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_test:
-                fragment = getSupportFragmentManager().findFragmentByTag("STATIddddSTICS");
-                if(fragment == null){
-                    fragment = new BigPlayerFragment();
+                if(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()) != null) {
+                    fragmentTransaction.show(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()));
+                } else {
+                    fragmentTransaction.add(R.id.mainFrame, new TestFragment(), TestFragment.class.getSimpleName());
                 }
                 break;
             default:
-                fragment = new HomeFragment();
+                    //
         }
-
-
-        fragmentManager.beginTransaction().replace(R.id.mainFrame, fragment).commit();
+        fragmentTransaction.commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
@@ -326,6 +330,22 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout.closeDrawers();
     }
+
+    /** is used before adding or showing a fragment
+     * hides all visible fragments but transaction must be commited AFTER this function call
+     * @param fragmentManager fragmentManager to get all Fragments
+     * @param fragmentTransaction fragmentTransaction needs to be commited after this function
+     */
+    public void hideVisibleFragments(FragmentManager fragmentManager,FragmentTransaction fragmentTransaction){
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if(fragments != null){
+            for(Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible())
+                    fragmentTransaction.hide(fragment);
+            }
+        }
+    }
+
 
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,  R.string.drawer_close);
@@ -362,10 +382,15 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.mainFrame, fragment)
-                .commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        hideVisibleFragments(fragmentManager,fragmentTransaction);
+        if(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
+            fragmentTransaction.show(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
+        } else {
+            fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
+        }
+        fragmentTransaction.commit();
     }
 
     public void setView(boolean view) {
