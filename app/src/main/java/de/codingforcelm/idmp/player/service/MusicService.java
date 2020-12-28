@@ -3,9 +3,11 @@ package de.codingforcelm.idmp.player.service;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.icu.text.Transliterator;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -64,6 +66,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private AudioManager audioManager;
     private AudioFocusChangeListener afcl;
     private AudioFocusRequest audioFocusRequest;
+    private IntentFilter intentFilter;
+    private BecomingNoisyReceiver noisyReceiver;
 
     @Override
     public void onCreate() {
@@ -78,6 +82,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         afcl = new AudioFocusChangeListener();
+        intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        noisyReceiver = new BecomingNoisyReceiver();
 
         updateSession();
         mediaSession.setCallback(new MusicCallbackHandler());
@@ -169,6 +175,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e(LOG_TAG, "onPrepared");
+
+        registerReceiver(noisyReceiver, intentFilter);
 
         if(!requestAudioFocus()) {
             Log.e(LOG_TAG, "Audio Focus not granted - return");
@@ -449,6 +457,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             MusicService.this.pauseSong(true);
             Log.e(LOG_TAG, "onStop");
             abondonAudioFocus();
+            unregisterReceiver(noisyReceiver);
             stopSelf();
         }
     }
@@ -474,6 +483,16 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                     Log.e(LOG_TAG, "Audio Focus gain");
                     player.setVolume(1.0f, 1.0f);
                     MusicService.this.resumeSong();
+            }
+        }
+    }
+
+    private class BecomingNoisyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
+                mediaSession.getController().getTransportControls().pause();
             }
         }
     }
