@@ -112,9 +112,7 @@ public class MainActivity extends AppCompatActivity {
         songList = new AudioLoader(this).getSongs();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.mainFrame, new ListPlayerFragment(songList), ListPlayerFragment.class.getSimpleName());
-
-        ft.replace(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
+        ft.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
 
         listview = true;
         playstatus = false;
