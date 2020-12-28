@@ -19,6 +19,7 @@ import de.codingforcelm.idmp.CardsAdapter;
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class SongListFragment extends Fragment {
     private ListView songView;
@@ -40,31 +41,10 @@ public class SongListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         songView = (ListView)view.findViewById(R.id.songlist);
-        loadAudio();
+        songList = new AudioLoader(this.getContext()).getSongs();
         CardsAdapter adapter = new CardsAdapter(this.getContext(), songList);
         songView.setAdapter(adapter);
     }
 
-    private void loadAudio() {
-        ContentResolver contentResolver = this.getContext().getContentResolver();
 
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        Cursor cursor = contentResolver.query(uri, null, selection, null, sortOrder);
-
-        songList = new ArrayList<>();
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                songList.add(new PhysicalSong(id, data, title, album, artist));
-            }
-        }
-        cursor.close();
-    }
 }

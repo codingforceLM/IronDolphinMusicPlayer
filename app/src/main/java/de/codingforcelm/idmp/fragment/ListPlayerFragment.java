@@ -2,12 +2,15 @@ package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
@@ -23,11 +26,14 @@ public class ListPlayerFragment extends Fragment {
     private ImageView prevButton;
     private ImageView image;
     private MusicService service;
+    private List<PhysicalSong> songList;
 
     public ListPlayerFragment(){
         //needed default constructor
     }
-
+    public ListPlayerFragment(List<PhysicalSong> songList){
+        this.songList = songList;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_player_list, parent, false);
@@ -35,9 +41,19 @@ public class ListPlayerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        ft.replace(R.id.player_list_top, new SongListFragment(), "SONGLIST");
-        ft.commit();
+
+        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ((MainActivity)getActivity()).hideVisibleFragments(fragmentManager,fragmentTransaction);
+
+        if(fragmentManager.findFragmentByTag(SongListFragment.class.getSimpleName()) != null) {
+            fragmentTransaction.show(fragmentManager.findFragmentByTag(SongListFragment.class.getSimpleName()));
+
+        } else {
+            fragmentTransaction.add(R.id.player_list_top, new SongListFragment(songList), SongListFragment.class.getSimpleName());
+        }
+        fragmentTransaction.commit();
+
         playPauseButton = view.findViewById(R.id.lp_playPauseButton);
         playPauseButton.setOnClickListener(new ListPlayerFragment.PlayPauseOnClickListener());
         nextButton = view.findViewById(R.id.lp_nextButton);
