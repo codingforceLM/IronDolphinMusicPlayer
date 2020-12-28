@@ -47,6 +47,7 @@ import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
 import de.codingforcelm.idmp.fragment.SongListFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
+import de.codingforcelm.idmp.fragment.TabFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.mainFrame, new ListPlayerFragment(songList), ListPlayerFragment.class.getSimpleName());
+
+        ft.replace(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
 
         listview = true;
         playstatus = false;
