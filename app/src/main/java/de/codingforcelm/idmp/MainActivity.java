@@ -18,7 +18,10 @@ import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.ResultReceiver;
+import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -29,6 +32,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -60,8 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navDrawer;
     private ActionBarDrawerToggle drawerToggle;
+    private Handler delayHandler;
     private boolean listview;
     private boolean playstatus;
+    private int duration;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -109,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
         listview = true;
         playstatus = false;
+
+        delayHandler = new Handler(getMainLooper());
+        runOnUiThread(new SeekBarRunner());
 
         ft.commit();
         this.createNotificationChannel();
@@ -203,14 +212,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
-            MediaDescriptionCompat desc = metadata.getDescription();
-            // TODO change Metadata once we have some shit to do so
+            BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
+            if(bpf != null) {
+                bpf.applyMetadata(metadata);
+            }
         }
 
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
-            ImageView il = findViewById(R.id.tp_playPauseButton);
-            ImageView ib = findViewById(R.id.bp_playPauseButton);
+            BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
+            ListPlayerFragment lpf = (ListPlayerFragment) getSupportFragmentManager().findFragmentByTag(ListPlayerFragment.class.getSimpleName());
 
             int res = -1;
 
@@ -228,10 +239,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if(res != -1) {
-                if(listview) {
-                    il.setImageResource(res);
-                } else {
-                    ib.setImageResource(res);
+                if(bpf != null) {
+                    Log.e(LOG_TAG, "Set playback status for big player");
+                    ImageView i = findViewById(R.id.bp_playPauseButton);
+                    i.setImageResource(res);
+                }
+                if(lpf != null) {
+                    Log.e(LOG_TAG, "Set playback status for list player");
+                    ImageView i = findViewById(R.id.lp_playPauseButton);
+                    i.setImageResource(res);
                 }
             }
         }
@@ -395,11 +411,32 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public void setView(boolean view) {
-        this.listview = view;
-    }
-
     public boolean isPlaying() {
         return playstatus;
+    }
+
+    private class SeekBarRunner implements Runnable {
+
+        @Override
+        public void run() {
+            if(playstatus) {
+                    ResultReceiver rr = new ResultReceiver(null) {
+                        @Override
+                        protected void onReceiveResult (int resultCode, Bundle resultData) {
+                            BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
+                            if(bpf != null) {
+                                if(resultCode != 0 || !resultData.containsKey(MusicService.KEY_POSITION)) {
+                                    throw new IllegalStateException("result code or data invalied");
+                                }
+                                int pos = resultData.getInt(MusicService.KEY_POSITION);
+                                bpf.setSeekBarTo(pos/1000);
+                            }
+
+                        }
+                    };
+                    MediaControllerCompat.getMediaController(MainActivity.this).sendCommand(MusicService.COMMAND_GET_POSITION, null, rr);
+            }
+            delayHandler.postDelayed(this, 1000);
+        }
     }
 }

@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -25,6 +26,7 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.widget.MediaController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,13 +43,21 @@ import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
-public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
+public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 
     private static final String MY_MEDIA_ROOT_ID = "My_Unique_Service";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     public static final String CHANNEL_ID = "idmp_player_notification";
     private static final int NOTIFICATION_ID = 666;
     private static final String LOG_TAG = "MusicService";
+
+    public static final String COMMAND_GET_POSITION = "de.codingforcelm.idmp.player.service.GET_POSITION";
+
+    public static final String KEY_ARTIST = "de.codingforcelm.idmp.player.service.ARTIST";
+    public static final String KEY_ALBUM = "de.codingforcelm.idmp.player.service.ALBUM";
+    public static final String KEY_TITLE = "de.codingforcelm.idmp.player.service.TITLE";
+    public static final String KEY_DURATION = "de.codingforcelm.idmp.player.service.DURATION";
+    public static final String KEY_POSITION = "de.codingforcelm.idmp.player.service.POSITION";
 
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
@@ -183,9 +193,22 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             return;
         }
 
-        if(position != 0) {
-            mp.seekTo(position);
-        }
+        mp.seekTo(position);
+        mp.start();
+
+        Log.e(LOG_TAG, "update session");
+        updateSession();
+
+        Log.e(LOG_TAG, "build new notification");
+        notification = buildNotification(false);
+        Log.e(LOG_TAG, "update notification");
+        startForeground(NOTIFICATION_ID, notification);
+    }
+
+    @Override
+    public void onSeekComplete(MediaPlayer mp) {
+        Log.e(LOG_TAG, "onSeekComplete");
+
         mp.start();
 
         Log.e(LOG_TAG, "update session");
@@ -259,6 +282,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         player.setOnErrorListener(this);
         player.setOnCompletionListener(this);
         player.setOnPreparedListener(this);
+        player.setOnSeekCompleteListener(this);
 
         AudioLoader al = new AudioLoader(this);
         this.setSongList(al.getSongs());
@@ -335,7 +359,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
     public void seekTo(long pos) {
         position = (int)pos;
-        player.prepareAsync();
+        Log.e(LOG_TAG,"Seek to "+pos);
+        player.seekTo(position);
     }
 
     public void setSong(int pos) {
@@ -362,9 +387,10 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         PhysicalSong song = songList.get(songPosition);
 
         MediaMetadataCompat.Builder dataBuilder = new MediaMetadataCompat.Builder();
-        dataBuilder.putString("artist", song.getArtist());
-        dataBuilder.putString("album", song.getAlbum());
-        dataBuilder.putString("title", song.getTitle());
+        dataBuilder.putString(KEY_ARTIST, song.getArtist());
+        dataBuilder.putString(KEY_ALBUM, song.getAlbum());
+        dataBuilder.putString(KEY_TITLE, song.getTitle());
+        dataBuilder.putString(KEY_DURATION, String.valueOf(player.getDuration()));
 
         mediaSession.setPlaybackState(stateBuilder.build());
         mediaSession.setMetadata(dataBuilder.build());
@@ -398,6 +424,18 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     private class MusicCallbackHandler extends MediaSessionCompat.Callback {
+
+        @Override
+        public void onCommand (String command, Bundle extras, ResultReceiver cb) {
+            switch(command) {
+                case COMMAND_GET_POSITION:
+                    Bundle b = new Bundle();
+                    b.putInt(KEY_POSITION, player.getCurrentPosition());
+                    cb.send(0, b);
+                    break;
+            }
+        }
+
         @Override
         public void onPause() {
             MusicService.this.pauseSong(true);

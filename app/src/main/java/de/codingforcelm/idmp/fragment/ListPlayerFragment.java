@@ -60,7 +60,6 @@ public class ListPlayerFragment extends Fragment {
         image = view.findViewById(R.id.tp_image);
         image.setOnClickListener(new ListPlayerFragment.ImageOnClickListener());
 
-        ((MainActivity)getActivity()).setView(true);
         if(((MainActivity)getActivity()).isPlaying()) {
             playPauseButton.setImageResource(R.drawable.ic_control_pause);
         } else {
@@ -68,7 +67,13 @@ public class ListPlayerFragment extends Fragment {
         }
     }
 
-
+    public void setPlaybackState(boolean play) {
+        if(play) {
+            playPauseButton.setImageResource(R.drawable.ic_control_pause);
+        } else {
+            playPauseButton.setImageResource(R.drawable.ic_control_play);
+        }
+    }
 
     private class NextOnClickListener implements View.OnClickListener {
         @Override
