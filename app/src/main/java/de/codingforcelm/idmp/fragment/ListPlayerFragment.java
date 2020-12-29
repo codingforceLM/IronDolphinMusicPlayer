@@ -25,7 +25,6 @@ public class ListPlayerFragment extends Fragment {
     private ImageView nextButton;
     private ImageView prevButton;
     private ImageView image;
-    private MusicService service;
     private List<PhysicalSong> songList;
 
     public ListPlayerFragment(){
@@ -71,13 +70,6 @@ public class ListPlayerFragment extends Fragment {
         }
     }
 
-    /**
-     * TODO doc
-     * @param service service
-     */
-    public void setService(MusicService service) {
-        this.service=service;
-    }
 
 
     private class NextOnClickListener implements View.OnClickListener {

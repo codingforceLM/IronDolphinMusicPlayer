@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         ft.commit();
         this.createNotificationChannel();
-
+        initializePlayer();
         //browser.connect();
     }
 
@@ -250,8 +250,14 @@ public class MainActivity extends AppCompatActivity {
      * passes the service to player fragments
      */
     private void initializePlayer() {
-        ListPlayerFragment lp = (ListPlayerFragment)getSupportFragmentManager().findFragmentByTag("LISTPLAYER");
-        lp.setService(service);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        ListPlayerFragment lp = new ListPlayerFragment();
+        BigPlayerFragment bp = new BigPlayerFragment();
+        fragmentTransaction.add(R.id.mainFrame,lp, ListPlayerFragment.class.getSimpleName());
+        fragmentTransaction.add(R.id.mainFrame,bp, BigPlayerFragment.class.getSimpleName());
+        fragmentTransaction.hide(lp);
+        fragmentTransaction.hide(bp);
+        fragmentTransaction.commit();
     }
 
 
