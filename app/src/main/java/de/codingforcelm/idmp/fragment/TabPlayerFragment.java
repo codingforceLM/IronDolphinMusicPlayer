@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,6 +15,7 @@ import de.codingforcelm.idmp.R;
 
 public class TabPlayerFragment  extends Fragment {
 
+    private ImageView tp_playPauseButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -22,6 +24,8 @@ public class TabPlayerFragment  extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        tp_playPauseButton = view.findViewById(R.id.tp_playPauseButton);
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -42,5 +46,15 @@ public class TabPlayerFragment  extends Fragment {
         }
 
         fragmentTransaction.commit();
+
+    }
+
+    public void setPlaystatus(boolean play) {
+
+        if(play) {
+
+        } else {
+
+        }
     }
 }
