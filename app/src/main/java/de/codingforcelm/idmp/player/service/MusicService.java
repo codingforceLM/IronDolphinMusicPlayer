@@ -55,6 +55,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String COMMAND_GET_POSITION = "de.codingforcelm.idmp.player.service.GET_POSITION";
     public static final String COMMAND_SET_SHUFFLE = "de.codingforcelm.idmp.player.service.SET_SHUFFLE";
     public static final String COMMAND_SET_REPEAT = "de.codingforcelm.idmp.player.service.SET_REPEAT";
+    public static final String COMMAND_UPDATE_METADATA = "de.codingforcelm.idmp.player.service.UPDATE_METADATA";
 
     public static final String KEY_ARTIST = "de.codingforcelm.idmp.player.service.ARTIST";
     public static final String KEY_ALBUM = "de.codingforcelm.idmp.player.service.ALBUM";
@@ -507,6 +508,10 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 case COMMAND_SET_SHUFFLE:
                     Log.e(LOG_TAG, "received COMMAND_SET_SHUFFLE");
                     toggleShuffle();
+                    break;
+                case COMMAND_UPDATE_METADATA:
+                    Log.e(LOG_TAG, "received COMMAND_SET_SHUFFLE");
+                    updateSession();
                     break;
             }
         }
