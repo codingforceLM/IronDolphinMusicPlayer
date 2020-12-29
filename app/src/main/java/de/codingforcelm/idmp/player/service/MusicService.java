@@ -53,6 +53,12 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
     public static final String COMMAND_GET_POSITION = "de.codingforcelm.idmp.player.service.GET_POSITION";
 
+    public static final String KEY_ARTIST = "de.codingforcelm.idmp.player.service.ARTIST";
+    public static final String KEY_ALBUM = "de.codingforcelm.idmp.player.service.ALBUM";
+    public static final String KEY_TITLE = "de.codingforcelm.idmp.player.service.TITLE";
+    public static final String KEY_DURATION = "de.codingforcelm.idmp.player.service.DURATION";
+    public static final String KEY_POSITION = "de.codingforcelm.idmp.player.service.POSITION";
+
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
     public static final String ACTION_MUSIC_PREV = "de.codingforcelm.idmp.player.service.MUSIC_PREV";
@@ -352,14 +358,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     public void seekTo(long pos) {
-        /*
-        position = (int)pos;
-        Log.e(LOG_TAG,"Seek to "+pos);
-        if(isPlaying()) {
-            pauseSong(false);
-        }
-        player.prepareAsync();
-        */
         position = (int)pos;
         Log.e(LOG_TAG,"Seek to "+pos);
         player.seekTo(position);
@@ -389,10 +387,10 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         PhysicalSong song = songList.get(songPosition);
 
         MediaMetadataCompat.Builder dataBuilder = new MediaMetadataCompat.Builder();
-        dataBuilder.putString("artist", song.getArtist());
-        dataBuilder.putString("album", song.getAlbum());
-        dataBuilder.putString("title", song.getTitle());
-        dataBuilder.putString("duration", String.valueOf(player.getDuration()));
+        dataBuilder.putString(KEY_ARTIST, song.getArtist());
+        dataBuilder.putString(KEY_ALBUM, song.getAlbum());
+        dataBuilder.putString(KEY_TITLE, song.getTitle());
+        dataBuilder.putString(KEY_DURATION, String.valueOf(player.getDuration()));
 
         mediaSession.setPlaybackState(stateBuilder.build());
         mediaSession.setMetadata(dataBuilder.build());
@@ -432,7 +430,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             switch(command) {
                 case COMMAND_GET_POSITION:
                     Bundle b = new Bundle();
-                    b.putInt("position", player.getCurrentPosition());
+                    b.putInt(KEY_POSITION, player.getCurrentPosition());
                     cb.send(0, b);
                     break;
             }

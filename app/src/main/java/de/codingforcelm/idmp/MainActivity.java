@@ -429,10 +429,10 @@ public class MainActivity extends AppCompatActivity {
                         protected void onReceiveResult (int resultCode, Bundle resultData) {
                             BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
                             if(bpf != null) {
-                                if(resultCode != 0 || !resultData.containsKey("position")) {
+                                if(resultCode != 0 || !resultData.containsKey(MusicService.KEY_POSITION)) {
                                     throw new IllegalStateException("result code or data invalied");
                                 }
-                                int pos = resultData.getInt("position");
+                                int pos = resultData.getInt(MusicService.KEY_POSITION);
                                 bpf.setSeekBarTo(pos/1000);
                             }
 

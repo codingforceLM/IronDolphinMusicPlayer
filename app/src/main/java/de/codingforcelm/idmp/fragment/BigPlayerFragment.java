@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.player.service.MusicService;
 
 public class BigPlayerFragment extends Fragment {
 
@@ -81,22 +82,22 @@ public class BigPlayerFragment extends Fragment {
     }
 
     public void applyMetadata(MediaMetadataCompat metadata) {
-        if(!metadata.containsKey("artist")) {
+        if(!metadata.containsKey(MusicService.KEY_ARTIST)) {
             throw new IllegalStateException("Missing artist");
         }
-        if(!metadata.containsKey("album")) {
+        if(!metadata.containsKey(MusicService.KEY_ALBUM)) {
             throw new IllegalStateException("Missing album");
         }
-        if(!metadata.containsKey("title")) {
+        if(!metadata.containsKey(MusicService.KEY_TITLE)) {
             throw new IllegalStateException("Missing title");
         }
-        if(!metadata.containsKey("duration")) {
+        if(!metadata.containsKey(MusicService.KEY_DURATION)) {
             throw new IllegalStateException("Missing duration");
         }
 
-        String title = metadata.getString("title");
-        String artistAlbum = metadata.getString("artist") + " - " + metadata.getString("album");
-        int duration = Integer.valueOf(metadata.getString("duration"));
+        String title = metadata.getString(MusicService.KEY_TITLE);
+        String artistAlbum = metadata.getString(MusicService.KEY_ARTIST) + " - " + metadata.getString(MusicService.KEY_ALBUM);
+        int duration = Integer.parseInt(metadata.getString(MusicService.KEY_DURATION));
 
         bp_title.setText(title);
         bp_artistAlbum.setText(artistAlbum);
