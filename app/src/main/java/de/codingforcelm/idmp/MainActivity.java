@@ -130,11 +130,12 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onStart() {
         super.onStart();
-        if(!browser.isConnected()) {
-            Log.e(LOG_TAG,"Connect browser");
+        if (!browser.isConnected()) {
+            Log.e(LOG_TAG, "Connect browser");
             browser.connect();
         }
     }
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if(MediaControllerCompat.getMediaController(this) != null) {
+        if (MediaControllerCompat.getMediaController(this) != null) {
             MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback);
         }
     }
@@ -210,10 +211,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
-            if(bpf != null) {
+            if (bpf != null) {
                 bpf.applyMetadata(metadata);
             }
-            mediaMetadata=metadata;
+            mediaMetadata = metadata;
         }
 
         @Override
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
             int res = -1;
 
-            switch(state.getState()) {
+            switch (state.getState()) {
                 case PlaybackStateCompat.STATE_PLAYING:
                     Log.e(LOG_TAG, "Playbackstate changed to play");
                     res = R.drawable.ic_control_pause;
@@ -236,18 +237,18 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            if(res != -1) {
-                if(bpf != null) {
+            if (res != -1) {
+                if (bpf != null) {
                     Log.e(LOG_TAG, "Set playback status for big player");
                     ImageView i = findViewById(R.id.bp_playPauseButton);
-                    if(i != null){
+                    if (i != null) {
                         i.setImageResource(res);
                     }
                 }
-                if(tpf != null) {
+                if (tpf != null) {
                     Log.e(LOG_TAG, "Set playback status for list player");
                     ImageView i = findViewById(R.id.tp_playPauseButton);
-                    if(i != null){
+                    if (i != null) {
                         i.setImageResource(res);
                     }
                 }
@@ -291,38 +292,38 @@ public class MainActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detachFragments(fragmentManager,fragmentTransaction);
-        switch(menuItem.getItemId()) {
+        detachFragments(fragmentManager, fragmentTransaction);
+        switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                if(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
+                if (fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
                     fragmentTransaction.attach(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_tabPlayer:
-                if(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()) != null) {
+                if (fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()) != null) {
                     fragmentTransaction.attach(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new TabPlayerFragment(), TabPlayerFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_statistics:
-                if(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()) != null) {
+                if (fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()) != null) {
                     fragmentTransaction.attach(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new StatisticsFragment(), StatisticsFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_test:
-                if(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()) != null) {
+                if (fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()) != null) {
                     fragmentTransaction.attach(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new TestFragment(), TestFragment.class.getSimpleName());
                 }
                 break;
             default:
-                    //
+                //
         }
 
         fragmentTransaction.commit();
@@ -335,23 +336,25 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.closeDrawers();
     }
 
-    /** is used before adding or showing a fragment
+    /**
+     * is used before adding or showing a fragment
      * hides all visible fragments but transaction must be commited AFTER this function call
-     * @param fragmentManager fragmentManager to get all Fragments
+     *
+     * @param fragmentManager     fragmentManager to get all Fragments
      * @param fragmentTransaction fragmentTransaction needs to be commited after this function
      */
-    public void detachFragments(FragmentManager fragmentManager, FragmentTransaction fragmentTransaction){
+    public void detachFragments(FragmentManager fragmentManager, FragmentTransaction fragmentTransaction) {
         List<Fragment> fragments = fragmentManager.getFragments();
-        if(fragments != null){
-            for(Fragment fragment : fragments){
-                if(fragment != null && !fragment.isDetached())
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment != null && !fragment.isDetached())
                     fragmentTransaction.detach(fragment);
             }
         }
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,  R.string.drawer_close);
+        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 
     @Override
@@ -370,10 +373,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout layout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        DrawerLayout layout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (layout.isDrawerOpen(GravityCompat.START)) {
             layout.closeDrawer(GravityCompat.START);
-        } else if(getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
+        } else if (getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
             replaceFragments(TabPlayerFragment.class);
         } else {
             super.onBackPressed();
@@ -391,38 +394,19 @@ public class MainActivity extends AppCompatActivity {
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detachFragments(fragmentManager,fragmentTransaction);
+        detachFragments(fragmentManager, fragmentTransaction);
 
-    /*    if(fragmentClass.equals(BigPlayerFragment.class)){
-            BigPlayerFragment bf = (BigPlayerFragment) fragmentManager.findFragmentByTag(fragmentClass.getSimpleName());
-            if(bf != null) {
-                Toast.makeText(MainActivity.this, "aa2a2a2a2a2aa2a22a", Toast.LENGTH_SHORT).show();
-                bf.applyMetadata(mediaMetadata);
-                fragmentTransaction.attach(bf);
-            } else {
-                Toast.makeText(MainActivity.this, "a1a1a1a1a1a1a1aa1a1", Toast.LENGTH_SHORT).show();
-                bf = new BigPlayerFragment();
-                fragmentTransaction.add(R.id.mainFrame, bf, fragmentClass.getSimpleName());
-
-           //     bf.applyMetadata(mediaMetadata);
-
-            }
-
-        }else{*/
-
-            if(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
-                fragmentTransaction.attach(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
-            } else {
-
-                    fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
-                }
-
-    //    }
+        if (fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
+        } else {
+            fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
+        }
+         
         fragmentTransaction.commit();
 
     }
 
-    public MediaMetadataCompat getMetadata(){
+    public MediaMetadataCompat getMetadata() {
         return mediaMetadata;
     }
 
@@ -434,22 +418,22 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            if(playstatus) {
-                    ResultReceiver rr = new ResultReceiver(null) {
-                        @Override
-                        protected void onReceiveResult (int resultCode, Bundle resultData) {
-                            BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
-                            if(bpf != null) {
-                                if(resultCode != 0 || !resultData.containsKey(MusicService.KEY_POSITION)) {
-                                    throw new IllegalStateException("result code or data invalied");
-                                }
-                                int pos = resultData.getInt(MusicService.KEY_POSITION);
-                                bpf.setSeekBarTo(pos/1000);
+            if (playstatus) {
+                ResultReceiver rr = new ResultReceiver(null) {
+                    @Override
+                    protected void onReceiveResult(int resultCode, Bundle resultData) {
+                        BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
+                        if (bpf != null) {
+                            if (resultCode != 0 || !resultData.containsKey(MusicService.KEY_POSITION)) {
+                                throw new IllegalStateException("result code or data invalied");
                             }
-
+                            int pos = resultData.getInt(MusicService.KEY_POSITION);
+                            bpf.setSeekBarTo(pos / 1000);
                         }
-                    };
-                    MediaControllerCompat.getMediaController(MainActivity.this).sendCommand(MusicService.COMMAND_GET_POSITION, null, rr);
+
+                    }
+                };
+                MediaControllerCompat.getMediaController(MainActivity.this).sendCommand(MusicService.COMMAND_GET_POSITION, null, rr);
             }
             delayHandler.postDelayed(this, 1000);
         }
