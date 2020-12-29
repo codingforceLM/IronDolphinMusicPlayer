@@ -21,9 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
-import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -32,7 +30,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -42,7 +39,6 @@ import java.util.List;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
-import de.codingforcelm.idmp.fragment.ListPlayerFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
 import de.codingforcelm.idmp.fragment.TabPlayerFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
@@ -242,12 +238,16 @@ public class MainActivity extends AppCompatActivity {
                 if(bpf != null) {
                     Log.e(LOG_TAG, "Set playback status for big player");
                     ImageView i = findViewById(R.id.bp_playPauseButton);
-                    i.setImageResource(res);
+                    if(i != null){
+                        i.setImageResource(res);
+                    }
                 }
                 if(tpf != null) {
                     Log.e(LOG_TAG, "Set playback status for list player");
                     ImageView i = findViewById(R.id.tp_playPauseButton);
-                    i.setImageResource(res);
+                    if(i != null){
+                        i.setImageResource(res);
+                    }
                 }
             }
         }
@@ -264,8 +264,8 @@ public class MainActivity extends AppCompatActivity {
         BigPlayerFragment bp = new BigPlayerFragment();
         fragmentTransaction.add(R.id.mainFrame,tp, TabPlayerFragment.class.getSimpleName());
         fragmentTransaction.add(R.id.mainFrame,bp, BigPlayerFragment.class.getSimpleName());
-        fragmentTransaction.hide(tp);
-        fragmentTransaction.hide(bp);
+        fragmentTransaction.detach(tp);
+        fragmentTransaction.detach(bp);
         fragmentTransaction.commit();
     }
 
@@ -304,32 +304,32 @@ public class MainActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        hideVisibleFragments(fragmentManager,fragmentTransaction);
+        detachFragments(fragmentManager,fragmentTransaction);
         switch(menuItem.getItemId()) {
             case R.id.nav_home:
                 if(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.show(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()));
+                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_tabPlayer:
                 if(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.show(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()));
+                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new TabPlayerFragment(), TabPlayerFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_statistics:
                 if(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.show(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()));
+                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new StatisticsFragment(), StatisticsFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_test:
                 if(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.show(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()));
+                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new TestFragment(), TestFragment.class.getSimpleName());
                 }
@@ -337,6 +337,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                     //
         }
+
         fragmentTransaction.commit();
 
         // Highlight the selected item has been done by NavigationView
@@ -352,12 +353,12 @@ public class MainActivity extends AppCompatActivity {
      * @param fragmentManager fragmentManager to get all Fragments
      * @param fragmentTransaction fragmentTransaction needs to be commited after this function
      */
-    public void hideVisibleFragments(FragmentManager fragmentManager,FragmentTransaction fragmentTransaction){
+    public void detachFragments(FragmentManager fragmentManager, FragmentTransaction fragmentTransaction){
         List<Fragment> fragments = fragmentManager.getFragments();
         if(fragments != null){
             for(Fragment fragment : fragments){
-                if(fragment != null && fragment.isVisible())
-                    fragmentTransaction.hide(fragment);
+                if(fragment != null && !fragment.isDetached())
+                    fragmentTransaction.detach(fragment);
             }
         }
     }
@@ -393,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     public void replaceFragments(Class fragmentClass) {
         Fragment fragment = null;
         try {
@@ -402,9 +404,9 @@ public class MainActivity extends AppCompatActivity {
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        hideVisibleFragments(fragmentManager,fragmentTransaction);
+        detachFragments(fragmentManager,fragmentTransaction);
         if(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
-            fragmentTransaction.show(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
         } else {
             fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
         }
@@ -429,7 +431,7 @@ public class MainActivity extends AppCompatActivity {
                                     throw new IllegalStateException("result code or data invalied");
                                 }
                                 int pos = resultData.getInt(MusicService.KEY_POSITION);
-                                bpf.setSeekBarTo(pos/1000);
+//                                bpf.setSeekBarTo(pos/1000);
                             }
 
                         }

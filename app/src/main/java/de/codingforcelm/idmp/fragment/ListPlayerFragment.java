@@ -41,7 +41,7 @@ public class ListPlayerFragment extends Fragment {
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ((MainActivity)getActivity()).hideVisibleFragments(fragmentManager,fragmentTransaction);
+        ((MainActivity)getActivity()).detachFragments(fragmentManager,fragmentTransaction);
 
         if(fragmentManager.findFragmentByTag(SongListFragment.class.getSimpleName()) != null) {
             fragmentTransaction.show(fragmentManager.findFragmentByTag(SongListFragment.class.getSimpleName()));
