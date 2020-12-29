@@ -1,6 +1,9 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.ResultReceiver;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
@@ -96,14 +99,24 @@ public class BigPlayerFragment extends Fragment {
         if(!metadata.containsKey(MusicService.KEY_DURATION)) {
             throw new IllegalStateException("Missing duration");
         }
+        if(!metadata.containsKey(MusicService.KEY_SHUFFLE)) {
+            throw new IllegalStateException("Missing shuffle");
+        }
+        if(!metadata.containsKey(MusicService.KEY_REPEAT)) {
+            throw new IllegalStateException("Missing repeat");
+        }
 
         String title = metadata.getString(MusicService.KEY_TITLE);
         String artistAlbum = metadata.getString(MusicService.KEY_ARTIST) + " - " + metadata.getString(MusicService.KEY_ALBUM);
         int duration = Integer.parseInt(metadata.getString(MusicService.KEY_DURATION));
+        boolean shuffle = Boolean.parseBoolean(metadata.getString(MusicService.KEY_SHUFFLE));
+        boolean repeat = Boolean.parseBoolean(metadata.getString(MusicService.KEY_REPEAT));
 
         bp_title.setText(title);
         bp_artistAlbum.setText(artistAlbum);
         bp_seekBar.setMax(duration/1000);
+
+        // TODO show the change of shuffle/repeat
     }
 
     public void setPlaybackState(boolean play) {
@@ -138,7 +151,7 @@ public class BigPlayerFragment extends Fragment {
     private class RepeatOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            //TODO implement
+            MediaControllerCompat.getMediaController(getActivity()).sendCommand(MusicService.COMMAND_SET_REPEAT, null, new ResultReceiver(new Handler(Looper.getMainLooper())));
         }
     }
 
@@ -171,7 +184,8 @@ public class BigPlayerFragment extends Fragment {
     private class ShuffleOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            //TODO implement
+            Log.e(LOG_TAG, "onClick");
+            MediaControllerCompat.getMediaController(getActivity()).sendCommand(MusicService.COMMAND_SET_SHUFFLE, null, new ResultReceiver(new Handler(Looper.getMainLooper())));
         }
     }
 
