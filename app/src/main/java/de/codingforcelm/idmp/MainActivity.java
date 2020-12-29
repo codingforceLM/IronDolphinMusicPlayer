@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         ft.commit();
         this.createNotificationChannel();
-        initializePlayer();
+
         //browser.connect();
     }
 
@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.service = binder.getService();
             MainActivity.this.service.setSongList(songList);
             bound = true;
-            initializePlayer();
             Toast.makeText(MainActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
         }
 
@@ -253,21 +252,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
-    /**
-     * gets called after the service is bound
-     * passes the service to player fragments
-     */
-    private void initializePlayer() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        TabPlayerFragment tp = new TabPlayerFragment();
-        BigPlayerFragment bp = new BigPlayerFragment();
-        fragmentTransaction.add(R.id.mainFrame,tp, TabPlayerFragment.class.getSimpleName());
-        fragmentTransaction.add(R.id.mainFrame,bp, BigPlayerFragment.class.getSimpleName());
-        fragmentTransaction.detach(tp);
-        fragmentTransaction.detach(bp);
-        fragmentTransaction.commit();
-    }
 
 
     public void songSelect(View view) {
@@ -431,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
                                     throw new IllegalStateException("result code or data invalied");
                                 }
                                 int pos = resultData.getInt(MusicService.KEY_POSITION);
-//                                bpf.setSeekBarTo(pos/1000);
+                                bpf.setSeekBarTo(pos/1000);
                             }
 
                         }
