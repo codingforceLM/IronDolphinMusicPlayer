@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
+import de.codingforcelm.idmp.fragment.SongListFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
 
 public class TabFragmentAdapter extends FragmentStateAdapter {
@@ -25,7 +26,7 @@ public class TabFragmentAdapter extends FragmentStateAdapter {
         switch(position) {
             case 0:
                 // Songs
-                return new ListPlayerFragment();
+                return new SongListFragment();
             case 1:
                 // Albums
                 return new TestFragment();

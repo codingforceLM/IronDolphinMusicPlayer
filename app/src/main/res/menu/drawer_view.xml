@@ -8,9 +8,9 @@
                 android:icon="@drawable/ic_baseline_outdoor_grill_24"
                 android:title="Home" />
             <item
-                android:id="@+id/nav_listPlayer"
+                android:id="@+id/nav_tabPlayer"
                 android:icon="@drawable/ic_baseline_outdoor_grill_24"
-                android:title="ListPlayer" />
+                android:title="TabPlayer" />
             <item
                 android:id="@+id/nav_statistics"
                 android:icon="@drawable/ic_baseline_outdoor_grill_24"

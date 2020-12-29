@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -176,7 +178,7 @@ public class BigPlayerFragment extends Fragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-               ((MainActivity) getActivity()).replaceFragments(ListPlayerFragment.class);
+               ((MainActivity) getActivity()).replaceFragments(TabPlayerFragment.class);
         }
     }
 

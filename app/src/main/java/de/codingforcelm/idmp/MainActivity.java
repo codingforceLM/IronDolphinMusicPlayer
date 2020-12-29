@@ -12,14 +12,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,16 +37,14 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
-import de.codingforcelm.idmp.fragment.SongListFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
-import de.codingforcelm.idmp.fragment.TabFragment;
+import de.codingforcelm.idmp.fragment.TabPlayerFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
@@ -117,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         songList = new AudioLoader(this).getSongs();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
+        ft.add(R.id.mainFrame, new TabPlayerFragment(), TabPlayerFragment.class.getSimpleName());
 
         listview = true;
         playstatus = false;
@@ -266,11 +260,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initializePlayer() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        ListPlayerFragment lp = new ListPlayerFragment();
+        TabPlayerFragment tp = new TabPlayerFragment();
         BigPlayerFragment bp = new BigPlayerFragment();
-        fragmentTransaction.add(R.id.mainFrame,lp, ListPlayerFragment.class.getSimpleName());
+        fragmentTransaction.add(R.id.mainFrame,tp, TabPlayerFragment.class.getSimpleName());
         fragmentTransaction.add(R.id.mainFrame,bp, BigPlayerFragment.class.getSimpleName());
-        fragmentTransaction.hide(lp);
+        fragmentTransaction.hide(tp);
         fragmentTransaction.hide(bp);
         fragmentTransaction.commit();
     }
@@ -319,11 +313,11 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
                 }
                 break;
-            case R.id.nav_listPlayer:
+            case R.id.nav_tabPlayer:
                 if(fragmentManager.findFragmentByTag(ListPlayerFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.show(fragmentManager.findFragmentByTag(ListPlayerFragment.class.getSimpleName()));
+                    fragmentTransaction.show(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()));
                 } else {
-                    fragmentTransaction.add(R.id.mainFrame, new ListPlayerFragment(), ListPlayerFragment.class.getSimpleName());
+                    fragmentTransaction.add(R.id.mainFrame, new TabPlayerFragment(), TabPlayerFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_statistics:
@@ -392,6 +386,8 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout layout = (DrawerLayout)findViewById(R.id.drawer_layout);
         if (layout.isDrawerOpen(GravityCompat.START)) {
             layout.closeDrawer(GravityCompat.START);
+        } else if(getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
+            replaceFragments(TabPlayerFragment.class);
         } else {
             super.onBackPressed();
         }
