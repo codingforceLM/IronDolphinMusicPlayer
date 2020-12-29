@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
             // TODO utilize transport controls
 
-            // TODO display initial state
+            controller.sendCommand(MusicService.COMMAND_UPDATE_METADATA, null, new ResultReceiver(new Handler(getMainLooper())));
 
             controller.registerCallback(controllerCallback);
             Toast.makeText(MainActivity.this, "Browser connected", Toast.LENGTH_SHORT).show();
