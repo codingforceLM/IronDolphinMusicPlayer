@@ -247,11 +247,13 @@ public class MainActivity extends AppCompatActivity {
             if(res != -1) {
                 if(bpf != null) {
                     Log.e(LOG_TAG, "Set playback status for big player");
-                    bpf.setPlaybackState(playstatus);
+                    ImageView i = findViewById(R.id.bp_playPauseButton);
+                    i.setImageResource(res);
                 }
                 if(lpf != null) {
                     Log.e(LOG_TAG, "Set playback status for list player");
-                    lpf.setPlaybackState(playstatus);
+                    ImageView i = findViewById(R.id.lp_playPauseButton);
+                    i.setImageResource(res);
                 }
             }
         }
