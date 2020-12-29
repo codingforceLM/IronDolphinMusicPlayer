@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
-            ListPlayerFragment lpf = (ListPlayerFragment) getSupportFragmentManager().findFragmentByTag(ListPlayerFragment.class.getSimpleName());
+            TabPlayerFragment tpf = (TabPlayerFragment) getSupportFragmentManager().findFragmentByTag(TabPlayerFragment.class.getSimpleName());
 
             int res = -1;
 
@@ -244,9 +244,9 @@ public class MainActivity extends AppCompatActivity {
                     ImageView i = findViewById(R.id.bp_playPauseButton);
                     i.setImageResource(res);
                 }
-                if(lpf != null) {
+                if(tpf != null) {
                     Log.e(LOG_TAG, "Set playback status for list player");
-                    ImageView i = findViewById(R.id.lp_playPauseButton);
+                    ImageView i = findViewById(R.id.tp_playPauseButton);
                     i.setImageResource(res);
                 }
             }
@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.nav_tabPlayer:
-                if(fragmentManager.findFragmentByTag(ListPlayerFragment.class.getSimpleName()) != null) {
+                if(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()) != null) {
                     fragmentTransaction.show(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()));
                 } else {
                     fragmentTransaction.add(R.id.mainFrame, new TabPlayerFragment(), TabPlayerFragment.class.getSimpleName());

@@ -36,7 +36,6 @@ public class ControlsFragment  extends Fragment {
         image = view.findViewById(R.id.tp_image);
         image.setOnClickListener(new ControlsFragment.ImageOnClickListener());
 
-        ((MainActivity)getActivity()).setView(true);
         if(((MainActivity)getActivity()).isPlaying()) {
             playPauseButton.setImageResource(R.drawable.ic_control_pause);
         } else {
