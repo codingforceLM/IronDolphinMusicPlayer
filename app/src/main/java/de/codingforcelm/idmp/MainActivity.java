@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout layout = (DrawerLayout)findViewById(R.id.drawer_layout);
         if (layout.isDrawerOpen(GravityCompat.START)) {
             layout.closeDrawer(GravityCompat.START);
-        } else if(!listview) {
+        } else if(getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
             replaceFragments(TabPlayerFragment.class);
         } else {
             super.onBackPressed();
