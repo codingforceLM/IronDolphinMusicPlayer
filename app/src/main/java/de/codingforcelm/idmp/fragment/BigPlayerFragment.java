@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -41,7 +42,6 @@ public class BigPlayerFragment extends Fragment {
     public BigPlayerFragment() {
         //needed default constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,6 @@ public class BigPlayerFragment extends Fragment {
         bp_title = view.findViewById(R.id.bp_track);
         bp_artistAlbum = view.findViewById(R.id.bp_albumArtist);
         bp_seekBar = view.findViewById(R.id.bp_seekBar);
-
         bp_seekBar.setOnSeekBarChangeListener(new SeekBarOnClickListener());
 
         if(((MainActivity)getActivity()).isPlaying()) {

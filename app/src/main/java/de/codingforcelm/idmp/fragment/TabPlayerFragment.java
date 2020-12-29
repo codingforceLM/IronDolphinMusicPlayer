@@ -29,17 +29,17 @@ public class TabPlayerFragment  extends Fragment {
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ((MainActivity) getActivity()).hideVisibleFragments(fragmentManager, fragmentTransaction);
+        ((MainActivity) getActivity()).detachFragments(fragmentManager, fragmentTransaction);
 
         if (fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()) != null) {
-            fragmentTransaction.show(fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()));
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()));
 
         } else {
             fragmentTransaction.add(R.id.tp_tab_frame, new TabFragment(), TabFragment.class.getSimpleName());
         }
 
         if (fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
-            fragmentTransaction.show(fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()));
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()));
 
         } else {
             fragmentTransaction.add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName());
