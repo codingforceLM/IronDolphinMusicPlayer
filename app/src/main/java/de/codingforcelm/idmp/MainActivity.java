@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.media.AudioManager;
+import android.media.MediaMetadata;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private Handler delayHandler;
     private boolean listview;
-    private boolean playstatus;
+    private boolean playstatus;//this
+    private MediaMetadataCompat mediaMetadata;
     private int duration;
 
     @Override
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
             if(bpf != null) {
                 bpf.applyMetadata(metadata);
             }
+            mediaMetadata=metadata;
         }
 
         @Override
@@ -347,7 +350,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
@@ -381,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void replaceFragments(Class fragmentClass) {
         Fragment fragment = null;
+
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
@@ -389,12 +392,38 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         detachFragments(fragmentManager,fragmentTransaction);
-        if(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
-            fragmentTransaction.attach(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
-        } else {
-            fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
-        }
+
+    /*    if(fragmentClass.equals(BigPlayerFragment.class)){
+            BigPlayerFragment bf = (BigPlayerFragment) fragmentManager.findFragmentByTag(fragmentClass.getSimpleName());
+            if(bf != null) {
+                Toast.makeText(MainActivity.this, "aa2a2a2a2a2aa2a22a", Toast.LENGTH_SHORT).show();
+                bf.applyMetadata(mediaMetadata);
+                fragmentTransaction.attach(bf);
+            } else {
+                Toast.makeText(MainActivity.this, "a1a1a1a1a1a1a1aa1a1", Toast.LENGTH_SHORT).show();
+                bf = new BigPlayerFragment();
+                fragmentTransaction.add(R.id.mainFrame, bf, fragmentClass.getSimpleName());
+
+           //     bf.applyMetadata(mediaMetadata);
+
+            }
+
+        }else{*/
+
+            if(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
+                fragmentTransaction.attach(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
+            } else {
+
+                    fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
+                }
+
+    //    }
         fragmentTransaction.commit();
+
+    }
+
+    public MediaMetadataCompat getMetadata(){
+        return mediaMetadata;
     }
 
     public boolean isPlaying() {

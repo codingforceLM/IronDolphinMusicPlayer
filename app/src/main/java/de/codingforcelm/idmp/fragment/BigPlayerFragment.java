@@ -1,9 +1,12 @@
 package de.codingforcelm.idmp.fragment;
 
+import android.content.Context;
+import android.media.MediaMetadata;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
+import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
@@ -39,9 +42,11 @@ public class BigPlayerFragment extends Fragment {
     private TextView bp_artistAlbum;
     private SeekBar bp_seekbar;
 
+
     public BigPlayerFragment() {
         //needed default constructor
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +63,6 @@ public class BigPlayerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
         bp_repeatButton = view.findViewById(R.id.bp_repeatButton);
         bp_repeatButton.setOnClickListener(new BigPlayerFragment.RepeatOnClickListener());
         bp_prevButton = view.findViewById(R.id.bp_prevButton);
@@ -83,6 +87,7 @@ public class BigPlayerFragment extends Fragment {
         } else {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_play);
         }
+
     }
 
     public void applyMetadata(MediaMetadataCompat metadata) {
@@ -116,6 +121,13 @@ public class BigPlayerFragment extends Fragment {
         bp_seekBar.setMax(duration/1000);
 
         // TODO show the change of shuffle/repeat
+    }
+
+    @Override
+    public void onStart () {
+        super.onStart();
+        MediaMetadataCompat c = ((MainActivity) getActivity()).getMetadata();
+        applyMetadata(c);
     }
 
     public void setPlaybackState(boolean play) {
