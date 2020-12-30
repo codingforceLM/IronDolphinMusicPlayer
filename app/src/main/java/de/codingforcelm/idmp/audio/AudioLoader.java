@@ -20,8 +20,8 @@ public class AudioLoader {
         this.context = context;
     }
 
-    public List<PhysicalSong> getSongs() {
-        List<PhysicalSong> songs = new ArrayList<>();
+    public ArrayList<PhysicalSong> getSongs() {
+        ArrayList<PhysicalSong> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -46,8 +46,8 @@ public class AudioLoader {
         return songs;
     }
 
-    public List<PhysicalAlbum> getSongsFromAlbum() {
-        List<PhysicalAlbum> songs = new ArrayList<>();
+    public ArrayList<PhysicalAlbum> getSongsFromAlbum() {
+        ArrayList<PhysicalAlbum> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
