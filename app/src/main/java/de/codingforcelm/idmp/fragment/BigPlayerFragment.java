@@ -1,12 +1,9 @@
 package de.codingforcelm.idmp.fragment;
 
-import android.content.Context;
-import android.media.MediaMetadata;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
-import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
@@ -16,12 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
@@ -120,7 +113,17 @@ public class BigPlayerFragment extends Fragment {
         bp_artistAlbum.setText(artistAlbum);
         bp_seekBar.setMax(duration/1000);
 
-        // TODO show the change of shuffle/repeat
+        if(shuffle){
+            bp_shuffleButton.setImageResource(R.drawable.ic_control_shuffle_active);
+        }else{
+            bp_shuffleButton.setImageResource(R.drawable.ic_control_shuffle);
+        }
+        if(repeat){
+            bp_repeatButton.setImageResource(R.drawable.ic_control_repeat_active);
+        }else {
+            bp_repeatButton.setImageResource(R.drawable.ic_control_repeat);
+        }
+
     }
 
     @Override
