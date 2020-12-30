@@ -262,9 +262,7 @@ public class MainActivity extends AppCompatActivity {
         int pos = Integer.parseInt(view.getTag().toString());
         PhysicalSong song = songList.get(pos);
         String id = String.valueOf(song.getId());
-        Bundle b = new Bundle();
-        b.putInt("position", pos);
-        transportControls.playFromMediaId(id, b);
+        transportControls.playFromMediaId(id, null);
         Log.e(LOG_TAG, "");
     }
 
@@ -367,9 +365,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
+    // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig);
-    }
+}
 
     @Override
     public void onBackPressed() {
