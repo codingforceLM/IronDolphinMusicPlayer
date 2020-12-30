@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.MainActivity;
@@ -23,12 +24,12 @@ public class ListPlayerFragment extends Fragment {
     private ImageView nextButton;
     private ImageView prevButton;
     private ImageView image;
-    private List<PhysicalSong> songList;
+    private ArrayList<PhysicalSong> songList;
 
     public ListPlayerFragment(){
         //needed default constructor
     }
-    public ListPlayerFragment(List<PhysicalSong> songList){
+    public ListPlayerFragment(ArrayList<PhysicalSong> songList){
         this.songList = songList;
     }
     @Override
@@ -47,7 +48,7 @@ public class ListPlayerFragment extends Fragment {
             fragmentTransaction.show(fragmentManager.findFragmentByTag(SongListFragment.class.getSimpleName()));
 
         } else {
-            fragmentTransaction.add(R.id.player_list_top, new SongListFragment(songList), SongListFragment.class.getSimpleName());
+            fragmentTransaction.add(R.id.player_list_top, new SongListFragment(), SongListFragment.class.getSimpleName());
         }
         fragmentTransaction.commit();
 

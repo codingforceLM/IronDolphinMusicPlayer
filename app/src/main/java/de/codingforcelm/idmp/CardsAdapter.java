@@ -1,53 +1,54 @@
 package de.codingforcelm.idmp;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class CardsAdapter extends BaseAdapter {
+public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.CardViewHolder> {
+    private ArrayList<PhysicalSong> songList;
 
-    private List<PhysicalSong> songs;
-    private LayoutInflater songInf;
+    public static class CardViewHolder extends RecyclerView.ViewHolder {
+        public ImageView item_image;
+        public TextView item_title;
+        public TextView item_artist;
 
-    public CardsAdapter(Context c, List<PhysicalSong> songs) {
-        this.songs = songs;
-        this.songInf = LayoutInflater.from(c);
+        public CardViewHolder(View itemView) {
+            super(itemView);
+            item_image = itemView.findViewById(R.id.item_image);
+            item_title = itemView.findViewById(R.id.item_title);
+            item_artist = itemView.findViewById(R.id.item_artist);
+        }
+    }
+
+    public CardsAdapter(ArrayList<PhysicalSong> songList) {
+        this.songList = songList;
     }
 
     @Override
-    public int getCount() {
-        return songs.size();
+    public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
+        CardViewHolder cvh = new CardViewHolder(view);
+        return cvh;
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public void onBindViewHolder(CardViewHolder holder, int position) {
+        PhysicalSong currentItem = songList.get(position);
+        holder.item_title.setText(currentItem.getTitle());
+        holder.item_artist.setText(currentItem.getArtist());
+        holder.itemView.setTag(position);
     }
 
     @Override
-    public long getItemId(int position) {
-        return 0;
+    public int getItemCount() {
+        return songList.size();
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        CardView lay = (CardView) songInf.inflate(R.layout.item_layout, parent, false);
-        TextView title = (TextView) lay.findViewById(R.id.title);
-        TextView artist = (TextView) lay.findViewById(R.id.artist);
 
-        PhysicalSong song = songs.get(position);
-        title.setText(song.getTitle());
-        artist.setText(song.getArtist());
-        lay.setTag(position);
-
-        return lay;
-    }
 }

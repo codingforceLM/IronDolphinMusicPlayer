@@ -1,31 +1,30 @@
 package de.codingforcelm.idmp.fragment;
 
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.codingforcelm.idmp.CardsAdapter;
-import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class SongListFragment extends Fragment {
     private ListView songView;
-    private List<PhysicalSong> songList;
+    private ArrayList<PhysicalSong> songList;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
-    public SongListFragment(List<PhysicalSong> songList) {
+    public SongListFragment(ArrayList<PhysicalSong> songList) {
         this.songList=songList;
     }
     public SongListFragment() {
@@ -40,10 +39,13 @@ public class SongListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        songView = (ListView)view.findViewById(R.id.songlist);
         songList = new AudioLoader(this.getContext()).getSongs();
-        CardsAdapter adapter = new CardsAdapter(this.getContext(), songList);
-        songView.setAdapter(adapter);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(view.getContext());
+        adapter = new CardsAdapter(songList);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
     }
 
 
