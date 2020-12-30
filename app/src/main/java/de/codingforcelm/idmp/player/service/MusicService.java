@@ -490,6 +490,27 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         }
     }
 
+    private void setSongPositionFromMediaId(long mediaId) {
+        Log.e(LOG_TAG, "setSongPositionFromMediaId");
+        Log.e(LOG_TAG,"get index for mediaId");
+        int index = getIndexForMediaId(mediaId);
+        if(index > -1) {
+            Log.e(LOG_TAG, "update songPosition");
+            songPosition = index;
+        } else {
+            Log.e(LOG_TAG, "song wasnt found in given songList");
+            throw new IllegalStateException("song not loaded");
+        }
+    }
+
+    private int getIndexForMediaId(long mediaId) {
+        Log.e(LOG_TAG, "getIndexForMediaId");
+        Log.e(LOG_TAG, "building dummy");
+        PhysicalSong dummy = new PhysicalSong(mediaId, null, null, null, null);
+        Log.e(LOG_TAG, "finding index");
+        return songList.indexOf(dummy);
+    }
+
     private class MusicCallbackHandler extends MediaSessionCompat.Callback {
 
         @Override
@@ -537,15 +558,12 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 Log.e(LOG_TAG, "Couldnt parse MediaId");
             }
 
-            if(extras.containsKey("position")) {
-                songPosition = extras.getInt("position");
-            } else {
-                throw new IllegalStateException("Missing songlist position");
-            }
+            setSongPositionFromMediaId(Long.valueOf(mediaId));
 
             MusicService.this.playSong(trackUri, true);
         }
 
+        @Deprecated
         @Override
         public void onPlayFromUri(Uri uri, Bundle extras) {
             Log.e(LOG_TAG, "onPlayFromUri");

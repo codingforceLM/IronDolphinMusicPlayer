@@ -54,4 +54,16 @@ public class PhysicalSong {
     public void setArtist(String artist) {
         this.artist = artist;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this) {
+            return true;
+        }
+        if(!(o instanceof PhysicalSong)) {
+            return false;
+        }
+        PhysicalSong that = (PhysicalSong) o;
+        return this.getId() == that.getId();
+    }
 }
