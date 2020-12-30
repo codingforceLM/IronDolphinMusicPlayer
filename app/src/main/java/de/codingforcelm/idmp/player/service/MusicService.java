@@ -256,9 +256,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
-        builder.setContentTitle(mediaMetdata.getString("title"));
-        builder.setContentText(mediaMetdata.getString("artist"));
-        builder.setSubText(mediaMetdata.getString("album"));
+        builder.setContentTitle(mediaMetdata.getString(KEY_TITLE));
+        builder.setContentText(mediaMetdata.getString(KEY_ARTIST));
+        builder.setSubText(mediaMetdata.getString(KEY_ALBUM));
         builder.setOngoing(false);
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setContentIntent(controller.getSessionActivity());
