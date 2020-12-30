@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
 
+import de.codingforcelm.idmp.CardsAdapter;
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
@@ -47,7 +48,7 @@ public class ListPlayerFragment extends Fragment {
             fragmentTransaction.show(fragmentManager.findFragmentByTag(SongListFragment.class.getSimpleName()));
 
         } else {
-            fragmentTransaction.add(R.id.player_list_top, new SongListFragment(songList), SongListFragment.class.getSimpleName());
+            fragmentTransaction.add(R.id.player_list_top, new SongListFragment(new CardsAdapter(getContext())), SongListFragment.class.getSimpleName());
         }
         fragmentTransaction.commit();
 

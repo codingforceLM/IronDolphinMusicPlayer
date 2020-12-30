@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -14,19 +13,19 @@ import java.util.List;
 
 import de.codingforcelm.idmp.audio.AudioLoader;
 
-public class CardsAdapter extends BaseAdapter {
+public class AlbumCardAdapter extends BaseAdapter {
 
-    private List<PhysicalSong> songs;
+    private List<PhysicalAlbum> albums;
     private LayoutInflater songInf;
 
-    public CardsAdapter(Context c) {
-        this.songs = new AudioLoader(c).getSongs();
+    public AlbumCardAdapter(Context c) {
+        this.albums = new AudioLoader(c).getSongsFromAlbum();
         this.songInf = LayoutInflater.from(c);
     }
 
     @Override
     public int getCount() {
-        return songs.size();
+        return albums.size();
     }
 
     @Override
@@ -45,7 +44,7 @@ public class CardsAdapter extends BaseAdapter {
         TextView title = (TextView) lay.findViewById(R.id.title);
         TextView artist = (TextView) lay.findViewById(R.id.artist);
 
-        PhysicalSong song = songs.get(position);
+        PhysicalAlbum song = albums.get(position);
         title.setText(song.getTitle());
         artist.setText(song.getArtist());
         lay.setTag(position);

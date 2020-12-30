@@ -1,5 +1,7 @@
 package de.codingforcelm.idmp;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,10 +16,12 @@ import de.codingforcelm.idmp.fragment.TestFragment;
 public class TabFragmentAdapter extends FragmentStateAdapter {
 
     private int numOfTabs;
+    private Context context;
 
-    public TabFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+    public TabFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, @NonNull Context context) {
         super(fragmentManager, lifecycle);
-        numOfTabs = 3;
+        this.numOfTabs = 3;
+        this.context = context;
     }
 
     @NonNull
@@ -26,10 +30,10 @@ public class TabFragmentAdapter extends FragmentStateAdapter {
         switch(position) {
             case 0:
                 // Songs
-                return new SongListFragment();
+                return new SongListFragment(new CardsAdapter(context));
             case 1:
                 // Albums
-                return new TestFragment();
+                return new SongListFragment(new AlbumCardAdapter(context));
             case 2:
                 // Playlists
                 return new TestFragment();

@@ -46,7 +46,7 @@ public class TabFragment extends Fragment {
         albumTab = view.findViewById(R.id.albumTab);
         pager = view.findViewById(R.id.tabFragmentPager);
 
-        TabFragmentAdapter adapter = new TabFragmentAdapter(getChildFragmentManager(), this.getLifecycle());
+        TabFragmentAdapter adapter = new TabFragmentAdapter(getChildFragmentManager(), this.getLifecycle(), getContext());
         pager.setAdapter(adapter);
 
         TabLayoutMediator.TabConfigurationStrategy strategy = new TabLayoutMediator.TabConfigurationStrategy() {

@@ -8,9 +8,11 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,12 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class SongListFragment extends Fragment {
     private ListView songView;
-    private List<PhysicalSong> songList;
+    private BaseAdapter adapter;
 
-    public SongListFragment(List<PhysicalSong> songList) {
-        this.songList=songList;
+    public SongListFragment(BaseAdapter adapter) {
+        this.adapter = adapter;
     }
+
     public SongListFragment() {
         //needed default constructor
     }
@@ -41,8 +44,6 @@ public class SongListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         songView = (ListView)view.findViewById(R.id.songlist);
-        songList = new AudioLoader(this.getContext()).getSongs();
-        CardsAdapter adapter = new CardsAdapter(this.getContext(), songList);
         songView.setAdapter(adapter);
     }
 
