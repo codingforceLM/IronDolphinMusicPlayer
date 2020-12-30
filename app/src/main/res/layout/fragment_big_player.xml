@@ -30,26 +30,70 @@
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:gravity="center"
-            android:text="Track" />
+            android:text="@string/track" />
 
         <TextView
-            android:id="@+id/bp_albumArtist"
+            android:id="@+id/bp_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:gravity="center"
-            android:text="Album - Artist" />
+            android:text="@string/album" />
+
+        <TextView
+            android:id="@+id/bp_artist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:text="@string/artist" />
+
+        <LinearLayout
+            android:id="@+id/bp_seekBarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <SeekBar
+                android:id="@+id/bp_seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/bp_currentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_duration"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.03"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/bp_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_duration"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.97"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="10" />
-
-        <SeekBar
-            android:id="@+id/bp_seekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="7" />
+            android:layout_weight="5" />
 
         <LinearLayout
             android:layout_width="match_parent"

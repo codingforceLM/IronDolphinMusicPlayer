@@ -429,6 +429,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             int pos = resultData.getInt(MusicService.KEY_POSITION);
                             bpf.setSeekBarTo(pos / 1000);
+                            bpf.setCurrentTime(pos);
                         }
 
                     }
