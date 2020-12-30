@@ -32,7 +32,11 @@ public class BigPlayerFragment extends Fragment {
     private SeekBar bp_seekBar;
     private ImageView bp_image;
     private TextView bp_title;
-    private TextView bp_artistAlbum;
+    private TextView bp_artist;
+    private TextView bp_album;
+    private TextView bp_currentTime;
+    private TextView bp_duration;
+    private int duration;
     private SeekBar bp_seekbar;
 
 
@@ -71,9 +75,13 @@ public class BigPlayerFragment extends Fragment {
         bp_image = view.findViewById(R.id.bp_image);
         bp_image.setOnClickListener(new BigPlayerFragment.ImageOnClickListener());
         bp_title = view.findViewById(R.id.bp_track);
-        bp_artistAlbum = view.findViewById(R.id.bp_albumArtist);
+        bp_artist = view.findViewById(R.id.bp_artist);
+        bp_album = view.findViewById(R.id.bp_album);
         bp_seekBar = view.findViewById(R.id.bp_seekBar);
         bp_seekBar.setOnSeekBarChangeListener(new SeekBarOnClickListener());
+        bp_currentTime = view.findViewById(R.id.bp_currentTime);
+        bp_duration = view.findViewById(R.id.bp_duration);
+
 
         if(((MainActivity)getActivity()).isPlaying()) {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_pause);
@@ -104,14 +112,23 @@ public class BigPlayerFragment extends Fragment {
         }
 
         String title = metadata.getString(MusicService.KEY_TITLE);
-        String artistAlbum = metadata.getString(MusicService.KEY_ARTIST) + " - " + metadata.getString(MusicService.KEY_ALBUM);
-        int duration = Integer.parseInt(metadata.getString(MusicService.KEY_DURATION));
+        String artist = metadata.getString(MusicService.KEY_ARTIST);
+        String album =  metadata.getString(MusicService.KEY_ALBUM);
         boolean shuffle = Boolean.parseBoolean(metadata.getString(MusicService.KEY_SHUFFLE));
         boolean repeat = Boolean.parseBoolean(metadata.getString(MusicService.KEY_REPEAT));
-
+        duration = Integer.parseInt(metadata.getString(MusicService.KEY_DURATION));
+        int seconds = (int) ((duration / 1000) % 60);
+        int minutes = (int) ((duration / 1000) / 60);
         bp_title.setText(title);
-        bp_artistAlbum.setText(artistAlbum);
+        bp_artist.setText(artist);
+        bp_album.setText(album);
         bp_seekBar.setMax(duration/1000);
+        if(seconds<10){
+            bp_duration.setText(minutes+":0"+seconds);
+        }else {
+            bp_duration.setText(minutes+":"+seconds);
+        }
+
 
         if(shuffle){
             bp_shuffleButton.setImageResource(R.drawable.ic_control_shuffle_active);
@@ -143,6 +160,17 @@ public class BigPlayerFragment extends Fragment {
 
     public void setSeekBarTo(int pos) {
         bp_seekBar.setProgress(pos);
+    }
+
+    public void setCurrentTime(int time) {
+        int seconds = (int) ((time / 1000) % 60);
+        int minutes = (int) ((time / 1000) / 60);
+        if(seconds<10){
+            bp_currentTime.setText(minutes+":0"+seconds);
+        }else{
+            bp_currentTime.setText(minutes+":"+seconds);
+        }
+
     }
 
     private class PlayPauseOnClickListener implements View.OnClickListener {
