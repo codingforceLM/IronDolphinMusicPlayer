@@ -9,11 +9,11 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 
 public class AudioLoader {
 
-    private List<PhysicalSong> songs;
     private Context context;
 
     public AudioLoader(Context context) {
@@ -21,19 +21,7 @@ public class AudioLoader {
     }
 
     public List<PhysicalSong> getSongs() {
-        if(context == null) {
-            return null;
-        }
-        if(songs != null) {
-            return songs;
-        }
-
-        loadAudio();
-        return songs;
-    }
-
-    private void loadAudio() {
-        songs = new ArrayList<>();
+        List<PhysicalSong> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -54,9 +42,31 @@ public class AudioLoader {
             }
         }
         cursor.close();
+
+        return songs;
     }
 
-    public void reloadAudio() {
-        loadAudio();
+    public List<PhysicalAlbum> getSongsFromAlbum() {
+        List<PhysicalAlbum> songs = new ArrayList<>();
+
+        ContentResolver contentResolver = context.getContentResolver();
+
+        Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        //String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+        String sortOrder = MediaStore.Audio.Albums.ALBUM + " ASC";
+        Cursor cursor = contentResolver.query(uri, null, null, null, sortOrder);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
+                Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+
+                songs.add(new PhysicalAlbum(id, album, artist));
+            }
+        }
+        cursor.close();
+
+        return songs;
     }
 }
