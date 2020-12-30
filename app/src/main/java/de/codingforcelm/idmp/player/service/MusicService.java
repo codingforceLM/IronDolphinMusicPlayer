@@ -145,6 +145,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
     @Override
     public void onDestroy()  {
+        unregisterReceiver(noisyReceiver);
         stopForeground(true);
     }
 
