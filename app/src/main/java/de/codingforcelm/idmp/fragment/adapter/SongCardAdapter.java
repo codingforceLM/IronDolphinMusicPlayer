@@ -1,5 +1,8 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.player.service.MusicService;
 
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
     private ArrayList<PhysicalSong> songList;
     private ArrayList<PhysicalSong> songListCopy;
+    private Context context;
     public static final String LOG_TAG = "CardsAdapter";
     private onLongItemClickListener longClickListener;
 
@@ -41,8 +47,9 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         
     }
 
-    public SongCardAdapter(ArrayList<PhysicalSong> songList) {
+    public SongCardAdapter(ArrayList<PhysicalSong> songList,Context context) {
         this.songList = songList;
+        this.context = context;
         this.songListCopy = new ArrayList<>();
         this.songListCopy.addAll(songList);
     }
@@ -65,6 +72,12 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
                 longClickListener.ItemLongClicked(v, position);
             }
             return true;
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (context instanceof MainActivity) {
+                ((MainActivity)context).songSelect(v);
+            }
         });
     }
 

@@ -53,7 +53,7 @@ public class SongListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new SongCardAdapter(songList);
+        adapter = new SongCardAdapter(songList,this.getContext());
         adapter.setOnLongItemClickListener(new SongCardAdapter.onLongItemClickListener() {
             @Override
             public void ItemLongClicked(View v, int position) {

@@ -50,7 +50,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             subRecyclerView.setLayoutManager(layoutManager);
 
             ArrayList<PhysicalSong> songList = new AudioLoader(itemView.getContext()).getSongsFromAlbum(album.getId());
-            SongCardAdapter adapter = new SongCardAdapter(songList);
+            SongCardAdapter adapter = new SongCardAdapter(songList,itemView.getContext());
             subRecyclerView.setAdapter(adapter);
 
         }

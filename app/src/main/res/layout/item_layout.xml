@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="1dp"
     android:elevation="100dp"
-    android:onClick="songSelect">
+    >
 
     <!--android:background="#00bcd4"-->
 
