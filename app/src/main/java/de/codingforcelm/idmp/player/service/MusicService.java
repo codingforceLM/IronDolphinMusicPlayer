@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
