@@ -57,6 +57,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String COMMAND_SET_SHUFFLE = "de.codingforcelm.idmp.player.service.SET_SHUFFLE";
     public static final String COMMAND_SET_REPEAT = "de.codingforcelm.idmp.player.service.SET_REPEAT";
     public static final String COMMAND_UPDATE_METADATA = "de.codingforcelm.idmp.player.service.UPDATE_METADATA";
+    public static final String COMMAND_LOAD_SONGLIST = "de.codingforcelm.idmp.player.service.LOAD_SONGLIST";
+    public static final String COMMAND_LOAD_ALBUM = "de.codingforcelm.idmp.player.service.LOAD_ALBUM";
 
     public static final String KEY_ARTIST = "de.codingforcelm.idmp.player.service.ARTIST";
     public static final String KEY_ALBUM = "de.codingforcelm.idmp.player.service.ALBUM";
@@ -66,6 +68,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String KEY_SHUFFLE = "de.codingforcelm.idmp.player.service.SHUFFLE";
     public static final String KEY_REPEAT = "de.codingforcelm.idmp.player.service.REPEAT";
     public static final String KEY_CONTEXT = "de.codingforcelm.idmp.player.service.CONTEXT";
+    public static final String KEY_ALBUM_ID = "de.codingforcelm.idmp.player.service.ALBUM_ID";
 
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
@@ -538,6 +541,21 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                     Log.e(LOG_TAG, "received COMMAND_SET_SHUFFLE");
                     updateSession();
                     break;
+                case COMMAND_LOAD_SONGLIST:
+                    Log.e(LOG_TAG, "received COMMAND_LOAD_SONGLIST");
+                    if(!context.equals(MainActivity.CONTEXT_SONGLIST)) {
+                        songList = new AudioLoader(getApplicationContext()).getSongs();
+                    }
+                    break;
+                case COMMAND_LOAD_ALBUM:
+                    Log.e(LOG_TAG, "received COMMAND_LOAD_ALBUM");
+                    if(!extras.containsKey(KEY_ALBUM_ID)) {
+                        throw new IllegalStateException("missing album id");
+                    }
+                    long id = extras.getLong(KEY_ALBUM_ID);
+                    if(!context.equals(String.valueOf(id))) {
+                        songList = new AudioLoader(getApplicationContext()).getSongsFromAlbum(id);
+                    }
             }
         }
 
