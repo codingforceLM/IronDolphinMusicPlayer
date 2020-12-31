@@ -64,6 +64,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String KEY_POSITION = "de.codingforcelm.idmp.player.service.POSITION";
     public static final String KEY_SHUFFLE = "de.codingforcelm.idmp.player.service.SHUFFLE";
     public static final String KEY_REPEAT = "de.codingforcelm.idmp.player.service.REPEAT";
+    public static final String KEY_CONTEXT = "de.codingforcelm.idmp.player.service.CONTEXT";
 
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
@@ -79,6 +80,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private boolean shuffle;
     private boolean repeat;
     private Notification notification;
+    private String context;
 
     private MediaSessionCompat mediaSession;
     private PlaybackStateCompat.Builder stateBuilder;
@@ -552,6 +554,11 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
+            if(!extras.containsKey(KEY_CONTEXT)) {
+                throw new IllegalStateException("missing context");
+            }
+            context = extras.getString(KEY_CONTEXT);
+
             Uri trackUri = null;
             try {
                 trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.parseLong(mediaId));

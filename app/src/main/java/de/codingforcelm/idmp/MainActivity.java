@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String Broadcast_PLAY_NEW_AUDIO = "de.codingforcelm.idmp.PlayNewAudio";
     public static final String LOG_TAG = "MainActivity";
 
+    public static final String CONTEXT_SONGLIST = "de.codingforcelm.idmp.player.service.SONGLIST";
+
     private List<PhysicalSong> songList;
     private boolean bound;
 
@@ -262,7 +264,9 @@ public class MainActivity extends AppCompatActivity {
         int pos = Integer.parseInt(view.getTag().toString());
         PhysicalSong song = songList.get(pos);
         String id = String.valueOf(song.getId());
-        transportControls.playFromMediaId(id, null);
+        Bundle b = new Bundle();
+        b.putString(MusicService.KEY_CONTEXT, CONTEXT_SONGLIST);
+        transportControls.playFromMediaId(id, b);
         Log.e(LOG_TAG, "");
     }
 
