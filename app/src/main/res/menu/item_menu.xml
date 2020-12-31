@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="wrap_content" android:layout_width="wrap_content">
+    <item
+        android:id="@+id/item_menu_1"
+        android:icon="@drawable/ic_baseline_outdoor_grill_24"
+        android:title="item_menu_1" />
+    <item
+        android:id="@+id/item_menu_2"
+        android:icon="@drawable/ic_baseline_outdoor_grill_24"
+        android:title="item_menu_2" />
+    <item
+        android:id="@+id/item_menu_3"
+        android:icon="@drawable/ic_baseline_outdoor_grill_24"
+        android:title="item_menu_3">
+        <menu>
+            <item
+                android:id="@+id/item_menu_3_1"
+                android:title="item_menu_3_1" />
+            <item
+                android:id="@+id/item_menu_3_2"
+                android:title="item_menu_3_2" />
+        </menu>
+    </item>
+</menu>

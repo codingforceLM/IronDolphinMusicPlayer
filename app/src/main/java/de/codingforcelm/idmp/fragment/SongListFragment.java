@@ -1,7 +1,11 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -18,11 +22,13 @@ import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class SongListFragment extends Fragment {
+    private static final String LOG_TAG = "SongListFragment";
     private ListView songView;
     private ArrayList<PhysicalSong> songList;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    private int currItemPos;
 
     public SongListFragment(ArrayList<PhysicalSong> songList) {
         this.songList=songList;
@@ -42,11 +48,54 @@ public class SongListFragment extends Fragment {
         songList = new AudioLoader(this.getContext()).getSongs();
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
+        registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
         adapter = new CardsAdapter(songList);
+        ((CardsAdapter) adapter).setOnLongItemClickListener(new CardsAdapter.onLongItemClickListener() {
+            @Override
+            public void ItemLongClicked(View v, int position) {
+                currItemPos = position;
+                v.showContextMenu();
+            }
+        });
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        menu.setHeaderTitle("Context Menu");
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.item_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        Log.e(LOG_TAG, "clicked context item: "+item.toString());
+        switch (item.getItemId()) {
+            case R.id.item_menu_1:
+                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+                break;
+            case R.id.item_menu_2:
+                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+                break;
+            case R.id.item_menu_3:
+                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+                break;
+            case R.id.item_menu_3_1:
+                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+                break;
+            case R.id.item_menu_3_2:
+                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+                break;
+            default:
+                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+                break;
+        }
+        return true;
+    }
 
 }
+
