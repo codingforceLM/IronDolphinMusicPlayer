@@ -109,6 +109,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         initMusicPlayer();
 
         paused = true;
+        context = MainActivity.CONTEXT_SONGLIST;
 
         mediaSession = new MediaSessionCompat(this, LOG_TAG);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
