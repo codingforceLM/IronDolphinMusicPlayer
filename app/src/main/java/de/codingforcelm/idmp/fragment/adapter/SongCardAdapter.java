@@ -6,12 +6,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
     private ArrayList<PhysicalSong> songList;
@@ -29,6 +32,11 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
             item_image = itemView.findViewById(R.id.item_image);
             item_title = itemView.findViewById(R.id.item_title);
             item_artist = itemView.findViewById(R.id.item_artist);
+        }
+
+        private void bind(PhysicalSong song) {
+            item_title.setText(song.getTitle());
+            item_artist.setText(song.getArtist());
         }
         
     }
@@ -49,17 +57,14 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
     @Override
     public void onBindViewHolder(SongCardViewHolder holder, int position) {
         PhysicalSong currentItem = songList.get(position);
-        holder.item_title.setText(currentItem.getTitle());
-        holder.item_artist.setText(currentItem.getArtist());
+        holder.bind(currentItem);
+
         holder.itemView.setTag(position);
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (longClickListener != null) {
-                    longClickListener.ItemLongClicked(v, position);
-                }
-                return true;
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.ItemLongClicked(v, position);
             }
+            return true;
         });
     }
 

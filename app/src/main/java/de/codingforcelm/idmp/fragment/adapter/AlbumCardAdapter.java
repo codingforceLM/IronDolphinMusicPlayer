@@ -27,7 +27,6 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
         public ImageView item_image;
         public TextView item_title;
         public TextView item_artist;
-        public ListView item_albumSong;
         public RecyclerView subRecyclerView;
 
         public AlbumCardViewHolder(View itemView) {
@@ -35,14 +34,15 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             item_image = itemView.findViewById(R.id.item_image);
             item_title = itemView.findViewById(R.id.item_title);
             item_artist = itemView.findViewById(R.id.item_artist);
-          //  item_albumSong = itemView.findViewById(R.id.item_album_sublist_title);
             subRecyclerView = itemView.findViewById(R.id.item_subRecycler);
         }
 
         private void bind(PhysicalAlbum album) {
-            // Get the state
+            item_title.setText(album.getTitle());
+            item_artist.setText(album.getArtist());
+
             boolean expanded = album.isExpanded();
-            // Set the visibility based on state
+            // Set the visibility based on expanded state
             subRecyclerView.setVisibility(expanded ? View.VISIBLE : View.GONE);
             subRecyclerView.setHasFixedSize(true);
 
@@ -53,9 +53,8 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             SongCardAdapter adapter = new SongCardAdapter(songList);
             subRecyclerView.setAdapter(adapter);
 
-            // item_albumSong.setText(album.getTitle());
         }
-        
+
     }
 
     public AlbumCardAdapter(ArrayList<PhysicalAlbum> albumList) {
@@ -74,28 +73,21 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
     @Override
     public void onBindViewHolder(AlbumCardViewHolder holder, int position) {
         PhysicalAlbum currentItem = albumList.get(position);
-        holder.item_title.setText(currentItem.getTitle());
-        holder.item_artist.setText(currentItem.getArtist());
+        holder.bind(currentItem);
 
         holder.itemView.setTag(position);
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (longClickListener != null) {
-                    longClickListener.ItemLongClicked(v, position);
-                }
-                return true;
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.ItemLongClicked(v, position);
             }
+            return true;
         });
-        holder.bind(currentItem);
+
         holder.itemView.setOnClickListener(v -> {
-                // Get the current state of the item
-        boolean expanded = currentItem.isExpanded();
-        // Change the state
+            boolean expanded = currentItem.isExpanded();
             currentItem.setExpanded(!expanded);
-        // Notify the adapter that item has changed
-        notifyItemChanged(position);
-    });;
+            notifyItemChanged(position);
+        });
     }
 
     @Override
@@ -113,12 +105,12 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
 
     public void filter(String text) {
         albumList.clear();
-        if(text.isEmpty()){
+        if (text.isEmpty()) {
             albumList.addAll(albumListCopy);
-        } else{
+        } else {
             text = text.toLowerCase();
-            for(PhysicalAlbum album: albumListCopy){
-                if(album.getTitle().toLowerCase().contains(text)){
+            for (PhysicalAlbum album : albumListCopy) {
+                if (album.getTitle().toLowerCase().contains(text)) {
                     albumList.add(album);
                 }
             }
