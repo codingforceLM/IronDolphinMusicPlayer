@@ -53,12 +53,9 @@ public class AlbumListFragment extends Fragment {
 
         layoutManager = new LinearLayoutManager(view.getContext());
         adapter = new AlbumCardAdapter(albumList);
-        adapter.setOnLongItemClickListener(new AlbumCardAdapter.onLongItemClickListener() {
-            @Override
-            public void ItemLongClicked(View v, int position) {
-                currItemPos = position;
-                v.showContextMenu();
-            }
+        adapter.setOnLongItemClickListener((v, position) -> {
+            currItemPos = position;
+            v.showContextMenu();
         });
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
