@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
     private ArrayList<PhysicalSong> songList;
+    private ArrayList<PhysicalSong> songListCopy;
     public static final String LOG_TAG = "CardsAdapter";
     private onLongItemClickListener longClickListener;
 
@@ -31,6 +32,8 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
 
     public SongCardAdapter(ArrayList<PhysicalSong> songList) {
         this.songList = songList;
+        this.songListCopy = new ArrayList<>();
+        this.songListCopy.addAll(songList);
     }
 
     @Override
@@ -68,6 +71,21 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
 
     public interface onLongItemClickListener {
         void ItemLongClicked(View v, int position);
+    }
+
+    public void filter(String text) {
+        songList.clear();
+        if(text.isEmpty()){
+            songList.addAll(songListCopy);
+        } else{
+            text = text.toLowerCase();
+            for(PhysicalSong song: songListCopy){
+                if(song.getTitle().toLowerCase().contains(text)){
+                    songList.add(song);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 }

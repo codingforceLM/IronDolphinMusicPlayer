@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +27,8 @@ public class SongListFragment extends Fragment {
     private ListView songView;
     private ArrayList<PhysicalSong> songList;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private SearchView searchView;
+    private SongCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
@@ -46,12 +48,13 @@ public class SongListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         songList = new AudioLoader(this.getContext()).getSongs();
+        searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
         adapter = new SongCardAdapter(songList);
-        ((SongCardAdapter) adapter).setOnLongItemClickListener(new SongCardAdapter.onLongItemClickListener() {
+        adapter.setOnLongItemClickListener(new SongCardAdapter.onLongItemClickListener() {
             @Override
             public void ItemLongClicked(View v, int position) {
                 currItemPos = position;
@@ -60,7 +63,21 @@ public class SongListFragment extends Fragment {
         });
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
     }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,8 +28,9 @@ public class AlbumListFragment extends Fragment {
     private ListView songView;
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
+    private SearchView searchView;
     private RecyclerView subRecyclerView;
-    private RecyclerView.Adapter adapter;
+    private AlbumCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
@@ -45,13 +47,14 @@ public class AlbumListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         albumList = new AudioLoader(this.getContext()).getAlbums();
+        searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
 
         layoutManager = new LinearLayoutManager(view.getContext());
         adapter = new AlbumCardAdapter(albumList);
-        ((AlbumCardAdapter) adapter).setOnLongItemClickListener(new AlbumCardAdapter.onLongItemClickListener() {
+        adapter.setOnLongItemClickListener(new AlbumCardAdapter.onLongItemClickListener() {
             @Override
             public void ItemLongClicked(View v, int position) {
                 currItemPos = position;
@@ -60,6 +63,19 @@ public class AlbumListFragment extends Fragment {
         });
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
     }
 
     @Override

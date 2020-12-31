@@ -19,6 +19,7 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     private ArrayList<PhysicalAlbum> albumList;
+    private ArrayList<PhysicalAlbum> albumListCopy;
     public static final String LOG_TAG = "CardsAdapter";
     private onLongItemClickListener longClickListener;
 
@@ -59,6 +60,8 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
 
     public AlbumCardAdapter(ArrayList<PhysicalAlbum> albumList) {
         this.albumList = albumList;
+        this.albumListCopy = new ArrayList<>();
+        this.albumListCopy.addAll(albumList);
     }
 
     @Override
@@ -106,6 +109,21 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
 
     public interface onLongItemClickListener {
         void ItemLongClicked(View v, int position);
+    }
+
+    public void filter(String text) {
+        albumList.clear();
+        if(text.isEmpty()){
+            albumList.addAll(albumListCopy);
+        } else{
+            text = text.toLowerCase();
+            for(PhysicalAlbum album: albumListCopy){
+                if(album.getTitle().toLowerCase().contains(text)){
+                    albumList.add(album);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 }
