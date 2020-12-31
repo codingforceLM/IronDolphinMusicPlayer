@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp;
+package de.codingforcelm.idmp.fragment.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import de.codingforcelm.idmp.fragment.AlbumListFragment;
 import de.codingforcelm.idmp.fragment.ListPlayerFragment;
+import de.codingforcelm.idmp.fragment.PlaylistListFragment;
 import de.codingforcelm.idmp.fragment.SongListFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
 
@@ -33,7 +34,7 @@ public class TabFragmentAdapter extends FragmentStateAdapter {
                 return new AlbumListFragment();
             case 2:
                 // Playlists
-                return new TestFragment();
+                return new PlaylistListFragment();
             default:
                 return null;
         }

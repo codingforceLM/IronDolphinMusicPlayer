@@ -14,7 +14,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.TabFragmentAdapter;
+import de.codingforcelm.idmp.fragment.adapter.TabFragmentAdapter;
 
 public class TabFragment extends Fragment {
 

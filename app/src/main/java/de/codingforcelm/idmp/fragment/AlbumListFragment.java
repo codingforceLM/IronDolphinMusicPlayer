@@ -17,14 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.AlbumCardAdapter;
-import de.codingforcelm.idmp.SongCardAdapter;
+import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class AlbumListFragment extends Fragment {
-    private static final String LOG_TAG = "SongListFragment";
+    private static final String LOG_TAG = "AlbumListFragment";
     private ListView songView;
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
