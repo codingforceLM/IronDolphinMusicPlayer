@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
         String id = String.valueOf(song.getId());
         Bundle b = new Bundle();
         b.putString(MusicService.KEY_CONTEXT, CONTEXT_SONGLIST);
+        b.putString(MusicService.KEY_CONTEXT_TYPE, MusicService.CONTEXT_TYPE_SONGLIST);
         transportControls.playFromMediaId(id, b);
         Log.e(LOG_TAG, "");
     }

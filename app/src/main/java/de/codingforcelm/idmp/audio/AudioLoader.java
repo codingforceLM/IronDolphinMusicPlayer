@@ -46,7 +46,7 @@ public class AudioLoader {
         return songs;
     }
 
-    public ArrayList<PhysicalAlbum> getSongsFromAlbum() {
+    public ArrayList<PhysicalAlbum> getAlbums() {
         ArrayList<PhysicalAlbum> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -63,6 +63,32 @@ public class AudioLoader {
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
 
                 songs.add(new PhysicalAlbum(id, album, artist));
+            }
+        }
+        cursor.close();
+
+        return songs;
+    }
+
+    public ArrayList<PhysicalSong> getSongsFromAlbum(long albumId) {
+        ArrayList<PhysicalSong> songs = new ArrayList<>();
+
+        ContentResolver contentResolver = context.getContentResolver();
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0" + " and " + MediaStore.Audio.Media.ALBUM_ID + " = " + albumId;
+        String sortOrder = MediaStore.Audio.Media.TRACK + " ASC";
+        Cursor cursor = contentResolver.query(uri, null, selection, null, sortOrder);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                songs.add(new PhysicalSong(id, data, title, album, artist));
             }
         }
         cursor.close();
