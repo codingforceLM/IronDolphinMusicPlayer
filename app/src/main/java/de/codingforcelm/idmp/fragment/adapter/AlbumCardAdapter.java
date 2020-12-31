@@ -1,12 +1,9 @@
-package de.codingforcelm.idmp;
+package de.codingforcelm.idmp.fragment.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,12 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.PhysicalAlbum;
+import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     private ArrayList<PhysicalAlbum> albumList;
     private ArrayList<PhysicalAlbum> albumListCopy;
-    public static final String LOG_TAG = "CardsAdapter";
+    public static final String LOG_TAG = "AlbumCardAdapter";
     private onLongItemClickListener longClickListener;
 
     public static class AlbumCardViewHolder extends RecyclerView.ViewHolder {
