@@ -62,7 +62,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
 
-                songs.add(new PhysicalAlbum(id, album, artist));
+                songs.add(new PhysicalAlbum(id, album, artist, false));
             }
         }
         cursor.close();

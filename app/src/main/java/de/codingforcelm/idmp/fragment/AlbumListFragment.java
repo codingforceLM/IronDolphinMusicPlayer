@@ -16,24 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.AlbumCardAdapter;
 import de.codingforcelm.idmp.SongCardAdapter;
-import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
-public class SongListFragment extends Fragment {
+public class AlbumListFragment extends Fragment {
     private static final String LOG_TAG = "SongListFragment";
     private ListView songView;
-    private ArrayList<PhysicalSong> songList;
+    private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
+    private RecyclerView subRecyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
-    public SongListFragment(ArrayList<PhysicalSong> songList) {
-        this.songList=songList;
-    }
-    public SongListFragment() {
+  public AlbumListFragment() {
         //needed default constructor
     }
 
@@ -45,13 +44,14 @@ public class SongListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        songList = new AudioLoader(this.getContext()).getSongs();
+        albumList = new AudioLoader(this.getContext()).getAlbums();
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
+
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new SongCardAdapter(songList);
-        ((SongCardAdapter) adapter).setOnLongItemClickListener(new SongCardAdapter.onLongItemClickListener() {
+        adapter = new AlbumCardAdapter(albumList);
+        ((AlbumCardAdapter) adapter).setOnLongItemClickListener(new AlbumCardAdapter.onLongItemClickListener() {
             @Override
             public void ItemLongClicked(View v, int position) {
                 currItemPos = position;
