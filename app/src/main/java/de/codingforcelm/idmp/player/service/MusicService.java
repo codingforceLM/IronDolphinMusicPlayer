@@ -68,7 +68,12 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String KEY_SHUFFLE = "de.codingforcelm.idmp.player.service.SHUFFLE";
     public static final String KEY_REPEAT = "de.codingforcelm.idmp.player.service.REPEAT";
     public static final String KEY_CONTEXT = "de.codingforcelm.idmp.player.service.CONTEXT";
+    public static final String KEY_CONTEXT_TYPE = "de.codingforcelm.idmp.player.service.CONTEXT_TYPE";
     public static final String KEY_ALBUM_ID = "de.codingforcelm.idmp.player.service.ALBUM_ID";
+
+    public static final String CONTEXT_TYPE_SONGLIST = "de.codingforcelm.idmp.player.service.TYPE_SONGLIST";
+    public static final String CONTEXT_TYPE_ALBUM = "de.codingforcelm.idmp.player.service.TYPE_ALBUM";
+    public static final String CONTEXT_TYPE_PLAYLIST = "de.codingforcelm.idmp.player.service.TYPE_PLAYLIST";
 
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
@@ -91,6 +96,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private AudioManager audioManager;
     private AudioFocusChangeListener afcl;
     private AudioFocusRequest audioFocusRequest;
+    private AudioLoader audioLoader;
     private IntentFilter intentFilter;
     private BecomingNoisyReceiver noisyReceiver;
 
@@ -315,8 +321,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         player.setOnPreparedListener(this);
         player.setOnSeekCompleteListener(this);
 
-        AudioLoader al = new AudioLoader(this);
-        this.setSongList(al.getSongs());
+        audioLoader = new AudioLoader(this);
+        this.setSongList(audioLoader.getSongs());
 
         player.reset();
         long curr = songList.get(songPosition).getId();
@@ -576,7 +582,29 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             if(!extras.containsKey(KEY_CONTEXT)) {
                 throw new IllegalStateException("missing context");
             }
-            context = extras.getString(KEY_CONTEXT);
+            if(!extras.containsKey(KEY_CONTEXT_TYPE)) {
+                throw new IllegalStateException("missing context type");
+            }
+
+            String newContext = extras.getString(KEY_CONTEXT);
+            String contextType = extras.getString(KEY_CONTEXT_TYPE);
+            if(!context.equals(newContext)) {
+                switch(contextType) {
+                    case CONTEXT_TYPE_SONGLIST:
+                        songList = audioLoader.getSongs();
+                        break;
+                    case CONTEXT_TYPE_ALBUM:
+                        if(!extras.containsKey(KEY_ALBUM_ID)) {
+                            throw new IllegalStateException("missing album id");
+                        }
+                        songList = audioLoader.getSongsFromAlbum(extras.getLong(KEY_ALBUM_ID));
+                        break;
+                    case CONTEXT_TYPE_PLAYLIST:
+                        // TODO implement once the playlists are ready
+                        break;
+                }
+                context = newContext;
+            }
 
             Uri trackUri = null;
             try {
