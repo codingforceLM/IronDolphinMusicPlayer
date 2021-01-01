@@ -38,13 +38,6 @@ public class TabPlayerFragment  extends Fragment {
             fragmentTransaction.add(R.id.tp_tab_frame, new TabFragment(), TabFragment.class.getSimpleName());
         }
 
-        if (fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
-            fragmentTransaction.attach(fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()));
-
-        } else {
-            fragmentTransaction.add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName());
-        }
-
         fragmentTransaction.commit();
 
     }

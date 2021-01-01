@@ -11,11 +11,4 @@
 
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/tp_controls_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="90">
-
-    </FrameLayout>
 </LinearLayout>

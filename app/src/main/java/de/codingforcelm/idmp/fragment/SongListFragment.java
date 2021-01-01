@@ -47,6 +47,12 @@ public class SongListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
+            getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
+
+        } else {
+            getChildFragmentManager().beginTransaction().add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName()).commit();
+        }
         songList = new AudioLoader(this.getContext()).getSongs();
         searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -73,6 +79,7 @@ public class SongListFragment extends Fragment {
                 return true;
             }
         });
+
     }
 
 

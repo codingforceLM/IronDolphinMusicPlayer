@@ -32,6 +32,11 @@ public class PlaylistFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
+            getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 
+        } else {
+            getChildFragmentManager().beginTransaction().add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName()).commit();
+        }
     }
 }
