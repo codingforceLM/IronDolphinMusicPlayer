@@ -6,16 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import de.codingforcelm.idmp.MainActivity;
-import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.fragment.PlaylistFragment;
+import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.structure.Playlist;
 
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {

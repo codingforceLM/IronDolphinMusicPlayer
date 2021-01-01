@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.fragment.tab.TabPlayerFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class BigPlayerFragment extends Fragment {

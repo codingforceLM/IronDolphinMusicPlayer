@@ -3,15 +3,12 @@ package de.codingforcelm.idmp.fragment.adapter;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import de.codingforcelm.idmp.fragment.AlbumListFragment;
-import de.codingforcelm.idmp.fragment.ListPlayerFragment;
-import de.codingforcelm.idmp.fragment.PlaylistListFragment;
-import de.codingforcelm.idmp.fragment.SongListFragment;
-import de.codingforcelm.idmp.fragment.TestFragment;
+import de.codingforcelm.idmp.fragment.tab.AlbumListFragment;
+import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
+import de.codingforcelm.idmp.fragment.tab.SongListFragment;
 
 public class TabFragmentAdapter extends FragmentStateAdapter {
 

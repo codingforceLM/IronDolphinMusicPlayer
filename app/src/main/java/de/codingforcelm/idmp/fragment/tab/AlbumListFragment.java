@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.fragment;
+package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -17,25 +17,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
-import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
-import de.codingforcelm.idmp.music.Song;
-import de.codingforcelm.idmp.structure.Playlist;
 
-public class PlaylistListFragment extends Fragment {
-    private static final String LOG_TAG = "PlaylistListFragment";
+public class AlbumListFragment extends Fragment {
+    private static final String LOG_TAG = "AlbumListFragment";
+    private ListView songView;
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
-    private PlaylistCardAdapter adapter;
+    private RecyclerView subRecyclerView;
+    private AlbumCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
-  public PlaylistListFragment() {
+  public AlbumListFragment() {
         //needed default constructor
     }
 
@@ -60,13 +59,7 @@ public class PlaylistListFragment extends Fragment {
         registerForContextMenu(recyclerView);
 
         layoutManager = new LinearLayoutManager(view.getContext());
-        ArrayList<Playlist> dummieList = new ArrayList<>();
-        ArrayList<Song> dummieListSong = new ArrayList<>();
-
-        dummieList.add(new Playlist("list1",dummieListSong,null));
-        dummieList.add(new Playlist("list2",dummieListSong,null));
-        dummieList.add(new Playlist("list3",dummieListSong,null));
-        adapter = new PlaylistCardAdapter(dummieList,this.getContext());
+        adapter = new AlbumCardAdapter(albumList);
         adapter.setOnLongItemClickListener((v, position) -> {
             currItemPos = position;
             v.showContextMenu();
@@ -86,8 +79,6 @@ public class PlaylistListFragment extends Fragment {
                 return true;
             }
         });
-
-
     }
 
     @Override

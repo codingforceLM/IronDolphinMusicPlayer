@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.fragment;
+package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.fragment.ControlsFragment;
 
 
 public class PlaylistFragment extends Fragment {

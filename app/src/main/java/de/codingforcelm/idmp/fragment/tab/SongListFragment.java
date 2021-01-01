@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.fragment;
+package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -17,23 +17,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
-import de.codingforcelm.idmp.PhysicalAlbum;
+import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
+import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
-public class AlbumListFragment extends Fragment {
-    private static final String LOG_TAG = "AlbumListFragment";
+public class SongListFragment extends Fragment {
+    private static final String LOG_TAG = "SongListFragment";
     private ListView songView;
-    private ArrayList<PhysicalAlbum> albumList;
+    private ArrayList<PhysicalSong> songList;
     private RecyclerView recyclerView;
     private SearchView searchView;
-    private RecyclerView subRecyclerView;
-    private AlbumCardAdapter adapter;
+    private SongCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
-  public AlbumListFragment() {
+    public SongListFragment(ArrayList<PhysicalSong> songList) {
+        this.songList=songList;
+    }
+    public SongListFragment() {
         //needed default constructor
     }
 
@@ -51,14 +54,13 @@ public class AlbumListFragment extends Fragment {
         } else {
             getChildFragmentManager().beginTransaction().add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName()).commit();
         }
-        albumList = new AudioLoader(this.getContext()).getAlbums();
+        songList = new AudioLoader(this.getContext()).getSongs();
         searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
-
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new AlbumCardAdapter(albumList);
+        adapter = new SongCardAdapter(songList,this.getContext());
         adapter.setOnLongItemClickListener((v, position) -> {
             currItemPos = position;
             v.showContextMenu();
@@ -78,7 +80,9 @@ public class AlbumListFragment extends Fragment {
                 return true;
             }
         });
+
     }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,

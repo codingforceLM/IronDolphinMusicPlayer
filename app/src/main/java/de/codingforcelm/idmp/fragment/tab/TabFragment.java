@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.fragment;
+package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
