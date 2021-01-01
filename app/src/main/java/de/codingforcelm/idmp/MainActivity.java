@@ -259,14 +259,11 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    public void songSelect(View view) {
-        int pos = Integer.parseInt(view.getTag().toString());
-        PhysicalSong song = songList.get(pos);
-        String id = String.valueOf(song.getId());
+    public void songSelect(long songId) {
         Bundle b = new Bundle();
         b.putString(MusicService.KEY_CONTEXT, CONTEXT_SONGLIST);
         b.putString(MusicService.KEY_CONTEXT_TYPE, MusicService.CONTEXT_TYPE_SONGLIST);
-        transportControls.playFromMediaId(id, b);
+        transportControls.playFromMediaId(String.valueOf(songId), b);
         Log.e(LOG_TAG, "");
     }
 

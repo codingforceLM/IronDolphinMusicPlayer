@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="1dp"
-    android:elevation="100dp"
-    android:onClick="songSelect">
+    android:elevation="100dp">
 
     <!--android:background="#00bcd4"-->
 

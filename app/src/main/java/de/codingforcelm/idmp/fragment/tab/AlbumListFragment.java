@@ -25,11 +25,9 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 
 public class AlbumListFragment extends Fragment {
     private static final String LOG_TAG = "AlbumListFragment";
-    private ListView songView;
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
-    private RecyclerView subRecyclerView;
     private AlbumCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;

@@ -32,6 +32,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         public ImageView item_image;
         public TextView item_title;
         public TextView item_artist;
+        public long currentSongID;
 
         public SongCardViewHolder(View itemView) {
             super(itemView);
@@ -43,6 +44,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         private void bind(PhysicalSong song) {
             item_title.setText(song.getTitle());
             item_artist.setText(song.getArtist());
+            currentSongID = song.getId();
         }
         
     }
@@ -76,7 +78,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
 
         holder.itemView.setOnClickListener(v -> {
             if (context instanceof MainActivity) {
-                ((MainActivity)context).songSelect(v);
+                ((MainActivity)context).songSelect(currentItem.getId());
             }
         });
     }
