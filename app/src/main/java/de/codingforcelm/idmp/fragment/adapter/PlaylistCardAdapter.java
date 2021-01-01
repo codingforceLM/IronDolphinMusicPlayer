@@ -32,7 +32,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             super(itemView);
             item_image = itemView.findViewById(R.id.item_image);
             item_title = itemView.findViewById(R.id.item_title);
-            item_artist = itemView.findViewById(R.id.item_artist);
+            item_artist = itemView.findViewById(R.id.item_subtitle);
         }
 
         private void bind(Playlist playlist) {

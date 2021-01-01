@@ -1,11 +1,9 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
-import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     private ArrayList<PhysicalAlbum> albumList;
@@ -37,7 +33,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             super(itemView);
             item_image = itemView.findViewById(R.id.item_image);
             item_title = itemView.findViewById(R.id.item_title);
-            item_artist = itemView.findViewById(R.id.item_artist);
+            item_artist = itemView.findViewById(R.id.item_subtitle);
             subRecyclerView = itemView.findViewById(R.id.item_subRecycler);
         }
 

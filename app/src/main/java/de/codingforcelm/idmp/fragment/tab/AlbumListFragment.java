@@ -51,7 +51,9 @@ public class AlbumListFragment extends Fragment {
         registerForContextMenu(recyclerView);
 
         layoutManager = new LinearLayoutManager(view.getContext());
+
         adapter = new AlbumCardAdapter(albumList);
+
         adapter.setOnLongItemClickListener((v, position) -> {
             currItemPos = position;
             v.showContextMenu();

@@ -41,7 +41,7 @@
                 android:textStyle="bold|italic" />
 
             <TextView
-                android:id="@+id/item_artist"
+                android:id="@+id/item_subtitle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
