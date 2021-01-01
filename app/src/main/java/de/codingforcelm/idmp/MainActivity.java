@@ -40,7 +40,7 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
-import de.codingforcelm.idmp.fragment.tab.TabPlayerFragment;
+import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         songList = new AudioLoader(this).getSongs();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.mainFrame, new TabPlayerFragment(), TabPlayerFragment.class.getSimpleName());
+        ft.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
 
         listview = true;
         playstatus = false;
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
-            TabPlayerFragment tpf = (TabPlayerFragment) getSupportFragmentManager().findFragmentByTag(TabPlayerFragment.class.getSimpleName());
+            TabFragment tpf = (TabFragment) getSupportFragmentManager().findFragmentByTag(TabFragment.class.getSimpleName());
 
             int res = -1;
 
@@ -304,10 +304,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.nav_tabPlayer:
-                if (fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TabPlayerFragment.class.getSimpleName()));
+                if (fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()) != null) {
+                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()));
                 } else {
-                    fragmentTransaction.add(R.id.mainFrame, new TabPlayerFragment(), TabPlayerFragment.class.getSimpleName());
+                    fragmentTransaction.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
                 }
                 break;
             case R.id.nav_statistics:
@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
         if (layout.isDrawerOpen(GravityCompat.START)) {
             layout.closeDrawer(GravityCompat.START);
         } else if (getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
-            replaceFragments(TabPlayerFragment.class);
+            replaceFragments(TabFragment.class);
         } else {
             super.onBackPressed();
         }

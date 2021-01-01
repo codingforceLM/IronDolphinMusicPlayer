@@ -7,12 +7,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.adapter.TabFragmentAdapter;
@@ -39,12 +42,14 @@ public class TabFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
-            getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
-
+            fragmentTransaction.attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()));
         } else {
-            getChildFragmentManager().beginTransaction().add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName()).commit();
+            fragmentTransaction.add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName());
         }
+        fragmentTransaction.commit();
 
         layout = view.findViewById(R.id.tabLayout);
         songsTab = view.findViewById(R.id.songTab);
