@@ -268,10 +268,16 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    public void songSelect(long songId) {
+    public void songSelect(long songId, String playContext, String playContextType) {
         Bundle b = new Bundle();
-        b.putString(MusicService.KEY_CONTEXT, CONTEXT_SONGLIST);
-        b.putString(MusicService.KEY_CONTEXT_TYPE, MusicService.CONTEXT_TYPE_SONGLIST);
+        b.putString(MusicService.KEY_CONTEXT, playContext);
+        b.putString(MusicService.KEY_CONTEXT_TYPE, playContextType);
+
+        if(playContextType.equals(MusicService.CONTEXT_TYPE_ALBUM)) {
+            //Context for album must be the album id
+            b.putLong(MusicService.KEY_ALBUM_ID, Long.parseLong(playContext));
+        }
+
         transportControls.playFromMediaId(String.valueOf(songId), b);
         Log.e(LOG_TAG, "");
     }
