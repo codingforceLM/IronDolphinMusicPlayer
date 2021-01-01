@@ -12,11 +12,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.fragment.tab.SongListFragment;
 
 @Deprecated
 public class ListPlayerFragment extends Fragment {

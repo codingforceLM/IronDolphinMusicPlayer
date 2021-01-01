@@ -6,18 +6,18 @@
             <item
                 android:id="@+id/nav_home"
                 android:icon="@drawable/ic_baseline_outdoor_grill_24"
-                android:title="Home" />
+                android:title="@string/home" />
             <item
                 android:id="@+id/nav_tabPlayer"
                 android:icon="@drawable/ic_baseline_outdoor_grill_24"
-                android:title="TabPlayer" />
+                android:title="@string/tabplayer" />
             <item
                 android:id="@+id/nav_statistics"
                 android:icon="@drawable/ic_baseline_outdoor_grill_24"
-                android:title="Statistics" />
+                android:title="@string/statistics" />
             <item
                 android:id="@+id/nav_test"
                 android:icon="@drawable/ic_baseline_outdoor_grill_24"
-                android:title="Test" />
+                android:title="@string/test" />
         </group>
     </menu>

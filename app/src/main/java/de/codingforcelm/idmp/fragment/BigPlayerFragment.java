@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class BigPlayerFragment extends Fragment {
@@ -234,7 +235,7 @@ public class BigPlayerFragment extends Fragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-               ((MainActivity) getActivity()).replaceFragments(TabPlayerFragment.class);
+               ((MainActivity) getActivity()).replaceFragments(TabFragment.class);
         }
     }
 

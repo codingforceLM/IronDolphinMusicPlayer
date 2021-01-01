@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.fragment;
+package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,24 +17,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.CardsAdapter;
 import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
+import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
+import de.codingforcelm.idmp.music.Song;
+import de.codingforcelm.idmp.structure.Playlist;
 
-public class SongListFragment extends Fragment {
-    private static final String LOG_TAG = "SongListFragment";
-    private ListView songView;
-    private ArrayList<PhysicalSong> songList;
+public class PlaylistListFragment extends Fragment {
+    private static final String LOG_TAG = "PlaylistListFragment";
+    private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private SearchView searchView;
+    private PlaylistCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
-    public SongListFragment(ArrayList<PhysicalSong> songList) {
-        this.songList=songList;
-    }
-    public SongListFragment() {
+  public PlaylistListFragment() {
         //needed default constructor
     }
 
@@ -45,21 +48,41 @@ public class SongListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        songList = new AudioLoader(this.getContext()).getSongs();
+        albumList = new AudioLoader(this.getContext()).getAlbums();
+        searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
+
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new CardsAdapter(songList);
-        ((CardsAdapter) adapter).setOnLongItemClickListener(new CardsAdapter.onLongItemClickListener() {
-            @Override
-            public void ItemLongClicked(View v, int position) {
-                currItemPos = position;
-                v.showContextMenu();
-            }
+        ArrayList<Playlist> dummieList = new ArrayList<>();
+        ArrayList<Song> dummieListSong = new ArrayList<>();
+
+        dummieList.add(new Playlist("list1",dummieListSong,null));
+        dummieList.add(new Playlist("list2",dummieListSong,null));
+        dummieList.add(new Playlist("list3",dummieListSong,null));
+        adapter = new PlaylistCardAdapter(dummieList,this.getContext());
+        adapter.setOnLongItemClickListener((v, position) -> {
+            currItemPos = position;
+            v.showContextMenu();
         });
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
+
+
     }
 
     @Override

@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="1dp"
-    android:elevation="100dp"
-    >
+    android:elevation="100dp">
 
     <!--android:background="#00bcd4"-->
 
@@ -47,9 +46,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:foregroundGravity="center_horizontal"
-                android:text="@string/subtitle"
+                android:text="@string/artist"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textSize="16sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/item_subRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/darker_gray"
+                android:scrollbars="vertical" />
+
         </LinearLayout>
 
 

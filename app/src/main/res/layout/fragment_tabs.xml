@@ -24,25 +24,36 @@
                 android:id="@+id/songTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Songs" />
+                android:text="@string/songs" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/albumTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Albums" />
+                android:text="@string/albums" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/playlistTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Playlists" />
+                android:text="@string/playlists" />
         </com.google.android.material.tabs.TabLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/tabFragmentPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="15">
+
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <FrameLayout
+            android:id="@+id/tp_controls_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="75">
+
+        </FrameLayout>
 
     </LinearLayout>
 

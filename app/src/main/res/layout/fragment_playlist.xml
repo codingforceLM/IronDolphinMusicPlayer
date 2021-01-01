@@ -17,11 +17,19 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="20"
+        android:layout_weight="15"
         android:background="@android:color/darker_gray"
         android:scrollbars="vertical">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <FrameLayout
+        android:id="@+id/pl_controls_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="75">
+
+    </FrameLayout>
 
 
 </LinearLayout>
