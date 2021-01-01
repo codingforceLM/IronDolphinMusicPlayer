@@ -23,5 +23,13 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <FrameLayout
+        android:id="@+id/pl_controls_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="90">
+
+    </FrameLayout>
+
 
 </LinearLayout>

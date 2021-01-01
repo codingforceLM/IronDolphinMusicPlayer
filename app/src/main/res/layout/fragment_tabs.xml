@@ -42,7 +42,18 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/tabFragmentPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="20">
+
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <FrameLayout
+            android:id="@+id/tp_controls_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="90">
+
+        </FrameLayout>
 
     </LinearLayout>
 
