@@ -1,8 +1,12 @@
 package de.codingforcelm.idmp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -12,8 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String LOG_TAG = "MainActivity";
 
     public static final String CONTEXT_SONGLIST = "de.codingforcelm.idmp.player.service.SONGLIST";
+    private static final int STORAGE_PERMISSION_CODE = 1;
 
     private List<PhysicalSong> songList;
     private boolean bound;
@@ -80,17 +87,22 @@ public class MainActivity extends AppCompatActivity {
         bound = savedInstanceState.getBoolean("ServiceState");
     }
 
+    public void checkStoragePermission(){
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "You have already granted this permission!",Toast.LENGTH_SHORT).show();
+            createBrowser();
+        } else {
+            requestStoragePermission();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        checkStoragePermission();
 
-        browser = new MediaBrowserCompat(
-                this,
-                new ComponentName(this, MusicService.class),
-                connectionCallback,
-                null
-        );
+        setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -107,10 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
         bound = false;
 
-        songList = new AudioLoader(this).getSongs();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
+        ft.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
 
         listview = true;
         playstatus = false;
@@ -135,10 +146,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        if (!browser.isConnected()) {
-            Log.e(LOG_TAG, "Connect browser");
-            browser.connect();
-        }
+
     }
 
     @Override
@@ -166,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            songList = new AudioLoader(MainActivity.this).getSongs();
             MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
             MainActivity.this.service = binder.getService();
             MainActivity.this.service.setSongList(songList);
@@ -381,7 +390,49 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+    private void requestStoragePermission() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permission needed")
+                .setMessage(R.string.permission_info)
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+                createBrowser();
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
+    private void createBrowser(){
+        browser = new MediaBrowserCompat(
+                this,
+                new ComponentName(this, MusicService.class),
+                connectionCallback,
+                null
+        );
+        if (!browser.isConnected()) {
+            Log.e(LOG_TAG, "Connect browser");
+            browser.connect();
+        }
+    }
 
     public void replaceFragments(Class fragmentClass) {
         Fragment fragment = null;
