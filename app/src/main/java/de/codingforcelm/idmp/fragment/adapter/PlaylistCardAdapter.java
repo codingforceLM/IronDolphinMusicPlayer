@@ -72,7 +72,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
         holder.itemView.setOnClickListener(v -> {
             if (context instanceof MainActivity) {
-                ((MainActivity)context). placeFragment(PlaylistFragment.class, R.id.mainFrame);
+                ((MainActivity)context).placeFragment(PlaylistFragment.class, R.id.mainFrame);
             }
         });
     }
