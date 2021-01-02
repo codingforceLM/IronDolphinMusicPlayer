@@ -36,7 +36,7 @@ public class PlaylistListFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
-  public PlaylistListFragment() {
+    public PlaylistListFragment() {
         //needed default constructor
     }
 

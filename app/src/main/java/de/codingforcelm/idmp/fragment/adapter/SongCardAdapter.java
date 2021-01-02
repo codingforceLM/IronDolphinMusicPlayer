@@ -39,9 +39,16 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         }
 
         private void bind(PhysicalSong song) {
-            item_title.setText(song.getTitle());
-            item_artist.setText(song.getArtist());
-            currentSongID = song.getId();
+            if(song != null) {
+                item_title.setText(song.getTitle());
+                item_artist.setText(song.getArtist());
+                currentSongID = song.getId();
+            } else {
+                item_title.setText("---");
+                item_artist.setText("---");
+                currentSongID = -1;
+            }
+
         }
         
     }
@@ -91,7 +98,18 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         this.longClickListener = onLongItemClickListener;
     }
 
+    public void setData(List<PhysicalSong> data) {
+        if(songList != null) {
+            songList.clear();
+            songList.addAll(data);
+        } else {
+            songList = data;
+        }
+        songListCopy = new ArrayList<>();
+        songListCopy.addAll(songList);
 
+        notifyDataSetChanged();
+    }
 
     public interface onLongItemClickListener {
         void ItemLongClicked(View v, int position);
