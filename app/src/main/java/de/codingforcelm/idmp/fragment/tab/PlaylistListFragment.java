@@ -55,8 +55,6 @@ public class PlaylistListFragment extends Fragment {
         registerForContextMenu(recyclerView);
 
         layoutManager = new LinearLayoutManager(view.getContext());
-        ArrayList<Playlist> dummieList = new ArrayList<>();
-        ArrayList<Song> dummieListSong = new ArrayList<>();
 
         adapter = new PlaylistCardAdapter(getActivity().getApplication());
         playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
