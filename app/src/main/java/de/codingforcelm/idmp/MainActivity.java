@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
             for (Fragment f : fragments) {
                 if (f != null && !f.isDetached())
                     fragmentTransaction.detach(f);
-                    Log.e(LOG_TAG, simpleName+" detatched");
+                    Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
             }
         }
 
