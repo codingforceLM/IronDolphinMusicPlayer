@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.fragment.tab.TabFragment;
 
 public class ControlsFragment  extends Fragment {
     private ImageView playPauseButton;
@@ -92,7 +93,7 @@ public class ControlsFragment  extends Fragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            ((MainActivity) getActivity()).replaceFragments(BigPlayerFragment.class);
+            ((MainActivity) getActivity()). placeFragment(BigPlayerFragment.class, R.id.mainFrame);
         }
     }
 }

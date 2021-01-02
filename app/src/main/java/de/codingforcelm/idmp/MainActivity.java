@@ -304,43 +304,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detachFragments(fragmentManager, fragmentTransaction);
+        Log.e(LOG_TAG, "--selectDrawerItem--");
+
+        Class fragmentClass = null;
+
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                if (fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
-                }
+                fragmentClass = HomeFragment.class;
                 break;
             case R.id.nav_tabPlayer:
-                if (fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
-                }
+                fragmentClass = TabFragment.class;
                 break;
             case R.id.nav_statistics:
-                if (fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new StatisticsFragment(), StatisticsFragment.class.getSimpleName());
-                }
+                fragmentClass = StatisticsFragment.class;
                 break;
             case R.id.nav_test:
-                if (fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new TestFragment(), TestFragment.class.getSimpleName());
-                }
+                fragmentClass = TestFragment.class;
                 break;
             default:
-                //
+                Log.e(LOG_TAG, "unknown navigation selected");
         }
-
-        fragmentTransaction.commit();
+        Log.e(LOG_TAG, fragmentClass.getSimpleName()+" selected");
+        placeFragment(fragmentClass, R.id.mainFrame);
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
@@ -348,24 +333,47 @@ public class MainActivity extends AppCompatActivity {
         setTitle(menuItem.getTitle());
 
         drawerLayout.closeDrawers();
+
     }
 
-    /**
-     * is used before adding or showing a fragment
-     * hides all visible fragments but transaction must be commited AFTER this function call
-     *
-     * @param fragmentManager     fragmentManager to get all Fragments
-     * @param fragmentTransaction fragmentTransaction needs to be commited after this function
+    /** places a Fragment on a given layout id
+     * @param fragmentClass FragmentClass to display
+     * @param frameId layoutFrame to place Fragment on
      */
-    public void detachFragments(FragmentManager fragmentManager, FragmentTransaction fragmentTransaction) {
+    public void placeFragment(Class fragmentClass, int frameId){
+        Log.e(LOG_TAG, "--placeFragment--");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // detach fragments
+        String simpleName = fragmentClass.getSimpleName();
         List<Fragment> fragments = fragmentManager.getFragments();
         if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment != null && !fragment.isDetached())
-                    fragmentTransaction.detach(fragment);
+            for (Fragment f : fragments) {
+                if (f != null && !f.isDetached())
+                    fragmentTransaction.detach(f);
+                    Log.e(LOG_TAG, simpleName+" detatched");
             }
         }
+
+        // add/attach fragments
+        if (fragmentManager.findFragmentByTag(simpleName) != null) {
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(simpleName));
+            Log.e(LOG_TAG, simpleName+" attached");
+        } else {
+            Fragment fragment = null;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Exception creating Fragment instance\n"+e.getMessage());
+            }
+            fragmentTransaction.add(frameId, fragment, simpleName);
+            Log.e(LOG_TAG, simpleName+" added");
+        }
+        fragmentTransaction.commit();
     }
+
+
 
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
@@ -391,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
         if (layout.isDrawerOpen(GravityCompat.START)) {
             layout.closeDrawer(GravityCompat.START);
         } else if (getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
-            replaceFragments(TabFragment.class);
+            placeFragment(TabFragment.class, R.id.mainFrame);
         } else {
             super.onBackPressed();
         }
@@ -440,27 +448,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void replaceFragments(Class fragmentClass) {
-        Fragment fragment = null;
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detachFragments(fragmentManager, fragmentTransaction);
-
-        if (fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
-            fragmentTransaction.attach(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
-        } else {
-            fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
-        }
-         
-        fragmentTransaction.commit();
-
-    }
 
     public MediaMetadataCompat getMetadata() {
         return mediaMetadata;
