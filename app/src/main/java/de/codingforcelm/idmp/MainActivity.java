@@ -373,6 +373,32 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    public void placeFragment(Fragment fragment, int frameId){
+        Log.e(LOG_TAG, "--placeFragment--");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // detach fragments
+        String simpleName = fragment.getClass().getSimpleName();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if (fragments != null) {
+            for (Fragment f : fragments) {
+                if (f != null && !f.isDetached())
+                    fragmentTransaction.detach(f);
+                Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
+            }
+        }
+
+        // add/attach fragments
+        if (fragmentManager.findFragmentByTag(simpleName) != null) {
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(simpleName));
+            Log.e(LOG_TAG, simpleName+" attached");
+        } else {
+            fragmentTransaction.add(frameId, fragment, simpleName);
+            Log.e(LOG_TAG, simpleName+" added");
+        }
+        fragmentTransaction.commit();
+    }
 
 
     private ActionBarDrawerToggle setupDrawerToggle() {
