@@ -235,7 +235,7 @@ public class BigPlayerFragment extends Fragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-               ((MainActivity) getActivity()).replaceFragments(TabFragment.class);
+               ((MainActivity) getActivity()).placeFragment(TabFragment.class, R.id.mainFrame);
         }
     }
 

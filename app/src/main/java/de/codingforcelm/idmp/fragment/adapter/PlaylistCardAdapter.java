@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
+import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.structure.Playlist;
 
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
@@ -71,7 +72,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
         holder.itemView.setOnClickListener(v -> {
             if (context instanceof MainActivity) {
-                ((MainActivity)context).replaceFragments(PlaylistFragment.class);
+                ((MainActivity)context).placeFragment(PlaylistFragment.class, R.id.mainFrame);
             }
         });
     }
