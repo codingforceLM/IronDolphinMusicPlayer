@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
-import de.codingforcelm.idmp.structure.Playlist;
+import de.codingforcelm.idmp.structure.playlist.Playlist;
 
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
     private ArrayList<Playlist> playlistList;

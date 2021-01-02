@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
@@ -17,15 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.PhysicalSong;
-import de.codingforcelm.idmp.fragment.ControlsFragment;
-import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.music.Song;
-import de.codingforcelm.idmp.structure.Playlist;
+import de.codingforcelm.idmp.structure.playlist.Playlist;
 
 public class PlaylistListFragment extends Fragment {
     private static final String LOG_TAG = "PlaylistListFragment";

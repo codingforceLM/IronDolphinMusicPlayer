@@ -1,5 +1,6 @@
 package de.codingforcelm.idmp.structure.playlist.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -18,9 +19,12 @@ public interface PlayListDao {
     @Delete
     void delete(Playlist playlist);
 
+    @Query("DELETE FROM playlist")
+    void deletePlaylist();
+
     @Query("SELECT * FROM playlist")
-    List<PlaylistWithEntries> getAll();
+    LiveData<List<PlaylistWithEntries>> getAll();
 
     @Query("SELECT * FROM playlist WHERE listId = :id")
-    Playlist getPlaylist(long id);
+    LiveData<Playlist> getPlaylist(long id);
 }
