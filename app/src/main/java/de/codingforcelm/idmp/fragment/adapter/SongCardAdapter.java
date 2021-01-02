@@ -22,6 +22,8 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
     private Context context;
     public static final String LOG_TAG = "CardsAdapter";
     private onLongItemClickListener longClickListener;
+    private String playContext;
+    private String playContextType;
 
     public static class SongCardViewHolder extends RecyclerView.ViewHolder {
         public ImageView item_image;
@@ -44,11 +46,13 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         
     }
 
-    public SongCardAdapter(ArrayList<PhysicalSong> songList,Context context) {
+    public SongCardAdapter(ArrayList<PhysicalSong> songList, Context context, String playContextType, String playContext) {
         this.songList = songList;
         this.context = context;
         this.songListCopy = new ArrayList<>();
         this.songListCopy.addAll(songList);
+        this.playContextType = playContextType;
+        this.playContext = playContext;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
 
         holder.itemView.setOnClickListener(v -> {
             if (context instanceof MainActivity) {
-                ((MainActivity)context).songSelect(currentItem.getId());
+                ((MainActivity)context).songSelect(currentItem.getId(), playContext, playContextType);
             }
         });
     }

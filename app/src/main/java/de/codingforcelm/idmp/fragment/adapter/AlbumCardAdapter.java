@@ -15,6 +15,7 @@ import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.player.service.MusicService;
 
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     private ArrayList<PhysicalAlbum> albumList;
@@ -49,8 +50,9 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
             subRecyclerView.setLayoutManager(layoutManager);
 
-            ArrayList<PhysicalSong> songList = new AudioLoader(itemView.getContext()).getSongsFromAlbum(album.getId());
-            SongCardAdapter adapter = new SongCardAdapter(songList,itemView.getContext());
+            long albumId = album.getId();
+            ArrayList<PhysicalSong> songList = new AudioLoader(itemView.getContext()).getSongsFromAlbum(albumId);
+            SongCardAdapter adapter = new SongCardAdapter(songList,itemView.getContext(), MusicService.CONTEXT_TYPE_ALBUM, String.valueOf(albumId));
             subRecyclerView.setAdapter(adapter);
 
         }

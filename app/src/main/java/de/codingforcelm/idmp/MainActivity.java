@@ -1,8 +1,12 @@
 package de.codingforcelm.idmp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -12,8 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String LOG_TAG = "MainActivity";
 
     public static final String CONTEXT_SONGLIST = "de.codingforcelm.idmp.player.service.SONGLIST";
+    private static final int STORAGE_PERMISSION_CODE = 1;
 
     private List<PhysicalSong> songList;
     private boolean bound;
@@ -80,17 +87,22 @@ public class MainActivity extends AppCompatActivity {
         bound = savedInstanceState.getBoolean("ServiceState");
     }
 
+    public void checkStoragePermission(){
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "You have already granted this permission!",Toast.LENGTH_SHORT).show();
+            createBrowser();
+        } else {
+            requestStoragePermission();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        checkStoragePermission();
 
-        browser = new MediaBrowserCompat(
-                this,
-                new ComponentName(this, MusicService.class),
-                connectionCallback,
-                null
-        );
+        setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -107,10 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
         bound = false;
 
-        songList = new AudioLoader(this).getSongs();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
+        ft.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
 
         listview = true;
         playstatus = false;
@@ -135,10 +146,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        if (!browser.isConnected()) {
-            Log.e(LOG_TAG, "Connect browser");
-            browser.connect();
-        }
+
     }
 
     @Override
@@ -166,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            songList = new AudioLoader(MainActivity.this).getSongs();
             MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
             MainActivity.this.service = binder.getService();
             MainActivity.this.service.setSongList(songList);
@@ -259,10 +268,16 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    public void songSelect(long songId) {
+    public void songSelect(long songId, String playContext, String playContextType) {
         Bundle b = new Bundle();
-        b.putString(MusicService.KEY_CONTEXT, CONTEXT_SONGLIST);
-        b.putString(MusicService.KEY_CONTEXT_TYPE, MusicService.CONTEXT_TYPE_SONGLIST);
+        b.putString(MusicService.KEY_CONTEXT, playContext);
+        b.putString(MusicService.KEY_CONTEXT_TYPE, playContextType);
+
+        if(playContextType.equals(MusicService.CONTEXT_TYPE_ALBUM)) {
+            //Context for album must be the album id
+            b.putLong(MusicService.KEY_ALBUM_ID, Long.parseLong(playContext));
+        }
+
         transportControls.playFromMediaId(String.valueOf(songId), b);
         Log.e(LOG_TAG, "");
     }
@@ -289,43 +304,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detachFragments(fragmentManager, fragmentTransaction);
+        Log.e(LOG_TAG, "--selectDrawerItem--");
+
+        Class fragmentClass = null;
+
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                if (fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(HomeFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
-                }
+                fragmentClass = HomeFragment.class;
                 break;
             case R.id.nav_tabPlayer:
-                if (fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
-                }
+                fragmentClass = TabFragment.class;
                 break;
             case R.id.nav_statistics:
-                if (fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(StatisticsFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new StatisticsFragment(), StatisticsFragment.class.getSimpleName());
-                }
+                fragmentClass = StatisticsFragment.class;
                 break;
             case R.id.nav_test:
-                if (fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()) != null) {
-                    fragmentTransaction.attach(fragmentManager.findFragmentByTag(TestFragment.class.getSimpleName()));
-                } else {
-                    fragmentTransaction.add(R.id.mainFrame, new TestFragment(), TestFragment.class.getSimpleName());
-                }
+                fragmentClass = TestFragment.class;
                 break;
             default:
-                //
+                Log.e(LOG_TAG, "unknown navigation selected");
         }
-
-        fragmentTransaction.commit();
+        Log.e(LOG_TAG, fragmentClass.getSimpleName()+" selected");
+        placeFragment(fragmentClass, R.id.mainFrame);
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
@@ -333,24 +333,73 @@ public class MainActivity extends AppCompatActivity {
         setTitle(menuItem.getTitle());
 
         drawerLayout.closeDrawers();
+
     }
 
-    /**
-     * is used before adding or showing a fragment
-     * hides all visible fragments but transaction must be commited AFTER this function call
-     *
-     * @param fragmentManager     fragmentManager to get all Fragments
-     * @param fragmentTransaction fragmentTransaction needs to be commited after this function
+    /** places a Fragment on a given layout id
+     * @param fragmentClass FragmentClass to display
+     * @param frameId layoutFrame to place Fragment on
      */
-    public void detachFragments(FragmentManager fragmentManager, FragmentTransaction fragmentTransaction) {
+    public void placeFragment(Class fragmentClass, int frameId){
+        Log.e(LOG_TAG, "--placeFragment--");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // detach fragments
+        String simpleName = fragmentClass.getSimpleName();
         List<Fragment> fragments = fragmentManager.getFragments();
         if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment != null && !fragment.isDetached())
-                    fragmentTransaction.detach(fragment);
+            for (Fragment f : fragments) {
+                if (f != null && !f.isDetached())
+                    fragmentTransaction.detach(f);
+                    Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
             }
         }
+
+        // add/attach fragments
+        if (fragmentManager.findFragmentByTag(simpleName) != null) {
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(simpleName));
+            Log.e(LOG_TAG, simpleName+" attached");
+        } else {
+            Fragment fragment = null;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Exception creating Fragment instance\n"+e.getMessage());
+            }
+            fragmentTransaction.add(frameId, fragment, simpleName);
+            Log.e(LOG_TAG, simpleName+" added");
+        }
+        fragmentTransaction.commit();
     }
+
+    public void placeFragment(Fragment fragment, int frameId){
+        Log.e(LOG_TAG, "--placeFragment--");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // detach fragments
+        String simpleName = fragment.getClass().getSimpleName();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if (fragments != null) {
+            for (Fragment f : fragments) {
+                if (f != null && !f.isDetached())
+                    fragmentTransaction.detach(f);
+                Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
+            }
+        }
+
+        // add/attach fragments
+        if (fragmentManager.findFragmentByTag(simpleName) != null) {
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(simpleName));
+            Log.e(LOG_TAG, simpleName+" attached");
+        } else {
+            fragmentTransaction.add(frameId, fragment, simpleName);
+            Log.e(LOG_TAG, simpleName+" added");
+        }
+        fragmentTransaction.commit();
+    }
+
 
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
@@ -376,34 +425,55 @@ public class MainActivity extends AppCompatActivity {
         if (layout.isDrawerOpen(GravityCompat.START)) {
             layout.closeDrawer(GravityCompat.START);
         } else if (getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
-            replaceFragments(TabFragment.class);
+            placeFragment(TabFragment.class, R.id.mainFrame);
         } else {
             super.onBackPressed();
         }
     }
-
-
-    public void replaceFragments(Class fragmentClass) {
-        Fragment fragment = null;
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detachFragments(fragmentManager, fragmentTransaction);
-
-        if (fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()) != null) {
-            fragmentTransaction.attach(fragmentManager.findFragmentByTag(fragmentClass.getSimpleName()));
-        } else {
-            fragmentTransaction.add(R.id.mainFrame, fragment, fragmentClass.getSimpleName());
-        }
-         
-        fragmentTransaction.commit();
-
+    private void requestStoragePermission() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permission needed")
+                .setMessage(R.string.permission_info)
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+                createBrowser();
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void createBrowser(){
+        browser = new MediaBrowserCompat(
+                this,
+                new ComponentName(this, MusicService.class),
+                connectionCallback,
+                null
+        );
+        if (!browser.isConnected()) {
+            Log.e(LOG_TAG, "Connect browser");
+            browser.connect();
+        }
+    }
+
 
     public MediaMetadataCompat getMetadata() {
         return mediaMetadata;

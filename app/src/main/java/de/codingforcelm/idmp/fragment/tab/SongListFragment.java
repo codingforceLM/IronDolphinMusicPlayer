@@ -17,11 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.player.service.MusicService;
 
 public class SongListFragment extends Fragment {
     private static final String LOG_TAG = "SongListFragment";
@@ -54,7 +56,7 @@ public class SongListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new SongCardAdapter(songList,this.getContext());
+        adapter = new SongCardAdapter(songList, this.getContext(), MusicService.CONTEXT_TYPE_SONGLIST, MainActivity.CONTEXT_SONGLIST);
         adapter.setOnLongItemClickListener((v, position) -> {
             currItemPos = position;
             v.showContextMenu();

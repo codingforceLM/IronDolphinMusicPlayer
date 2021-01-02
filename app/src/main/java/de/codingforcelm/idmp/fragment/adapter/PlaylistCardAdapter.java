@@ -18,6 +18,7 @@ import java.util.List;
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
+
 import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
 import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
@@ -81,7 +82,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         holder.itemView.setOnClickListener(v -> {
             Context context = application.getApplicationContext();
             if (context instanceof MainActivity) {
-                ((MainActivity)context).replaceFragments(PlaylistFragment.class);
+                ((MainActivity)context).placeFragment(PlaylistFragment.class, R.id.mainFrame);
             }
         });
     }
