@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,13 +23,16 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.music.Song;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 public class PlaylistListFragment extends Fragment {
     private static final String LOG_TAG = "PlaylistListFragment";
+
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private PlaylistCardAdapter adapter;
+    private PlaylistViewModel playlistViewModel;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
 
@@ -54,10 +58,11 @@ public class PlaylistListFragment extends Fragment {
         ArrayList<Playlist> dummieList = new ArrayList<>();
         ArrayList<Song> dummieListSong = new ArrayList<>();
 
-        dummieList.add(new Playlist("list1",dummieListSong,null));
-        dummieList.add(new Playlist("list2",dummieListSong,null));
-        dummieList.add(new Playlist("list3",dummieListSong,null));
-        adapter = new PlaylistCardAdapter(dummieList,this.getContext());
+        adapter = new PlaylistCardAdapter(getActivity().getApplication());
+        playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
+        playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
+            adapter.setData(playlistWithEntries);
+        });
         adapter.setOnLongItemClickListener((v, position) -> {
             currItemPos = position;
             v.showContextMenu();

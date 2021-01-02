@@ -7,12 +7,20 @@ import android.view.ViewGroup;
 
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
+import de.codingforcelm.idmp.structure.playlist.Playlist;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 
 public class PlaylistFragment extends Fragment {
+
+    private PlaylistCardAdapter adapter;
+    private PlaylistViewModel playlistViewModel;
 
     public PlaylistFragment() {
         //needed default constructor
@@ -22,7 +30,11 @@ public class PlaylistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        adapter = new PlaylistCardAdapter(getActivity().getApplication());
+        playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
+        playlistViewModel.getPlaylists().observe(this, playlistWithEntries -> {
+            adapter.setData(playlistWithEntries);
+        });
     }
 
     @Override

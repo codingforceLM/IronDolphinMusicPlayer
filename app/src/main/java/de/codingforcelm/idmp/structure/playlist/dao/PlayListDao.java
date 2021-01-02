@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.structure.playlist.Playlist;
@@ -26,5 +27,5 @@ public interface PlayListDao {
     LiveData<List<PlaylistWithEntries>> getAll();
 
     @Query("SELECT * FROM playlist WHERE listId = :id")
-    LiveData<Playlist> getPlaylist(long id);
+    LiveData<PlaylistWithEntries> getPlaylist(long id);
 }

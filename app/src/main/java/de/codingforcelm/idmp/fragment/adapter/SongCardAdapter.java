@@ -10,14 +10,15 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
-    private ArrayList<PhysicalSong> songList;
-    private ArrayList<PhysicalSong> songListCopy;
+    private List<PhysicalSong> songList;
+    private List<PhysicalSong> songListCopy;
     private Context context;
     public static final String LOG_TAG = "CardsAdapter";
     private onLongItemClickListener longClickListener;
@@ -85,6 +86,8 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
     public void setOnLongItemClickListener(onLongItemClickListener onLongItemClickListener) {
         this.longClickListener = onLongItemClickListener;
     }
+
+
 
     public interface onLongItemClickListener {
         void ItemLongClicked(View v, int position);
