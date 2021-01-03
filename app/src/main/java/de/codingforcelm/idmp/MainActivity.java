@@ -270,13 +270,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void songSelect(long songId, String playContext, String playContextType) {
         Bundle b = new Bundle();
-        b.putString(MusicService.KEY_CONTEXT, playContext);
-        b.putString(MusicService.KEY_CONTEXT_TYPE, playContextType);
 
         if(playContextType.equals(MusicService.CONTEXT_TYPE_ALBUM)) {
             //Context for album must be the album id
             b.putLong(MusicService.KEY_ALBUM_ID, Long.parseLong(playContext));
+            b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_ALBUM + playContext);
+        } else if(playContextType.equals(MusicService.CONTEXT_TYPE_PLAYLIST)) {
+            // TODO Add String with mediaId s
+            b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playContext);
+        } else {
+            b.putString(MusicService.KEY_CONTEXT, playContext);
         }
+
+        b.putString(MusicService.KEY_CONTEXT_TYPE, playContextType);
 
         transportControls.playFromMediaId(String.valueOf(songId), b);
         Log.e(LOG_TAG, "");

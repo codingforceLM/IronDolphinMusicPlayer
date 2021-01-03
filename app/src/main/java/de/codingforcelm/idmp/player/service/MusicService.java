@@ -77,6 +77,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String CONTEXT_TYPE_ALBUM = "de.codingforcelm.idmp.player.service.TYPE_ALBUM";
     public static final String CONTEXT_TYPE_PLAYLIST = "de.codingforcelm.idmp.player.service.TYPE_PLAYLIST";
 
+    public static final String CONTEXT_PREFIX_ALBUM = "de.codingforcelm.idmp.player.service.PREFIX_ALBUM";
+    public static final String CONTEXT_PREFIX_PLAYLIST = "de.codingforcelm.idmp.player.service.PREFIX_PLAYLIST";
+
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
     public static final String ACTION_MUSIC_PREV = "de.codingforcelm.idmp.player.service.MUSIC_PREV";
