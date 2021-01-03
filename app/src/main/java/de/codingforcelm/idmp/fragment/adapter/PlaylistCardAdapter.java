@@ -26,6 +26,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
     private List<PlaylistWithEntries> playlistList;
     private List<PlaylistWithEntries> playlistListCopy;
     private Application application;
+    private Context context;
     public static final String LOG_TAG = "PlaylistCardAdapter";
     private onLongItemClickListener longClickListener;
     private PlaylistRepository repository;
@@ -49,7 +50,8 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
     }
 
-    public PlaylistCardAdapter(Application application) {
+    public PlaylistCardAdapter(Application application, Context context) {
+        this.context = context;
         this.application = application;
         this.playlistList = new ArrayList<>();
         this.playlistListCopy = new ArrayList<>();
@@ -81,7 +83,6 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
         Log.e(LOG_TAG, "Set the click listener");
         holder.itemView.setOnClickListener(v -> {
-            Context context = application.getApplicationContext();
             if (context instanceof MainActivity) {
                 ((MainActivity)context).placeFragment(new PlaylistFragment((int) v.getTag(), playlistList.get(position).getPlaylist().getListId()), R.id.mainFrame);
             }

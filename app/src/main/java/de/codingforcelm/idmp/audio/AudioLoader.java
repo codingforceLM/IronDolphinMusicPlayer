@@ -49,7 +49,7 @@ public class AudioLoader {
     public PhysicalSong getSong(long songId) {
         ContentResolver contentResolver = context.getContentResolver();
 
-        Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0 and " + MediaStore.Audio.Media._ID + " = " + songId;
         Cursor cursor = contentResolver.query(uri, null, selection, null, null);
 

@@ -56,7 +56,7 @@ public class PlaylistListFragment extends Fragment {
 
         layoutManager = new LinearLayoutManager(view.getContext());
 
-        adapter = new PlaylistCardAdapter(getActivity().getApplication());
+        adapter = new PlaylistCardAdapter(getActivity().getApplication(), getActivity());
         playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
             adapter.setData(playlistWithEntries);

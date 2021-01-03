@@ -31,6 +31,7 @@ import android.widget.MediaController;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
@@ -44,6 +45,7 @@ import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 
@@ -592,16 +594,19 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             if(!context.equals(newContext)) {
                 switch(contextType) {
                     case CONTEXT_TYPE_SONGLIST:
+                        Log.e(LOG_TAG, "new context songlist");
                         songList = audioLoader.getSongs();
                         break;
                     case CONTEXT_TYPE_ALBUM:
+                        Log.e(LOG_TAG, "new context album");
                         if(!extras.containsKey(KEY_ALBUM_ID)) {
                             throw new IllegalStateException("missing album id");
                         }
                         songList = audioLoader.getSongsFromAlbum(extras.getLong(KEY_ALBUM_ID));
                         break;
                     case CONTEXT_TYPE_PLAYLIST:
-                        // TODO implement once the playlists are ready
+                        Log.e(LOG_TAG, "new context playlist");
+                        // TODO implement loading of songs from playlist
                         break;
                 }
                 context = newContext;
