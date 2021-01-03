@@ -56,7 +56,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         this.playlistList = new ArrayList<>();
         this.playlistListCopy = new ArrayList<>();
         this.playlistListCopy.addAll(playlistList);
-        this.repository = new PlaylistRepository(application);
+        this.repository = PlaylistRepository.getInstance(application);
     }
 
     @Override

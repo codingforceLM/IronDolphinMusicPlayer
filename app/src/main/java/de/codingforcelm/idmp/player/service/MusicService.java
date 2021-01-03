@@ -16,7 +16,9 @@ import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
@@ -45,6 +47,9 @@ import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
+import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
+import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
 import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
@@ -72,6 +77,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String KEY_CONTEXT = "de.codingforcelm.idmp.player.service.CONTEXT";
     public static final String KEY_CONTEXT_TYPE = "de.codingforcelm.idmp.player.service.CONTEXT_TYPE";
     public static final String KEY_ALBUM_ID = "de.codingforcelm.idmp.player.service.ALBUM_ID";
+    public static final String KEY_PLAYLIST_ID = "de.codingforcelm.idmp.player.service.PLAYLIST_ID";
 
     public static final String CONTEXT_TYPE_SONGLIST = "de.codingforcelm.idmp.player.service.TYPE_SONGLIST";
     public static final String CONTEXT_TYPE_ALBUM = "de.codingforcelm.idmp.player.service.TYPE_ALBUM";
@@ -609,7 +615,27 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         break;
                     case CONTEXT_TYPE_PLAYLIST:
                         Log.e(LOG_TAG, "new context playlist");
-                        // TODO implement loading of songs from playlist
+                        if(!extras.containsKey(KEY_PLAYLIST_ID)) {
+                            throw new IllegalStateException("missing album id");
+                        }
+                        long listId = extras.getLong(KEY_PLAYLIST_ID);
+                        PlaylistRepository repo = PlaylistRepository.getInstance(getApplication());
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                repo.getPlaylist(listId).observeForever(playlistWithEntries -> {
+                                    List<PhysicalSong> songs = new ArrayList<>();
+                                    for(PlaylistEntry entry : playlistWithEntries.getEntries()) {
+                                        PhysicalSong s = audioLoader.getSong(entry.getMediaId());
+                                        if(s != null) {
+                                            songs.add(s);
+                                        }
+                                    }
+                                    songList = songs;
+                                    setSongPositionFromMediaId(Long.valueOf(mediaId));
+                                });
+                            }
+                        });
                         break;
                 }
                 context = newContext;

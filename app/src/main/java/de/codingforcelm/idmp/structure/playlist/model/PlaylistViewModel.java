@@ -19,7 +19,7 @@ public class PlaylistViewModel extends AndroidViewModel {
 
     public PlaylistViewModel(@NonNull Application application) {
         super(application);
-        repository = new PlaylistRepository(application);
+        repository = PlaylistRepository.getInstance(application);
         playlists = repository.getPlaylists();
     }
 
