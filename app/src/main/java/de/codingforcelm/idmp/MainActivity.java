@@ -45,6 +45,7 @@ import java.util.List;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
@@ -386,6 +387,9 @@ public class MainActivity extends AppCompatActivity {
 
         // detach fragments
         String simpleName = fragment.getClass().getSimpleName();
+        if(fragment instanceof NameAwareFragment) {
+            simpleName = ((NameAwareFragment)fragment).getFragmentname();
+        }
         List<Fragment> fragments = fragmentManager.getFragments();
         if (fragments != null) {
             for (Fragment f : fragments) {
@@ -397,7 +401,8 @@ public class MainActivity extends AppCompatActivity {
 
         // add/attach fragments
         if (fragmentManager.findFragmentByTag(simpleName) != null) {
-            fragmentTransaction.attach(fragmentManager.findFragmentByTag(simpleName));
+            Fragment f = fragmentManager.findFragmentByTag(simpleName);
+            fragmentTransaction.attach(f);
             Log.e(LOG_TAG, simpleName+" attached");
         } else {
             fragmentTransaction.add(frameId, fragment, simpleName);

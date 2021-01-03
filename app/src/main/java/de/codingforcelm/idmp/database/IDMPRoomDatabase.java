@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.database;
 
 import android.content.Context;
+import android.provider.MediaStore;
 import android.support.v4.app.INotificationSideChannel;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
 import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;

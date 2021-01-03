@@ -13,7 +13,7 @@ import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
 
-public class ControlsFragment  extends Fragment {
+public class ControlsFragment  extends NameAwareFragment {
     private ImageView playPauseButton;
     private ImageView nextButton;
     private ImageView prevButton;
@@ -27,6 +27,7 @@ public class ControlsFragment  extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        setFragmentname(this.getClass().getSimpleName());
 
         playPauseButton = view.findViewById(R.id.tp_playPauseButton);
         playPauseButton.setOnClickListener(new ControlsFragment.PlayPauseOnClickListener());

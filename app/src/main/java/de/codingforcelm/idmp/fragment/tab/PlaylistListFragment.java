@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.music.Song;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
-public class PlaylistListFragment extends Fragment {
+public class PlaylistListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "PlaylistListFragment";
 
     private ArrayList<PhysicalAlbum> albumList;
@@ -48,6 +49,8 @@ public class PlaylistListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        setFragmentname(this.getClass().getSimpleName());
+        
         albumList = new AudioLoader(this.getContext()).getAlbums();
         searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);

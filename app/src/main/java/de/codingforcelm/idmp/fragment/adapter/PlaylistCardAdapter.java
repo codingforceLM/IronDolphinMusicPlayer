@@ -83,8 +83,10 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
         Log.e(LOG_TAG, "Set the click listener");
         holder.itemView.setOnClickListener(v -> {
+            int itemPos = (int) v.getTag();
             if (context instanceof MainActivity) {
-                ((MainActivity)context).placeFragment(new PlaylistFragment((int) v.getTag(), playlistList.get((int)v.getTag()).getPlaylist().getListId()), R.id.mainFrame);
+                PlaylistFragment fragment = new PlaylistFragment((int) v.getTag(), playlistList.get(itemPos).getPlaylist().getListId());
+                ((MainActivity)context).placeFragment(fragment, R.id.mainFrame);
             }
         });
     }

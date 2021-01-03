@@ -12,7 +12,7 @@ import android.widget.Toast;
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends NameAwareFragment {
 
     public HomeFragment() {
         //needed default constructor
@@ -30,6 +30,11 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        setFragmentname(this.getClass().getSimpleName());
     }
 
 

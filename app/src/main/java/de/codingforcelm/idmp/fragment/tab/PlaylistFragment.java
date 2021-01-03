@@ -20,6 +20,7 @@ import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
 import de.codingforcelm.idmp.player.service.MusicService;
@@ -29,7 +30,7 @@ import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
 import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 
-public class PlaylistFragment extends Fragment {
+public class PlaylistFragment extends NameAwareFragment {
 
     private SongCardAdapter adapter;
     private PlaylistViewModel playlistViewModel;
@@ -65,11 +66,17 @@ public class PlaylistFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        setFragmentname(this.getClass().getSimpleName() + (position < 0 ? "" : "_"+position));
+
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
             getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 
         } else {
-            getChildFragmentManager().beginTransaction().add(R.id.pl_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName()).commit();
+            getChildFragmentManager().beginTransaction().add(
+                    R.id.pl_controls_frame,
+                    new ControlsFragment(),
+                    ControlsFragment.class.getSimpleName()
+            ).commit();
         }
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import de.codingforcelm.idmp.R;
 
-public class StatisticsFragment extends Fragment {
+public class StatisticsFragment extends NameAwareFragment {
 
     public StatisticsFragment() {
         //needed default constructor
@@ -27,5 +27,10 @@ public class StatisticsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_statistics, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        setFragmentname(this.getClass().getSimpleName());
     }
 }
