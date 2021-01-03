@@ -45,6 +45,7 @@ import java.util.List;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
@@ -270,13 +271,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void songSelect(long songId, String playContext, String playContextType) {
         Bundle b = new Bundle();
-        b.putString(MusicService.KEY_CONTEXT, playContext);
-        b.putString(MusicService.KEY_CONTEXT_TYPE, playContextType);
 
         if(playContextType.equals(MusicService.CONTEXT_TYPE_ALBUM)) {
             //Context for album must be the album id
             b.putLong(MusicService.KEY_ALBUM_ID, Long.parseLong(playContext));
+            b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_ALBUM + playContext);
+        } else if(playContextType.equals(MusicService.CONTEXT_TYPE_PLAYLIST)) {
+            b.putLong(MusicService.KEY_PLAYLIST_ID, Long.parseLong(playContext));
+            b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playContext);
+        } else {
+            b.putString(MusicService.KEY_CONTEXT, playContext);
         }
+
+        b.putString(MusicService.KEY_CONTEXT_TYPE, playContextType);
 
         transportControls.playFromMediaId(String.valueOf(songId), b);
         Log.e(LOG_TAG, "");
@@ -380,6 +387,9 @@ public class MainActivity extends AppCompatActivity {
 
         // detach fragments
         String simpleName = fragment.getClass().getSimpleName();
+        if(fragment instanceof NameAwareFragment) {
+            simpleName = ((NameAwareFragment)fragment).getFragmentname();
+        }
         List<Fragment> fragments = fragmentManager.getFragments();
         if (fragments != null) {
             for (Fragment f : fragments) {
@@ -391,7 +401,8 @@ public class MainActivity extends AppCompatActivity {
 
         // add/attach fragments
         if (fragmentManager.findFragmentByTag(simpleName) != null) {
-            fragmentTransaction.attach(fragmentManager.findFragmentByTag(simpleName));
+            Fragment f = fragmentManager.findFragmentByTag(simpleName);
+            fragmentTransaction.attach(f);
             Log.e(LOG_TAG, simpleName+" attached");
         } else {
             fragmentTransaction.add(frameId, fragment, simpleName);

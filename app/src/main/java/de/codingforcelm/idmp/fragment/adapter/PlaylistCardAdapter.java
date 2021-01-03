@@ -1,6 +1,8 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
+import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,19 +12,24 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
-import de.codingforcelm.idmp.fragment.tab.TabFragment;
-import de.codingforcelm.idmp.structure.Playlist;
+
+import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
+import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
 
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
-    private ArrayList<Playlist> playlistList;
-    private ArrayList<Playlist> playlistListCopy;
+    private List<PlaylistWithEntries> playlistList;
+    private List<PlaylistWithEntries> playlistListCopy;
+    private Application application;
     private Context context;
     public static final String LOG_TAG = "PlaylistCardAdapter";
     private onLongItemClickListener longClickListener;
+    private PlaylistRepository repository;
 
     public static class PlaylistCardViewHolder extends RecyclerView.ViewHolder {
         public ImageView item_image;
@@ -36,18 +43,20 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             item_artist = itemView.findViewById(R.id.item_subtitle);
         }
 
-        private void bind(Playlist playlist) {
-            item_title.setText(playlist.getName());
-            item_artist.setText(playlist.size()+" Songs");
+        private void bind(PlaylistWithEntries playlist) {
+            item_title.setText(playlist.getPlaylist().getName());
+            item_artist.setText(playlist.getEntries().size()+" Songs");
         }
 
     }
 
-    public PlaylistCardAdapter(ArrayList<Playlist> playlistList, Context context) {
-        this.playlistList = playlistList;
+    public PlaylistCardAdapter(Application application, Context context) {
         this.context = context;
+        this.application = application;
+        this.playlistList = new ArrayList<>();
         this.playlistListCopy = new ArrayList<>();
         this.playlistListCopy.addAll(playlistList);
+        this.repository = PlaylistRepository.getInstance(application);
     }
 
     @Override
@@ -59,8 +68,10 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
     @Override
     public void onBindViewHolder(PlaylistCardViewHolder holder, int position) {
-        Playlist currentItem = playlistList.get(position);
+        Log.e(LOG_TAG, "-- onBindViewHolder --");
+        PlaylistWithEntries currentItem = playlistList.get(position);
         holder.bind(currentItem);
+        holder.itemView.setTag(position);
 
         holder.itemView.setTag(position);
         holder.itemView.setOnLongClickListener(v -> {
@@ -70,9 +81,12 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             return true;
         });
 
+        Log.e(LOG_TAG, "Set the click listener");
         holder.itemView.setOnClickListener(v -> {
+            int itemPos = (int) v.getTag();
             if (context instanceof MainActivity) {
-                ((MainActivity)context).placeFragment(PlaylistFragment.class, R.id.mainFrame);
+                PlaylistFragment fragment = new PlaylistFragment((int) v.getTag(), playlistList.get(itemPos).getPlaylist().getListId());
+                ((MainActivity)context).placeFragment(fragment, R.id.mainFrame);
             }
         });
     }
@@ -90,14 +104,27 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         void ItemLongClicked(View v, int position);
     }
 
+    public void setData(List<PlaylistWithEntries> data) {
+        if(playlistList != null) {
+            playlistList.clear();
+            playlistList.addAll(data);
+        } else {
+            playlistList = data;
+        }
+        playlistListCopy = new ArrayList<>();
+        playlistListCopy.addAll(playlistList);
+
+        notifyDataSetChanged();
+    }
+
     public void filter(String text) {
         playlistList.clear();
         if(text.isEmpty()){
             playlistList.addAll(playlistListCopy);
         } else{
             text = text.toLowerCase();
-            for(Playlist playlist: playlistListCopy){
-                if(playlist.getName().toLowerCase().contains(text)){
+            for(PlaylistWithEntries playlist: playlistListCopy){
+                if(playlist.getPlaylist().getName().toLowerCase().contains(text)){
                     playlistList.add(playlist);
                 }
             }

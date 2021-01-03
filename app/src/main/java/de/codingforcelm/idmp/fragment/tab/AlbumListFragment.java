@@ -18,12 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 
-public class AlbumListFragment extends Fragment {
+public class AlbumListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "AlbumListFragment";
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
@@ -33,8 +34,9 @@ public class AlbumListFragment extends Fragment {
     private int currItemPos;
 
   public AlbumListFragment() {
-        //needed default constructor
-    }
+      //needed default constructor
+      setFragmentname(this.getClass().getSimpleName());
+  }
 
 
     @Override
@@ -44,6 +46,7 @@ public class AlbumListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         albumList = new AudioLoader(this.getContext()).getAlbums();
         searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);

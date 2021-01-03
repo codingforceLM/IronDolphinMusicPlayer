@@ -3,7 +3,7 @@ package de.codingforcelm.idmp.player;
 import java.util.List;
 
 import de.codingforcelm.idmp.music.Song;
-import de.codingforcelm.idmp.structure.Playlist;
+import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.SongQueue;
 
 public class Player {

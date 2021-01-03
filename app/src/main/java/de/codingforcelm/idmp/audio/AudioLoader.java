@@ -46,6 +46,30 @@ public class AudioLoader {
         return songs;
     }
 
+    public PhysicalSong getSong(long songId) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0 and " + MediaStore.Audio.Media._ID + " = " + songId;
+        Cursor cursor = contentResolver.query(uri, null, selection, null, null);
+
+        PhysicalSong song = null;
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                song = new PhysicalSong(id, data, title, album, artist);
+            }
+        }
+        cursor.close();
+
+        return song;
+    }
+
     public ArrayList<PhysicalAlbum> getAlbums() {
         ArrayList<PhysicalAlbum> songs = new ArrayList<>();
 

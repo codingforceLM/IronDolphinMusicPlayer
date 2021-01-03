@@ -21,7 +21,7 @@ import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
-public class BigPlayerFragment extends Fragment {
+public class BigPlayerFragment extends NameAwareFragment {
 
     private final String LOG_TAG = BigPlayerFragment.class.getSimpleName();
 
@@ -43,6 +43,7 @@ public class BigPlayerFragment extends Fragment {
 
     public BigPlayerFragment() {
         //needed default constructor
+        setFragmentname(this.getClass().getSimpleName());
     }
 
 
@@ -61,6 +62,7 @@ public class BigPlayerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         bp_repeatButton = view.findViewById(R.id.bp_repeatButton);
         bp_repeatButton.setOnClickListener(new BigPlayerFragment.RepeatOnClickListener());
         bp_prevButton = view.findViewById(R.id.bp_prevButton);

@@ -10,14 +10,15 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
-    private ArrayList<PhysicalSong> songList;
-    private ArrayList<PhysicalSong> songListCopy;
+    private List<PhysicalSong> songList;
+    private List<PhysicalSong> songListCopy;
     private Context context;
     public static final String LOG_TAG = "CardsAdapter";
     private onLongItemClickListener longClickListener;
@@ -38,9 +39,16 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         }
 
         private void bind(PhysicalSong song) {
-            item_title.setText(song.getTitle());
-            item_artist.setText(song.getArtist());
-            currentSongID = song.getId();
+            if(song != null) {
+                item_title.setText(song.getTitle());
+                item_artist.setText(song.getArtist());
+                currentSongID = song.getId();
+            } else {
+                item_title.setText("---");
+                item_artist.setText("---");
+                currentSongID = -1;
+            }
+
         }
         
     }
@@ -88,6 +96,19 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
 
     public void setOnLongItemClickListener(onLongItemClickListener onLongItemClickListener) {
         this.longClickListener = onLongItemClickListener;
+    }
+
+    public void setData(List<PhysicalSong> data) {
+        if(songList != null) {
+            songList.clear();
+            songList.addAll(data);
+        } else {
+            songList = data;
+        }
+        songListCopy = new ArrayList<>();
+        songListCopy.addAll(songList);
+
+        notifyDataSetChanged();
     }
 
     public interface onLongItemClickListener {

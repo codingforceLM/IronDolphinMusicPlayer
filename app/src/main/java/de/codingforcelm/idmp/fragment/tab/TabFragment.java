@@ -18,9 +18,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.TabFragmentAdapter;
 
-public class TabFragment extends Fragment {
+public class TabFragment extends NameAwareFragment {
 
     private String[] tabTexts = new String[]{"Songs", "Albums", "Playlists"};
 
@@ -32,7 +33,7 @@ public class TabFragment extends Fragment {
     private TabLayoutMediator mediator;
 
     public TabFragment() {
-
+        setFragmentname(this.getClass().getSimpleName());
     }
 
     @Override
@@ -42,6 +43,7 @@ public class TabFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
