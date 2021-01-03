@@ -605,6 +605,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                     case CONTEXT_TYPE_SONGLIST:
                         Log.e(LOG_TAG, "new context songlist");
                         songList = audioLoader.getSongs();
+                        setSongPositionFromMediaId(Long.valueOf(mediaId));
                         break;
                     case CONTEXT_TYPE_ALBUM:
                         Log.e(LOG_TAG, "new context album");
@@ -612,6 +613,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             throw new IllegalStateException("missing album id");
                         }
                         songList = audioLoader.getSongsFromAlbum(extras.getLong(KEY_ALBUM_ID));
+                        setSongPositionFromMediaId(Long.valueOf(mediaId));
                         break;
                     case CONTEXT_TYPE_PLAYLIST:
                         Log.e(LOG_TAG, "new context playlist");
@@ -647,8 +649,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             } catch(NumberFormatException nfe) {
                 Log.e(LOG_TAG, "Couldnt parse MediaId");
             }
-
-            setSongPositionFromMediaId(Long.valueOf(mediaId));
 
             MusicService.this.playSong(trackUri, true);
         }
