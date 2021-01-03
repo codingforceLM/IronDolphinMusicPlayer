@@ -635,6 +635,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                                     }
                                     songList = songs;
                                     setSongPositionFromMediaId(Long.valueOf(mediaId));
+                                    updateSession();
                                 });
                             }
                         });
@@ -649,7 +650,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             } catch(NumberFormatException nfe) {
                 Log.e(LOG_TAG, "Couldnt parse MediaId");
             }
-
+            setSongPositionFromMediaId(Long.valueOf(mediaId));
             MusicService.this.playSong(trackUri, true);
         }
 
