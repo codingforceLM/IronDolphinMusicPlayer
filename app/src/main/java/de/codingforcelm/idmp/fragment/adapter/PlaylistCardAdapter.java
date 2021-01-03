@@ -2,6 +2,7 @@ package de.codingforcelm.idmp.fragment.adapter;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
     @Override
     public void onBindViewHolder(PlaylistCardViewHolder holder, int position) {
+        Log.e(LOG_TAG, "-- onBindViewHolder --");
         PlaylistWithEntries currentItem = playlistList.get(position);
         holder.bind(currentItem);
         holder.itemView.setTag(position);
@@ -77,10 +79,11 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             return true;
         });
 
+        Log.e(LOG_TAG, "Set the click listener");
         holder.itemView.setOnClickListener(v -> {
             Context context = application.getApplicationContext();
             if (context instanceof MainActivity) {
-                ((MainActivity)context).placeFragment(PlaylistFragment.class, R.id.mainFrame);
+                ((MainActivity)context).placeFragment(new PlaylistFragment((int) v.getTag(), playlistList.get(position).getPlaylist().getListId()), R.id.mainFrame);
             }
         });
     }

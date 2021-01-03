@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +33,12 @@ public class PlaylistFragment extends Fragment {
 
     private SongCardAdapter adapter;
     private PlaylistViewModel playlistViewModel;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
     private int position;
     private int listId;
     private AudioLoader loader;
+
 
     public PlaylistFragment(int position, int listId) {
         this.position = position;
@@ -49,20 +54,7 @@ public class PlaylistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loader = new AudioLoader(getContext());
-        adapter = new SongCardAdapter(new ArrayList<>(), getContext(), MusicService.CONTEXT_TYPE_PLAYLIST, String.valueOf(listId));
-        playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
-        playlistViewModel.getPlaylists().observe(this, playlistWithEntries -> {
-            if(position < 0) {
-                throw new IllegalStateException("missing position in PlaylistFragment");
-            }
-            List<PhysicalSong> data = new ArrayList<>();
-            for(PlaylistEntry entry : playlistWithEntries.get(position).getEntries()) {
-                PhysicalSong s = loader.getSong(entry.getMediaId());
-                data.add(s);
-            }
-            adapter.setData(data);
-        });
+
     }
 
     @Override
@@ -79,5 +71,29 @@ public class PlaylistFragment extends Fragment {
         } else {
             getChildFragmentManager().beginTransaction().add(R.id.pl_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName()).commit();
         }
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        registerForContextMenu(recyclerView);
+
+        layoutManager = new LinearLayoutManager(view.getContext());
+
+        loader = new AudioLoader(getContext());
+        adapter = new SongCardAdapter(new ArrayList<>(), getContext(), MusicService.CONTEXT_TYPE_PLAYLIST, String.valueOf(listId));
+        playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
+        playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
+            if(position < 0) {
+                throw new IllegalStateException("missing position in PlaylistFragment");
+            }
+            List<PhysicalSong> data = new ArrayList<>();
+            for(PlaylistEntry entry : playlistWithEntries.get(position).getEntries()) {
+                PhysicalSong s = loader.getSong(entry.getMediaId());
+                data.add(s);
+            }
+            adapter.setData(data);
+        });
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
     }
 }

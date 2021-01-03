@@ -65,8 +65,8 @@ public class PlaylistListFragment extends Fragment {
             currItemPos = position;
             v.showContextMenu();
         });
-        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
