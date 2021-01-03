@@ -13,6 +13,7 @@ public class TestFragment extends NameAwareFragment {
 
     public TestFragment() {
         //needed default constructor
+        setFragmentname(this.getClass().getSimpleName());
     }
 
 
@@ -31,6 +32,6 @@ public class TestFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName());
+
     }
 }

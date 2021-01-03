@@ -37,10 +37,13 @@ public class SongListFragment extends NameAwareFragment {
     private int currItemPos;
 
     public SongListFragment(ArrayList<PhysicalSong> songList) {
+        setFragmentname(this.getClass().getSimpleName());
         this.songList=songList;
     }
+
     public SongListFragment() {
         //needed default constructor
+        setFragmentname(this.getClass().getSimpleName());
     }
 
 
@@ -51,7 +54,6 @@ public class SongListFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName());
 
         songList = new AudioLoader(this.getContext()).getSongs();
         searchView =  view.findViewById(R.id.searchView);

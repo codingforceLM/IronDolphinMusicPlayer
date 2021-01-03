@@ -34,8 +34,9 @@ public class AlbumListFragment extends NameAwareFragment {
     private int currItemPos;
 
   public AlbumListFragment() {
-        //needed default constructor
-    }
+      //needed default constructor
+      setFragmentname(this.getClass().getSimpleName());
+  }
 
 
     @Override
@@ -45,7 +46,6 @@ public class AlbumListFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName());
 
         albumList = new AudioLoader(this.getContext()).getAlbums();
         searchView =  view.findViewById(R.id.searchView);

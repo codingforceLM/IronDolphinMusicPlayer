@@ -19,6 +19,10 @@ public class ControlsFragment  extends NameAwareFragment {
     private ImageView prevButton;
     private ImageView image;
 
+    public ControlsFragment() {
+        setFragmentname(this.getClass().getSimpleName());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_controls, parent, false);
@@ -27,7 +31,6 @@ public class ControlsFragment  extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName());
 
         playPauseButton = view.findViewById(R.id.tp_playPauseButton);
         playPauseButton.setOnClickListener(new ControlsFragment.PlayPauseOnClickListener());

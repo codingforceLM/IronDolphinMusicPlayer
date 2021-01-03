@@ -16,6 +16,7 @@ public class HomeFragment extends NameAwareFragment {
 
     public HomeFragment() {
         //needed default constructor
+        setFragmentname(this.getClass().getSimpleName());
     }
 
 
@@ -34,7 +35,7 @@ public class HomeFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName());
+
     }
 
 

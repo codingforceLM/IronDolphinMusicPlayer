@@ -33,7 +33,7 @@ public class TabFragment extends NameAwareFragment {
     private TabLayoutMediator mediator;
 
     public TabFragment() {
-
+        setFragmentname(this.getClass().getSimpleName());
     }
 
     @Override
@@ -43,7 +43,6 @@ public class TabFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName());
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

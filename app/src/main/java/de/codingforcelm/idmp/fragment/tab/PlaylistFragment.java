@@ -44,6 +44,12 @@ public class PlaylistFragment extends NameAwareFragment {
     public PlaylistFragment(int position, int listId) {
         this.position = position;
         this.listId = listId;
+
+        String name = this.getClass().getSimpleName();
+        if(position >= 0) {
+            name = name+"_"+position;
+        }
+        setFragmentname(name);
     }
 
     public PlaylistFragment() {
@@ -55,7 +61,6 @@ public class PlaylistFragment extends NameAwareFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -66,8 +71,6 @@ public class PlaylistFragment extends NameAwareFragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName() + (position < 0 ? "" : "_"+position));
-
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
             getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 

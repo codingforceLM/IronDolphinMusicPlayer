@@ -43,6 +43,7 @@ public class BigPlayerFragment extends NameAwareFragment {
 
     public BigPlayerFragment() {
         //needed default constructor
+        setFragmentname(this.getClass().getSimpleName());
     }
 
 
@@ -61,7 +62,6 @@ public class BigPlayerFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setFragmentname(this.getClass().getSimpleName());
 
         bp_repeatButton = view.findViewById(R.id.bp_repeatButton);
         bp_repeatButton.setOnClickListener(new BigPlayerFragment.RepeatOnClickListener());
