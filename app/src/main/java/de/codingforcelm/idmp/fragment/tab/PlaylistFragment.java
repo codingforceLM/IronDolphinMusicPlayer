@@ -5,6 +5,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,7 @@ public class PlaylistFragment extends NameAwareFragment {
     private PlaylistViewModel playlistViewModel;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
+    private SearchView searchView;
     private int position;
     private int listId;
     private AudioLoader loader;
@@ -81,6 +83,7 @@ public class PlaylistFragment extends NameAwareFragment {
                     ControlsFragment.class.getSimpleName()
             ).commit();
         }
+        searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
@@ -104,6 +107,18 @@ public class PlaylistFragment extends NameAwareFragment {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
     }
 }
