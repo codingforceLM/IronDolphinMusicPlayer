@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -65,8 +66,22 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
         holder.bind(selection);
         holder.itemView.setOnClickListener(v -> {
             selection.setSelected(!selection.isSelected());
-            holder.itemView.setBackgroundColor(selection.isSelected() ? Color.GRAY : Color.WHITE);
+            int color = -1;
+            if(selection.isSelected()) {
+                color = Color.GRAY;
+            } else {
+                color = Color.WHITE;
+            }
+            v.setBackgroundColor(color);
         });
+        
+        int color = -1;
+        if(selection.isSelected()) {
+            color = Color.GRAY;
+        } else {
+            color = Color.WHITE;
+        }
+        holder.itemView.setBackgroundColor(color);
     }
 
     @Override
