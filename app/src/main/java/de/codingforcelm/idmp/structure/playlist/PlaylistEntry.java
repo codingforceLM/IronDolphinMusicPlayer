@@ -13,8 +13,8 @@ public class PlaylistEntry {
     private long mediaId;
     private int playlistId;
 
-    public PlaylistEntry(int entryId, long mediaId, int playlistId) {
-        this.entryId = entryId;
+    public PlaylistEntry(long mediaId, int playlistId) {
+        this.entryId = 0; // 0 tells framework to autogenerate id
         this.mediaId = mediaId;
         this.playlistId = playlistId;
     }

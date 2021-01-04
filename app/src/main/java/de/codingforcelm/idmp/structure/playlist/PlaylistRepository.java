@@ -48,7 +48,7 @@ public class PlaylistRepository {
         });
     }
 
-    public LiveData<PlaylistWithEntries> getPlaylist(long id) {
+    public LiveData<PlaylistWithEntries> getPlaylist(String id) {
         return playListDao.getPlaylist(id);
     }
 }

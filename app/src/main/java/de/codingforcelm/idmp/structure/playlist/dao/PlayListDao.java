@@ -27,5 +27,5 @@ public interface PlayListDao {
     LiveData<List<PlaylistWithEntries>> getAll();
 
     @Query("SELECT * FROM playlist WHERE listId = :id")
-    LiveData<PlaylistWithEntries> getPlaylist(long id);
+    LiveData<PlaylistWithEntries> getPlaylist(String id);
 }
