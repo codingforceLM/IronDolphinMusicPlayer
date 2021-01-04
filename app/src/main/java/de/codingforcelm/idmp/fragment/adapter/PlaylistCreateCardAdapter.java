@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.PhysicalSong;
@@ -89,7 +90,15 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
         return selectionList.size();
     }
 
-    public List<PlaylistCreateActivity.PlaylistSelection> getSelectionList() {
-        return selectionList;
+    public List<PlaylistCreateActivity.PlaylistSelection> getSelectedList() {
+        List<PlaylistCreateActivity.PlaylistSelection> selectedList = new ArrayList<>();
+
+        for(PlaylistCreateActivity.PlaylistSelection selection : selectedList) {
+            if(selection.isSelected()) {
+                selectedList.add(selection);
+            }
+        }
+
+        return selectedList;
     }
 }
