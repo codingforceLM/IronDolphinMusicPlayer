@@ -51,4 +51,13 @@ public class PlaylistRepository {
     public LiveData<PlaylistWithEntries> getPlaylist(String id) {
         return playListDao.getPlaylist(id);
     }
+
+    public void deletePlaylist(Playlist playlist) {
+        IDMPRoomDatabase.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                playListDao.delete(playlist);
+            }
+        });
+    }
 }

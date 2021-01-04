@@ -33,8 +33,14 @@ public class PlaylistViewModel extends AndroidViewModel {
         return repository.getPlaylist(id);
     }
 
+    public void deletePlaylist(Playlist playlist){
+        repository.deletePlaylist(playlist);
+    }
+
     public void insert(Playlist playlist) {
         repository.insert(playlist);
     }
 
+
 }
+

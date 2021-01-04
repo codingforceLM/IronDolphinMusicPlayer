@@ -1,5 +1,6 @@
 package de.codingforcelm.idmp.fragment.tab;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -7,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,18 +21,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.MenuIdentifier;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
-import de.codingforcelm.idmp.music.Song;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 public class PlaylistListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "PlaylistListFragment";
-
+    private static final int DELETE_PLAYLIST = 0;
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
@@ -37,6 +40,8 @@ public class PlaylistListFragment extends NameAwareFragment {
     private PlaylistViewModel playlistViewModel;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
+    private int playlistID;
+
 
     public PlaylistListFragment() {
         //needed default constructor
@@ -65,9 +70,11 @@ public class PlaylistListFragment extends NameAwareFragment {
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
             adapter.setData(playlistWithEntries);
         });
-        adapter.setOnLongItemClickListener((v, position) -> {
-            currItemPos = position;
+        adapter.setOnLongItemClickListener((v, position,listID) -> {
+            currItemPos=position;
+            playlistID = listID;
             v.showContextMenu();
+
         });
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -84,40 +91,48 @@ public class PlaylistListFragment extends NameAwareFragment {
                 return true;
             }
         });
-
-
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        menu.setHeaderTitle("Context Menu");
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.item_menu, menu);
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        contextMenu.add(MenuIdentifier.MENU_PLAYLISTLIST, DELETE_PLAYLIST, 0, "Delete Playlist");
+        super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
     }
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        if(item.getGroupId() != MenuIdentifier.MENU_PLAYLISTLIST){
+            return false;
+        }
+        Log.e(LOG_TAG, "--onContextItemSelected--");
 
-        Log.e(LOG_TAG, "clicked context item: "+item.toString());
         switch (item.getItemId()) {
-            case R.id.item_menu_1:
-                Log.e(LOG_TAG, "clicked context item: "+item.toString());
-                break;
-            case R.id.item_menu_2:
-                Log.e(LOG_TAG, "clicked context item: "+item.toString());
-                break;
-            case R.id.item_menu_3:
-                Log.e(LOG_TAG, "clicked context item: "+item.toString());
-                break;
-            case R.id.item_menu_3_1:
-                Log.e(LOG_TAG, "clicked context item: "+item.toString());
-                break;
-            case R.id.item_menu_3_2:
-                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+            case DELETE_PLAYLIST:
+                Log.e(LOG_TAG, "menu item: "+item.toString()+" selected");
+                 playlistViewModel.getPlaylist(playlistID).observe(getViewLifecycleOwner(), playlistWithEntries -> {
+                     if(playlistWithEntries != null){
+                         Playlist playlist = playlistWithEntries.getPlaylist();
+                         AlertDialog alertDialog = new AlertDialog.Builder(this.getContext()).create();
+                         alertDialog.setTitle("Warning deleting Playlist");
+                         alertDialog.setMessage("Are you sure you want to delete\n\""+playlist.getName()+"\"\nThis action can not be undone!");
+                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "YES",
+                                 (dialog, which) -> {
+                                     playlistViewModel.deletePlaylist(playlist);
+                                     Fragment fragment = getChildFragmentManager().findFragmentByTag(PlaylistFragment.class.getSimpleName()+"_"+currItemPos);
+                                     if(fragment != null){
+                                         getChildFragmentManager().beginTransaction().remove(fragment).commit();
+                                     }
+                                     dialog.dismiss();
+                                 });
+                         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                                 (dialog, which) -> dialog.dismiss());
+                         alertDialog.show();
+                     }
+                });
                 break;
             default:
-                Log.e(LOG_TAG, "clicked context item: "+item.toString());
+                Log.e(LOG_TAG, "unexpected menu item clicked"+item.toString());
                 break;
         }
         return true;

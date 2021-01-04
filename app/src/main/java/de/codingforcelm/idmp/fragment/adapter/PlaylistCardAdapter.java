@@ -19,6 +19,7 @@ import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 
+import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
 import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
 
@@ -76,7 +77,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         holder.itemView.setTag(position);
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
-                longClickListener.ItemLongClicked(v, position);
+                longClickListener.ItemLongClicked(v, position , currentItem.getPlaylist().getListId());
             }
             return true;
         });
@@ -101,7 +102,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
     }
 
     public interface onLongItemClickListener {
-        void ItemLongClicked(View v, int position);
+        void ItemLongClicked(View v, int position, int playlistID);
     }
 
     public void setData(List<PlaylistWithEntries> data) {
