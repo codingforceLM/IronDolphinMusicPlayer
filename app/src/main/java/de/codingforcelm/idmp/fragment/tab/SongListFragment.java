@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -12,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,11 +25,12 @@ import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.player.service.MusicService;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 public class SongListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "SongListFragment";
-    private static final String MENU_1_ITEM = "chagneThis";
+    private static final int ADD_TO_PLAYLIST = 0;
+    private static final int SUB_MENU = 1;
     private ListView songView;
     private ArrayList<PhysicalSong> songList;
     private RecyclerView recyclerView;
@@ -40,6 +39,7 @@ public class SongListFragment extends NameAwareFragment {
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
     private static final int MENU2 = 2;
+    private PlaylistViewModel playlistViewModel;
 
     public SongListFragment(ArrayList<PhysicalSong> songList) {
         setFragmentname(this.getClass().getSimpleName());
@@ -86,31 +86,31 @@ public class SongListFragment extends NameAwareFragment {
                 return true;
             }
         });
-
+        playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
     }
 
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-   //TODO
-    /*contextMenu.add(MENU2, 0, 0, "menu1");
-        contextMenu.add(MENU2, 1, 1, "menu1");
-        SubMenu menu3 = contextMenu.addSubMenu(MENU2, 2, 2, "menu1");
-        menu3.add(MENU2, 3, 0, "menu1");
-        menu3.add(MENU2, 4, 1, "menu1");*/
-        super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
+        SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.MENU_SONGLIST, ADD_TO_PLAYLIST, 0, "Add to Playlist");
+        playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
+            for(int i=0; i < playlistWithEntries.size(); i++){
+                subMenu.add(MenuIdentifier.MENU_SONGLIST, ADD_TO_PLAYLIST, i, playlistWithEntries.get(i).getPlaylist().getName());
+            }
+            super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
+        });
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Log.e(LOG_TAG, "--onContextItemSelected--PlaylistList "+item.toString());
+
         if(item.getGroupId() != MenuIdentifier.MENU_SONGLIST){
             return false;
         }
-
+        Log.e(LOG_TAG, "--onContextItemSelected--");
         switch (item.getItemId()) {
-            case 0:
-
+            case ADD_TO_PLAYLIST:
+                //TODO implement
                 break;
             default:
                 Log.e(LOG_TAG, "unexpected menu item clicked"+item.toString());

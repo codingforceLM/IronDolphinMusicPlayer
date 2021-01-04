@@ -104,7 +104,7 @@ public class PlaylistListFragment extends NameAwareFragment {
         if(item.getGroupId() != MenuIdentifier.MENU_PLAYLISTLIST){
             return false;
         }
-        Log.e(LOG_TAG, "--onContextItemSelected--PlaylistList "+item.toString());
+        Log.e(LOG_TAG, "--onContextItemSelected--");
 
         switch (item.getItemId()) {
             case DELETE_PLAYLIST:
