@@ -113,6 +113,8 @@ public class SongListFragment extends NameAwareFragment {
         switch (item.getItemId()) {
             case ADD_TO_PLAYLIST:
                 //TODO implement
+                Log.e(LOG_TAG, "adding to playlist mediaID: "+currSongId);
+
                 break;
             default:
                 Log.e(LOG_TAG, "unexpected menu item clicked"+item.toString());
