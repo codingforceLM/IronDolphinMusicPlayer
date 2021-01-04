@@ -620,7 +620,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         if(!extras.containsKey(KEY_PLAYLIST_ID)) {
                             throw new IllegalStateException("missing album id");
                         }
-                        long listId = extras.getLong(KEY_PLAYLIST_ID);
+                        String listId = extras.getString(KEY_PLAYLIST_ID);
                         PlaylistRepository repo = PlaylistRepository.getInstance(getApplication());
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override

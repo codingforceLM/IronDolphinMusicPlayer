@@ -93,7 +93,7 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
     public List<PlaylistCreateActivity.PlaylistSelection> getSelectedList() {
         List<PlaylistCreateActivity.PlaylistSelection> selectedList = new ArrayList<>();
 
-        for(PlaylistCreateActivity.PlaylistSelection selection : selectedList) {
+        for(PlaylistCreateActivity.PlaylistSelection selection : selectionList) {
             if(selection.isSelected()) {
                 selectedList.add(selection);
             }

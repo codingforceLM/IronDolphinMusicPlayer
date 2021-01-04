@@ -9,14 +9,22 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
+import de.codingforcelm.idmp.structure.playlist.Playlist;
+import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
+import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistEntryViewModel;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistWithEntriesViewModel;
 
 public class PlaylistCreateActivity extends AppCompatActivity {
 
@@ -82,7 +90,26 @@ public class PlaylistCreateActivity extends AppCompatActivity {
     }
 
     private void savePlaylist() {
-        // TODO implement database storage
+        PlaylistViewModel playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
+        PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
+        PlaylistWithEntriesViewModel viewModel = new ViewModelProvider(this).get(PlaylistWithEntriesViewModel.class);
+
+        String playlistUuid = UUID.randomUUID().toString();
+        List<PlaylistSelection> selected = adapter.getSelectedList();
+        List<PlaylistEntry> entries = new ArrayList<>();
+
+        Playlist playlist = new Playlist(playlistUuid, name);
+        for(PlaylistSelection selection : selected) {
+            PhysicalSong song = selection.getSong();
+            PlaylistEntry entry = new PlaylistEntry(song.getId(), playlist.getListId());
+            entries.add(entry);
+        }
+
+        PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
+
+        //playlistViewModel.insert(playlist);
+        //playlistEntryViewModel.insertAll();
+        viewModel.insert(playlist, entriesArr);
     }
 
     public static class PlaylistSelection {

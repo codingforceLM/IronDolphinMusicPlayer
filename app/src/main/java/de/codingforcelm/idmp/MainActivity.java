@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
             b.putLong(MusicService.KEY_ALBUM_ID, Long.parseLong(playContext));
             b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_ALBUM + playContext);
         } else if(playContextType.equals(MusicService.CONTEXT_TYPE_PLAYLIST)) {
-            b.putLong(MusicService.KEY_PLAYLIST_ID, Long.parseLong(playContext));
+            b.putString(MusicService.KEY_PLAYLIST_ID, playContext);
             b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playContext);
         } else {
             b.putString(MusicService.KEY_CONTEXT, playContext);
