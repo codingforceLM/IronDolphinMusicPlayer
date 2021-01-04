@@ -94,10 +94,8 @@ public class PlaylistListFragment extends NameAwareFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-        playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
-            contextMenu.add(MenuIdentifier.MENU_PLAYLISTLIST, DELETE_PLAYLIST, 0, "Delete Playlist");
-            super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
-        });
+        contextMenu.add(MenuIdentifier.MENU_PLAYLISTLIST, DELETE_PLAYLIST, 0, "Delete Playlist");
+        super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
     }
 
 
