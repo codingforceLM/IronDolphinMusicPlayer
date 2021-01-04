@@ -77,7 +77,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         holder.itemView.setTag(position);
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
-                longClickListener.ItemLongClicked(v, position);
+                longClickListener.ItemLongClicked(v, position, currentItem.getId());
             }
             return true;
         });
@@ -112,7 +112,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
     }
 
     public interface onLongItemClickListener {
-        void ItemLongClicked(View v, int position);
+        void ItemLongClicked(View v, int position, long songId);
     }
 
     public void filter(String text) {

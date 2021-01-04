@@ -53,8 +53,8 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             long albumId = album.getId();
             ArrayList<PhysicalSong> songList = new AudioLoader(itemView.getContext()).getSongsFromAlbum(albumId);
             SongCardAdapter adapter = new SongCardAdapter(songList,itemView.getContext(), MusicService.CONTEXT_TYPE_ALBUM, String.valueOf(albumId));
-            adapter.setOnLongItemClickListener((v, songid) -> {
-               // currItemPos = position;
+            adapter.setOnLongItemClickListener((v, position, songid) -> {
+                //sonig to album context??????????
                 v.showContextMenu();
             });
             subRecyclerView.setAdapter(adapter);

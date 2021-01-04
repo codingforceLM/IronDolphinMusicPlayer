@@ -38,6 +38,7 @@ public class SongListFragment extends NameAwareFragment {
     private SongCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
+    private long currSongId;
     private static final int MENU2 = 2;
     private PlaylistViewModel playlistViewModel;
 
@@ -67,7 +68,8 @@ public class SongListFragment extends NameAwareFragment {
         registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
         adapter = new SongCardAdapter(songList, this.getContext(), MusicService.CONTEXT_TYPE_SONGLIST, MainActivity.CONTEXT_SONGLIST);
-        adapter.setOnLongItemClickListener((v, position) -> {
+        adapter.setOnLongItemClickListener((v, position, songId) -> {
+            currSongId = songId;
             currItemPos = position;
             v.showContextMenu();
         });
