@@ -102,6 +102,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private Notification notification;
     private String context;
 
+    private boolean waitForLoad;
+
     private MediaSessionCompat mediaSession;
     private PlaybackStateCompat.Builder stateBuilder;
     private AudioManager audioManager;
@@ -119,6 +121,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         player = new MediaPlayer();
         initMusicPlayer();
 
+        waitForLoad = false;
         paused = true;
         context = MainActivity.CONTEXT_SONGLIST;
 
@@ -598,14 +601,22 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 throw new IllegalStateException("missing context type");
             }
 
+            Uri trackUri = null;
+            try {
+                trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.parseLong(mediaId));
+            } catch(NumberFormatException nfe) {
+                Log.e(LOG_TAG, "Couldnt parse MediaId");
+            }
+
             String newContext = extras.getString(KEY_CONTEXT);
             String contextType = extras.getString(KEY_CONTEXT_TYPE);
+            WaitForLoadObject load = new WaitForLoadObject();
             if(!context.equals(newContext)) {
                 switch(contextType) {
                     case CONTEXT_TYPE_SONGLIST:
                         Log.e(LOG_TAG, "new context songlist");
                         songList = audioLoader.getSongs();
-                        setSongPositionFromMediaId(Long.valueOf(mediaId));
+                        notifyLoadedAndPlay(mediaId, trackUri);
                         break;
                     case CONTEXT_TYPE_ALBUM:
                         Log.e(LOG_TAG, "new context album");
@@ -613,15 +624,18 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             throw new IllegalStateException("missing album id");
                         }
                         songList = audioLoader.getSongsFromAlbum(extras.getLong(KEY_ALBUM_ID));
-                        setSongPositionFromMediaId(Long.valueOf(mediaId));
+                        notifyLoadedAndPlay(mediaId, trackUri);
                         break;
                     case CONTEXT_TYPE_PLAYLIST:
                         Log.e(LOG_TAG, "new context playlist");
+                        load.setWaitForLoad(true);
                         if(!extras.containsKey(KEY_PLAYLIST_ID)) {
                             throw new IllegalStateException("missing album id");
                         }
                         String listId = extras.getString(KEY_PLAYLIST_ID);
                         PlaylistRepository repo = PlaylistRepository.getInstance(getApplication());
+                        waitForLoad = true;
+                        Uri finalTrackUri = trackUri;
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
@@ -636,20 +650,19 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                                     songList = songs;
                                     setSongPositionFromMediaId(Long.valueOf(mediaId));
                                     updateSession();
+                                    notifyLoadedAndPlay(mediaId, finalTrackUri);
                                 });
                             }
                         });
                         break;
                 }
                 context = newContext;
+            } else {
+                notifyLoadedAndPlay(mediaId, trackUri);
             }
+        }
 
-            Uri trackUri = null;
-            try {
-                trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.parseLong(mediaId));
-            } catch(NumberFormatException nfe) {
-                Log.e(LOG_TAG, "Couldnt parse MediaId");
-            }
+        private void notifyLoadedAndPlay(String mediaId, Uri trackUri) {
             setSongPositionFromMediaId(Long.valueOf(mediaId));
             MusicService.this.playSong(trackUri, true);
         }
@@ -721,6 +734,22 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             if(AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
                 mediaSession.getController().getTransportControls().pause();
             }
+        }
+    }
+
+    private class WaitForLoadObject {
+        private boolean waiting;
+
+        public WaitForLoadObject() {
+            waiting = false;
+        }
+
+        public boolean isWaiting() {
+            return waiting;
+        }
+
+        public void setWaitForLoad(boolean waiting) {
+            this.waiting = waiting;
         }
     }
 }
