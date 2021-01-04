@@ -50,7 +50,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playlist_create);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        searchView =  findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.apc_recyclerview);
         searchView = findViewById(R.id.apc_searchview);
         layoutManager = new LinearLayoutManager(this);
@@ -70,6 +70,19 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -111,6 +124,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         //playlistEntryViewModel.insertAll();
         viewModel.insert(playlist, entriesArr);
     }
+
 
     public static class PlaylistSelection {
 

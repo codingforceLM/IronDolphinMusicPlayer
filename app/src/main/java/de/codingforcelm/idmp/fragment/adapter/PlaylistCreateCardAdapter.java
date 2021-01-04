@@ -14,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.PlaylistCreateActivity;
 import de.codingforcelm.idmp.R;
 
 public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCreateCardAdapter.SelectionCardViewHolder> {
 
+    private List<PlaylistCreateActivity.PlaylistSelection> playlistListCopy;
     private List<PlaylistCreateActivity.PlaylistSelection> selectionList;
 
     public static class SelectionCardViewHolder extends RecyclerView.ViewHolder {
@@ -52,6 +54,8 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
 
     public PlaylistCreateCardAdapter(List<PlaylistCreateActivity.PlaylistSelection> selectionList) {
         this.selectionList = selectionList;
+        this.playlistListCopy = new ArrayList<>();
+        this.playlistListCopy.addAll(selectionList);
     }
 
     @Override
@@ -100,5 +104,20 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
         }
 
         return selectedList;
+    }
+
+    public void filter(String text) {
+        selectionList.clear();
+        if (text.isEmpty()) {
+            selectionList.addAll(playlistListCopy);
+        } else {
+            text = text.toLowerCase();
+            for (PlaylistCreateActivity.PlaylistSelection song : playlistListCopy) {
+                if (song.getSong().getTitle().toLowerCase().contains(text)) {
+                    selectionList.add(song);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }
