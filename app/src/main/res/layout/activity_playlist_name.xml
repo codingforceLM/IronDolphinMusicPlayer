@@ -13,14 +13,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <SearchView
-            android:id="@+id/apc_searchview"
+        <!-- TODO make it look nice -->
+        <TextView
+            android:id="@+id/apn_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Pick a name" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/apc_recyclerview"
+        <EditText
+            android:id="@+id/apn_edittext"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Playlist Name" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

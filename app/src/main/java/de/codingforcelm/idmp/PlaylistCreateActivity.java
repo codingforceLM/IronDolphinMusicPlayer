@@ -7,7 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,12 +20,16 @@ import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
 
 public class PlaylistCreateActivity extends AppCompatActivity {
 
+    public static final String KEY_PLAYLIST_NAME = "de.codingforcelm.idmp.PLAYLIST_NAME";
+
     private PlaylistCreateCardAdapter adapter;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private AudioLoader audioLoader;
     private RecyclerView.LayoutManager layoutManager;
     private Toolbar toolbar;
+
+    private String name;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -42,6 +46,12 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.apc_recyclerview);
         searchView = findViewById(R.id.apc_searchview);
         layoutManager = new LinearLayoutManager(this);
+
+        Bundle b = getIntent().getExtras();
+        if(!b.containsKey(KEY_PLAYLIST_NAME)) {
+            throw new IllegalStateException("Missing playlist name");
+        }
+        name = getIntent().getStringExtra(KEY_PLAYLIST_NAME);
 
         audioLoader = new AudioLoader(this);
         List<PhysicalSong> songs = audioLoader.getSongs();

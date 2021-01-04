@@ -59,7 +59,7 @@ public class TabFragment extends NameAwareFragment {
         albumTab = view.findViewById(R.id.albumTab);
         pager = view.findViewById(R.id.tabFragmentPager);
 
-        TabFragmentAdapter adapter = new TabFragmentAdapter(getChildFragmentManager(), this.getLifecycle());
+        TabFragmentAdapter adapter = new TabFragmentAdapter(getChildFragmentManager(), this.getLifecycle(), (MainActivity) getActivity());
         pager.setAdapter(adapter);
 
         TabLayoutMediator.TabConfigurationStrategy strategy = new TabLayoutMediator.TabConfigurationStrategy() {
@@ -73,7 +73,24 @@ public class TabFragment extends NameAwareFragment {
         layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
+                MainActivity activity = (MainActivity) getActivity();
+                switch (tab.getPosition()) {
+                    case 0:
+                        // Songs
+                        activity.setCurrentTab(MainActivity.TAB_SONGS);
+                        activity.invalidateOptionsMenu();
+                        break;
+                    case 1:
+                        // Albums
+                        activity.setCurrentTab(MainActivity.TAB_ALBUMS);
+                        activity.invalidateOptionsMenu();
+                        break;
+                    case 2:
+                        // Playlists
+                        activity.setCurrentTab(MainActivity.TAB_PAYLISTS);
+                        activity.invalidateOptionsMenu();
+                        break;
+                }
             }
 
             @Override

@@ -33,9 +33,12 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -56,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String Broadcast_PLAY_NEW_AUDIO = "de.codingforcelm.idmp.PlayNewAudio";
     public static final String LOG_TAG = "MainActivity";
 
+    public static final String TAB_SONGS = "de.codingforcelm.idmp.TAB_SONGS";
+    public static final String TAB_ALBUMS = "de.codingforcelm.idmp.TAB_ALBUMS";
+    public static final String TAB_PAYLISTS = "de.codingforcelm.idmp.TAB_PLAYLISTS";
+
     public static final String CONTEXT_SONGLIST = "de.codingforcelm.idmp.player.service.SONGLIST";
     private static final int STORAGE_PERMISSION_CODE = 1;
 
@@ -75,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean playstatus;//this
     private MediaMetadataCompat mediaMetadata;
     private int duration;
+    private String currentTab;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -108,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        currentTab = TAB_SONGS;
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navDrawer = (NavigationView) findViewById(R.id.navView);
         drawerToggle = setupDrawerToggle();
@@ -137,9 +147,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
+        int m = -1;
+        switch(currentTab) {
+            case TAB_SONGS:
+                // empty stud
+                break;
+            case TAB_ALBUMS:
+                // empty stud
+                break;
+            case TAB_PAYLISTS:
+                m = R.menu.playlist_add_menu;
+                break;
+        }
+        if(m >= 0) {
+            inflater.inflate(m, menu);
+        } else {
+            menu.clear();
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
+        }
+
+        if(item.getItemId() == R.id.ma_action_add) {
+            Intent intent = new Intent(this, PlaylistNameActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -485,6 +525,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setCurrentTab(String tab) {
+        this.currentTab = tab;
+    }
 
     public MediaMetadataCompat getMetadata() {
         return mediaMetadata;
