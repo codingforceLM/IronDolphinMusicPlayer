@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.structure.playlist.Playlist;
+import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
 import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
 import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
 
@@ -27,7 +29,12 @@ public class PlaylistViewModel extends AndroidViewModel {
         return playlists;
     }
 
-    public LiveData<PlaylistWithEntries> getPlaylist(long id) {
+    public LiveData<PlaylistWithEntries> getPlaylist(String id) {
         return repository.getPlaylist(id);
     }
+
+    public void insert(Playlist playlist) {
+        repository.insert(playlist);
+    }
+
 }

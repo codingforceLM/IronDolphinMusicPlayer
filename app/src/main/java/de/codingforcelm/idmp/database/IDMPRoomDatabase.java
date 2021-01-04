@@ -51,6 +51,7 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
             // You may need to adjust the values depending on you accessible local files
             databaseWriteExecutor.execute(() -> {
                 Log.e(LOG_TAG,"Add initial testing data");
+                /*
                 PlayListDao pld = INSTANCE.playListDao();
                 PlaylistEntryDao ped = INSTANCE.playlistEntryDao();
 
@@ -74,6 +75,7 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
 
                 pld.insertAll(p1, p2);
                 ped.insertAll(p1e1, p1e2, p1e3, p1e4, p1e5, p2e1, p2e2, p2e3, p2e4, p2e5);
+                */
             });
         }
 

@@ -13,21 +13,21 @@ import de.codingforcelm.idmp.music.Song;
 @Entity(tableName = "playlist")
 public class Playlist {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     @NonNull
-    private int listId;
+    private String listId;
     private String name;
 
-    public Playlist(int listId, String name) {
+    public Playlist(String listId, String name) {
         this.listId = listId;
         this.name = name;
     }
 
-    public int getListId() {
+    public String getListId() {
         return listId;
     }
 
-    public void setListId(int listId) {
+    public void setListId(String listId) {
         this.listId = listId;
     }
 

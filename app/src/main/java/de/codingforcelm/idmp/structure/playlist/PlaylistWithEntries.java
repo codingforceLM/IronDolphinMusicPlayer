@@ -10,7 +10,8 @@ public class PlaylistWithEntries {
     private Playlist playlist;
     @Relation(
             parentColumn = "listId",
-            entityColumn = "playlistId"
+            entityColumn = "playlistId",
+            entity = PlaylistEntry.class
     )
     private List<PlaylistEntry> entries;
 
