@@ -6,29 +6,35 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.MenuIdentifier;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 public class AlbumListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "AlbumListFragment";
+    private static final int ADD_TO_PLAYLIST = 0;
     private ArrayList<PhysicalAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private AlbumCardAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
+    private PlaylistViewModel playlistViewModel;
 
   public AlbumListFragment() {
       //needed default constructor
@@ -73,18 +79,37 @@ public class AlbumListFragment extends NameAwareFragment {
                 return true;
             }
         });
+        playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-      //TODO
-     /*   menu.setHeaderTitle("Context Menu");
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.item_menu, menu);*/
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.MENU_ALBUMLIST, ADD_TO_PLAYLIST, 0, "Add to Playlist");
+        playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
+            for(int i=0; i < playlistWithEntries.size(); i++){
+                subMenu.add(MenuIdentifier.MENU_ALBUMLIST, ADD_TO_PLAYLIST, i, playlistWithEntries.get(i).getPlaylist().getName());
+            }
+            super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
+        });
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
 
+        if(item.getGroupId() != MenuIdentifier.MENU_SONGLIST){
+            return false;
+        }
+        Log.e(LOG_TAG, "--onContextItemSelected--");
+        switch (item.getItemId()) {
+            case ADD_TO_PLAYLIST:
+                //TODO implement
+                break;
+            default:
+                Log.e(LOG_TAG, "unexpected menu item clicked"+item.toString());
+                break;
+        }
+        return true;
+    }
 
 }
 
