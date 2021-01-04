@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IronDolphinMusicPlayer">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:screenOrientation = "portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,8 +24,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".PlaylistNameActivity"/>
-        <activity android:name=".PlaylistCreateActivity"/>
+        <activity android:name=".PlaylistNameActivity" android:screenOrientation = "portrait"/>
+        <activity android:name=".PlaylistCreateActivity" android:screenOrientation = "portrait"/>
 
         <service android:name=".player.service.MusicService"
             android:label="MusicService">
