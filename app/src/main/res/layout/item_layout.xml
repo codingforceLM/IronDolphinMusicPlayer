@@ -7,14 +7,15 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="1dp"
     android:elevation="100dp"
+    android:background="@color/cardview_light_background"
     >
 
     <!--android:background="#00bcd4"-->
 
     <LinearLayout
+        android:id="@+id/item_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background"
         android:orientation="horizontal"
         android:padding="10dp">
 

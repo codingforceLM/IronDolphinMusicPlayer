@@ -39,11 +39,11 @@ public class PlaylistFragment extends NameAwareFragment {
     private RecyclerView.LayoutManager layoutManager;
     private SearchView searchView;
     private int position;
-    private int listId;
+    private String listId;
     private AudioLoader loader;
 
 
-    public PlaylistFragment(int position, int listId) {
+    public PlaylistFragment(int position, String listId) {
         this.position = position;
         this.listId = listId;
 
@@ -91,7 +91,7 @@ public class PlaylistFragment extends NameAwareFragment {
         layoutManager = new LinearLayoutManager(view.getContext());
 
         loader = new AudioLoader(getContext());
-        adapter = new SongCardAdapter(new ArrayList<>(), getContext(), MusicService.CONTEXT_TYPE_PLAYLIST, String.valueOf(listId));
+        adapter = new SongCardAdapter(new ArrayList<>(), getContext(), MusicService.CONTEXT_TYPE_PLAYLIST, listId);
         playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
             if(position < 0) {

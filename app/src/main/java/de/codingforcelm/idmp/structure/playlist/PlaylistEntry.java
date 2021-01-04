@@ -11,10 +11,10 @@ public class PlaylistEntry {
     @NonNull
     private int entryId;
     private long mediaId;
-    private int playlistId;
+    private String playlistId;
 
-    public PlaylistEntry(int entryId, long mediaId, int playlistId) {
-        this.entryId = entryId;
+    public PlaylistEntry(long mediaId, String playlistId) {
+        this.entryId = 0; // 0 tells framework to autogenerate id
         this.mediaId = mediaId;
         this.playlistId = playlistId;
     }
@@ -35,11 +35,11 @@ public class PlaylistEntry {
         this.mediaId = mediaId;
     }
 
-    public int getPlaylistId() {
+    public String getPlaylistId() {
         return playlistId;
     }
 
-    public void setPlaylistId(int playlistId) {
+    public void setPlaylistId(String playlistId) {
         this.playlistId = playlistId;
     }
 }
