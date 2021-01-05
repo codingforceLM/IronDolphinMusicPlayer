@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 
-import android.provider.MediaStore;
-
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -15,12 +13,14 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 import de.codingforcelm.idmp.MenuIdentifier;
@@ -34,7 +34,6 @@ import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 
 import de.codingforcelm.idmp.fragment.OnManualDetachListener;
-import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
 import de.codingforcelm.idmp.player.service.MusicService;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
@@ -151,6 +150,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
         contextMenu.add(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.ADD_TO_QUEUE, 0, R.string.add_to_queue);
+        contextMenu.add(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.REMOVE_FROM_PLAYLIST, 2, R.string.remove_from_playlist);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
             currPlaylistWithEntries=playlistWithEntries;
@@ -177,6 +177,18 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
         }
 
         switch (item.getItemId()) {
+            case MenuIdentifier.REMOVE_FROM_PLAYLIST:
+                PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
+                LiveData<PlaylistWithEntries> playlist = playlistViewModel.getPlaylist(listId);
+                AtomicBoolean removed = new AtomicBoolean(false);
+                playlist.observe(getViewLifecycleOwner(), entries -> {
+                    if(!removed.get()){
+                        List<PlaylistEntry> entry = entries.getEntries();
+                        playlistEntryViewModel.delete(entry.get(currItemPos));
+                    }
+                    removed.set(true);
+                });
+                break;
             case MenuIdentifier.ADD_TO_PLAYLIST:
                 Log.e(LOG_TAG, "waiting for submenu");
             case MenuIdentifier.ADD_TO_QUEUE:
