@@ -2,6 +2,7 @@ package de.codingforcelm.idmp;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
+import de.codingforcelm.idmp.player.service.MusicService;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
 import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
@@ -144,6 +146,16 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         }
         PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
         playlistEntryViewModel.insertAll(entriesArr);
+
+        MainActivity activity = MainActivitySingleton.getInstance().getMainActivity();
+        if(activity == null) {
+            throw new IllegalStateException("couldnt get MainActivity");
+        }
+        MediaControllerCompat controller = MediaControllerCompat.getMediaController(activity);
+        Bundle b = new Bundle();
+        b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playlistUuid);
+        b.putString(MusicService.KEY_PLAYLIST_ID, playlistUuid);
+        controller.sendCommand(MusicService.COMMAND_RELOAD_PLAYLIST, b, null);
     }
 
     private void savePlaylist() {

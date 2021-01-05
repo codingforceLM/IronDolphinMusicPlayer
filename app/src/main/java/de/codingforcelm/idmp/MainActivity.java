@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaMetadataCompat mediaMetadata;
     private int duration;
     private String currentTab;
+    private boolean inPlaylist;
     private String playlistUuid;
 
     @Override
@@ -113,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkStoragePermission();
+
+        MainActivitySingleton.getInstance().setMainActivity(this);
 
         setContentView(R.layout.activity_main);
 
@@ -181,8 +184,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(item.getItemId() == R.id.ma_action_add) {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(PlaylistListFragment.class.getSimpleName());
-            if(fragment != null && fragment.isVisible()) {
+            if(!inPlaylist) {
                 Intent intent = new Intent(this, PlaylistNameActivity.class);
                 startActivity(intent);
             } else {
@@ -543,6 +545,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentTab(String tab) {
         this.currentTab = tab;
+    }
+
+    public void setInPlaylist(boolean inPlaylist) {
+        this.inPlaylist = inPlaylist;
     }
 
     public void setPlaylistUuid(String uuid) {

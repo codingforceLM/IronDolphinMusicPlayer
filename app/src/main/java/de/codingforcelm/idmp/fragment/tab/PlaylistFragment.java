@@ -86,6 +86,7 @@ public class PlaylistFragment extends NameAwareFragment {
         }
 
         ((MainActivity)getActivity()).setPlaylistUuid(listId);
+        ((MainActivity)getActivity()).setInPlaylist(true);
 
         searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -129,6 +130,7 @@ public class PlaylistFragment extends NameAwareFragment {
     @Override
     public void onDetach() {
         ((MainActivity)getActivity()).setPlaylistUuid(null);
+        ((MainActivity)getActivity()).setInPlaylist(false);
         super.onDetach();
     }
 }
