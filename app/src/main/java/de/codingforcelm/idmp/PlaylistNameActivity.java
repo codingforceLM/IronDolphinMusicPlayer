@@ -42,11 +42,12 @@ public class PlaylistNameActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.apn_action_accept) {
             String name = text.getText().toString();
             name = name.trim();
-            if(name == null || name.equals("")) {
+            if(name.equals("")) {
                 // TODO do something?
             } else {
                 Bundle b = new Bundle();
                 b.putString(PlaylistCreateActivity.KEY_PLAYLIST_NAME, name);
+                b.putString(PlaylistCreateActivity.KEY_MODE, PlaylistCreateActivity.MODE_CREATE);
                 Intent intent = new Intent(this, PlaylistCreateActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
