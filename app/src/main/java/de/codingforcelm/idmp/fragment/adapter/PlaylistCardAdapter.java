@@ -88,6 +88,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             if (context instanceof MainActivity) {
                 PlaylistFragment fragment = new PlaylistFragment((int) v.getTag(), playlistList.get(itemPos).getPlaylist().getListId());
                 ((MainActivity)context).placeFragment(fragment, R.id.mainFrame);
+                ((MainActivity)context).setTitle(playlistList.get(itemPos).getPlaylist().getName());
             }
         });
     }

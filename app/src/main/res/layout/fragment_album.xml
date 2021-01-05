@@ -10,8 +10,8 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:showAsAction="always"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.SearchView"
+        android:showAsAction="always"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -24,7 +24,7 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <FrameLayout
-        android:id="@+id/pl_controls_frame"
+        android:id="@+id/album_control_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="75">
