@@ -49,10 +49,13 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
+import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.structure.playlist.Playlist;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     private MediaMetadataCompat mediaMetadata;
     private int duration;
     private String currentTab;
+    private boolean inPlaylist;
+    private String playlistUuid;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -110,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkStoragePermission();
+
+        MainActivitySingleton.getInstance().setMainActivity(this);
 
         setContentView(R.layout.activity_main);
 
@@ -178,8 +185,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(item.getItemId() == R.id.ma_action_add) {
-            Intent intent = new Intent(this, PlaylistNameActivity.class);
-            startActivity(intent);
+            if(!inPlaylist) {
+                Intent intent = new Intent(this, PlaylistNameActivity.class);
+                startActivity(intent);
+            } else {
+                if(playlistUuid == null) {
+                    throw new IllegalStateException("missing uuid");
+                }
+                Intent intent = new Intent(this, PlaylistCreateActivity.class);
+                Bundle b = new Bundle();
+                b.putString(PlaylistCreateActivity.KEY_MODE, PlaylistCreateActivity.MODE_ADD);
+                b.putString(PlaylistCreateActivity.KEY_PLAYLIST_UUID, playlistUuid);
+                intent.putExtras(b);
+                startActivity(intent);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -187,7 +206,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
+        MediaControllerCompat con = MediaControllerCompat.getMediaController(this);
+        if(browser.isConnected() && con != null) {
+            con.registerCallback(controllerCallback);
+        }
     }
 
     @Override
@@ -397,9 +419,14 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragments = fragmentManager.getFragments();
         if (fragments != null) {
             for (Fragment f : fragments) {
-                if (f != null && !f.isDetached())
+                if (f != null && !f.isDetached()) {
                     fragmentTransaction.detach(f);
-                    Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
+                    if(f instanceof OnManualDetachListener) {
+                        Log.e(LOG_TAG, "Calling onManualDetach");
+                        ((OnManualDetachListener)f).onManualDetach();
+                    }
+                    Log.e(LOG_TAG, f.getClass().getSimpleName() + " detatched");
+                }
             }
         }
 
@@ -527,6 +554,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentTab(String tab) {
         this.currentTab = tab;
+    }
+
+    public void setInPlaylist(boolean inPlaylist) {
+        this.inPlaylist = inPlaylist;
+    }
+
+    public void setPlaylistUuid(String uuid) {
+        this.playlistUuid = uuid;
     }
 
     public MediaMetadataCompat getMetadata() {
