@@ -49,6 +49,7 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
 import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
@@ -415,9 +416,14 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragments = fragmentManager.getFragments();
         if (fragments != null) {
             for (Fragment f : fragments) {
-                if (f != null && !f.isDetached())
+                if (f != null && !f.isDetached()) {
                     fragmentTransaction.detach(f);
-                    Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
+                    if(f instanceof OnManualDetachListener) {
+                        Log.e(LOG_TAG, "Calling onManualDetach");
+                        ((OnManualDetachListener)f).onManualDetach();
+                    }
+                    Log.e(LOG_TAG, f.getClass().getSimpleName() + " detatched");
+                }
             }
         }
 

@@ -2,6 +2,7 @@ package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
 import de.codingforcelm.idmp.player.service.MusicService;
@@ -32,8 +34,9 @@ import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
 import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 
-public class PlaylistFragment extends NameAwareFragment {
+public class PlaylistFragment extends NameAwareFragment implements OnManualDetachListener {
 
+    private static final String LOG_TAG = "PlaylistFragment";
     private SongCardAdapter adapter;
     private PlaylistViewModel playlistViewModel;
     private RecyclerView recyclerView;
@@ -129,8 +132,14 @@ public class PlaylistFragment extends NameAwareFragment {
 
     @Override
     public void onDetach() {
+
+        super.onDetach();
+    }
+
+    @Override
+    public void onManualDetach() {
+        Log.e(LOG_TAG, "onManualDetach");
         ((MainActivity)getActivity()).setPlaylistUuid(null);
         ((MainActivity)getActivity()).setInPlaylist(false);
-        super.onDetach();
     }
 }
