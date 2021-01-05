@@ -54,4 +54,13 @@ public class PlaylistEntryRepository {
             }
         });
     }
+
+    public void delete(PlaylistEntry entry) {
+        IDMPRoomDatabase.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                playlistEntryDao.delete(entry);
+            }
+        });
+    }
 }

@@ -1,16 +1,10 @@
-package de.codingforcelm.idmp.structure.playlist.dao;
+package de.codingforcelm.idmp.structure.playlist;
 
 import android.app.Application;
 
-import androidx.lifecycle.LiveData;
-
-import java.util.List;
-
 import de.codingforcelm.idmp.database.IDMPRoomDatabase;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
+import de.codingforcelm.idmp.structure.playlist.dao.PlayListDao;
+import de.codingforcelm.idmp.structure.playlist.dao.PlaylistEntryDao;
 
 public class PlaylistWithEntriesRepository {
 
