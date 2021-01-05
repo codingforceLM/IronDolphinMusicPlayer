@@ -43,7 +43,7 @@ public class TabFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        ((MainActivity)getContext()).setTitle("TabPlayer");
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
