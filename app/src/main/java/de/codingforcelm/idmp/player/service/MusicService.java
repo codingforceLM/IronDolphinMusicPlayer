@@ -133,6 +133,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         afcl = new AudioFocusChangeListener();
         intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
         noisyReceiver = new BecomingNoisyReceiver();
+        registerReceiver(noisyReceiver, intentFilter);
 
         updateSession();
         mediaSession.setCallback(new MusicCallbackHandler());
@@ -236,8 +237,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e(LOG_TAG, "onPrepared");
-
-        registerReceiver(noisyReceiver, intentFilter);
 
         if(!requestAudioFocus()) {
             Log.e(LOG_TAG, "Audio Focus not granted - return");
@@ -481,12 +480,20 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         PhysicalSong song = songList.get(songPosition);
 
         MediaMetadataCompat.Builder dataBuilder = new MediaMetadataCompat.Builder();
-        dataBuilder.putString(KEY_ARTIST, song.getArtist());
-        dataBuilder.putString(KEY_ALBUM, song.getAlbum());
-        dataBuilder.putString(KEY_TITLE, song.getTitle());
-        dataBuilder.putString(KEY_DURATION, String.valueOf(player.getDuration()));
-        dataBuilder.putString(KEY_SHUFFLE, String.valueOf(shuffle));
-        dataBuilder.putString(KEY_REPEAT, String.valueOf(repeat));
+
+        String artist = song.getArtist();
+        String album = song.getAlbum();
+        String title = song.getTitle();
+        String duration = String.valueOf(player.getDuration());
+        String shuffleStr = String.valueOf(shuffle);
+        String repeatStr = String.valueOf(repeat);
+
+        dataBuilder.putString(KEY_ARTIST, artist);
+        dataBuilder.putString(KEY_ALBUM, album);
+        dataBuilder.putString(KEY_TITLE, title);
+        dataBuilder.putString(KEY_DURATION, duration);
+        dataBuilder.putString(KEY_SHUFFLE, shuffleStr);
+        dataBuilder.putString(KEY_REPEAT, repeatStr);
 
         mediaSession.setPlaybackState(stateBuilder.build());
         mediaSession.setMetadata(dataBuilder.build());
@@ -588,7 +595,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         if(!extras.containsKey(KEY_PLAYLIST_ID)) {
                             throw new IllegalStateException("missing playlist id");
                         }
-                        PhysicalSong prev = songList.get(songPosition);
                         PlaylistRepository repo = PlaylistRepository.getInstance(getApplication());
                         loading = true;
                         String listId = extras.getString(KEY_PLAYLIST_ID);
@@ -596,6 +602,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             @Override
                             public void run() {
                                 repo.getPlaylist(listId).observeForever(playlistWithEntries -> {
+                                    PhysicalSong prev = songList.get(songPosition);
                                     List<PhysicalSong> songs = new ArrayList<>();
                                     for(PlaylistEntry entry : playlistWithEntries.getEntries()) {
                                         PhysicalSong s = audioLoader.getSong(entry.getMediaId());
@@ -626,7 +633,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
-            while(loading) { /* wait until audiolist is loaded */ }
+            //while(loading) { /* wait until audiolist is loaded */ }
 
             if(!extras.containsKey(KEY_CONTEXT)) {
                 throw new IllegalStateException("missing context");
@@ -652,7 +659,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         Log.e(LOG_TAG, "new context songlist");
                         loading = true;
                         songList = audioLoader.getSongs();
-                        notifyLoadedAndPlay(mediaId, trackUri);
+                        notifyLoadedAndPlay(mediaId, trackUri, false);
                         break;
                     case CONTEXT_TYPE_ALBUM:
                         Log.e(LOG_TAG, "new context album");
@@ -661,7 +668,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         }
                         loading = true;
                         songList = audioLoader.getSongsFromAlbum(extras.getLong(KEY_ALBUM_ID));
-                        notifyLoadedAndPlay(mediaId, trackUri);
+                        notifyLoadedAndPlay(mediaId, trackUri, false);
                         break;
                     case CONTEXT_TYPE_PLAYLIST:
                         Log.e(LOG_TAG, "new context playlist");
@@ -687,7 +694,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                                     songList = songs;
                                     setSongPositionFromMediaId(Long.valueOf(mediaId));
                                     updateSession();
-                                    notifyLoadedAndPlay(mediaId, finalTrackUri);
+                                    notifyLoadedAndPlay(mediaId, finalTrackUri, player.isPlaying());
                                 });
                             }
                         });
@@ -695,18 +702,20 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 }
                 context = newContext;
             } else {
-                notifyLoadedAndPlay(mediaId, trackUri);
+                notifyLoadedAndPlay(mediaId, trackUri, false);
             }
         }
 
-        private void notifyLoadedAndPlay(String mediaId, Uri trackUri) {
+        private void notifyLoadedAndPlay(String mediaId, Uri trackUri, boolean isPlaying) {
             loading = false;
             setSongPositionFromMediaId(Long.valueOf(mediaId));
-            MusicService.this.playSong(trackUri, true);
+            if(!isPlaying) {
+                MusicService.this.playSong(trackUri, true);
+            }
         }
 
         private void notifyReload(PhysicalSong prev) {
-            long mediaId = prev.getId();Uri trackUri = null;
+            long mediaId = prev.getId();
             setSongPositionFromMediaId(mediaId);
             loading = false;
         }

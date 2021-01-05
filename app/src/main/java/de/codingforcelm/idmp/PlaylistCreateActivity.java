@@ -155,7 +155,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playlistUuid);
         b.putString(MusicService.KEY_PLAYLIST_ID, playlistUuid);
-        controller.sendCommand(MusicService.COMMAND_RELOAD_PLAYLIST, b, null);
+        //controller.sendCommand(MusicService.COMMAND_RELOAD_PLAYLIST, b, null);
     }
 
     private void savePlaylist() {
