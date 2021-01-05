@@ -102,7 +102,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
     }
 
     public interface onLongItemClickListener {
-        void ItemLongClicked(View v, int position, int playlistID);
+        void ItemLongClicked(View v, int position, String playlistID);
     }
 
     public void setData(List<PlaylistWithEntries> data) {

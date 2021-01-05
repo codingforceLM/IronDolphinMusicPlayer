@@ -40,7 +40,7 @@ public class PlaylistListFragment extends NameAwareFragment {
     private PlaylistViewModel playlistViewModel;
     private RecyclerView.LayoutManager layoutManager;
     private int currItemPos;
-    private int playlistID;
+    private String playlistID;
 
 
     public PlaylistListFragment() {
