@@ -74,7 +74,7 @@ public class AlbumFragment extends NameAwareFragment {
                     ControlsFragment.class.getSimpleName()
             ).commit();
         }
-        songList = new AudioLoader(this.getContext()).getSongs();
+
         searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
