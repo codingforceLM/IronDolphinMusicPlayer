@@ -29,6 +29,11 @@ import de.codingforcelm.idmp.structure.playlist.model.PlaylistWithEntriesViewMod
 public class PlaylistCreateActivity extends AppCompatActivity {
 
     public static final String KEY_PLAYLIST_NAME = "de.codingforcelm.idmp.PLAYLIST_NAME";
+    public static final String KEY_PLAYLIST_UUID = "de.codingforcelm.idmp.PLAYLIST_UUID";
+    public static final String KEY_MODE = "de.codingforcelm.idmp.MODE";
+
+    public static final String MODE_CREATE = "de.codingforcelm.idmp.MODE_CREATE";
+    public static final String MODE_ADD = "de.codingforcelm.idmp.MODE_ADD";
 
     private PlaylistCreateCardAdapter adapter;
     private RecyclerView recyclerView;
@@ -37,7 +42,9 @@ public class PlaylistCreateActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private Toolbar toolbar;
 
+    private String mode;
     private String name;
+    private String playlistUuid;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -56,10 +63,26 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
 
         Bundle b = getIntent().getExtras();
-        if(!b.containsKey(KEY_PLAYLIST_NAME)) {
-            throw new IllegalStateException("Missing playlist name");
+        if(!b.containsKey(KEY_MODE)) {
+            throw new IllegalStateException("Missing mode");
         }
-        name = getIntent().getStringExtra(KEY_PLAYLIST_NAME);
+        mode = b.getString(KEY_MODE);
+        switch(mode) {
+            case MODE_ADD:
+                if(!b.containsKey(KEY_PLAYLIST_UUID)) {
+                    throw new IllegalStateException("Missing playlist name");
+                }
+                playlistUuid = b.getString(KEY_PLAYLIST_UUID);
+                break;
+            case MODE_CREATE:
+                if(!b.containsKey(KEY_PLAYLIST_NAME)) {
+                    throw new IllegalStateException("Missing playlist name");
+                }
+                name = getIntent().getStringExtra(KEY_PLAYLIST_NAME);
+                break;
+            default:
+                throw new IllegalStateException("Unknown mode");
+        }
 
         audioLoader = new AudioLoader(this);
         List<PhysicalSong> songs = audioLoader.getSongs();
@@ -82,23 +105,42 @@ public class PlaylistCreateActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_accept) {
-            savePlaylist();
+            switch(mode) {
+                case MODE_ADD:
+                    addSongsToPlaylist();
+                    break;
+                case MODE_CREATE:
+                    savePlaylist();
+                    break;
+            }
             finish();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void savePlaylist() {
-        PlaylistViewModel playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
+    private void addSongsToPlaylist() {
         PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
+
+        List<PlaylistSelection> selected = adapter.getSelectedList();
+        List<PlaylistEntry> entries = new ArrayList<>();
+        for(PlaylistSelection selection : selected) {
+            PhysicalSong song = selection.getSong();
+            PlaylistEntry entry = new PlaylistEntry(song.getId(), playlistUuid);
+            entries.add(entry);
+        }
+        PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
+        playlistEntryViewModel.insertAll(entriesArr);
+    }
+
+    private void savePlaylist() {
         PlaylistWithEntriesViewModel viewModel = new ViewModelProvider(this).get(PlaylistWithEntriesViewModel.class);
 
-        String playlistUuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
         List<PlaylistSelection> selected = adapter.getSelectedList();
         List<PlaylistEntry> entries = new ArrayList<>();
 
-        Playlist playlist = new Playlist(playlistUuid, name);
+        Playlist playlist = new Playlist(uuid, name);
         for(PlaylistSelection selection : selected) {
             PhysicalSong song = selection.getSong();
             PlaylistEntry entry = new PlaylistEntry(song.getId(), playlist.getListId());
@@ -106,9 +148,6 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         }
 
         PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
-
-        //playlistViewModel.insert(playlist);
-        //playlistEntryViewModel.insertAll();
         viewModel.insert(playlist, entriesArr);
     }
 
