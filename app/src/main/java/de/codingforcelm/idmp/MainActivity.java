@@ -50,9 +50,11 @@ import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
+import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.structure.playlist.Playlist;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaMetadataCompat mediaMetadata;
     private int duration;
     private String currentTab;
+    private String playlistUuid;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -178,8 +181,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(item.getItemId() == R.id.ma_action_add) {
-            Intent intent = new Intent(this, PlaylistNameActivity.class);
-            startActivity(intent);
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(PlaylistListFragment.class.getSimpleName());
+            if(fragment != null && fragment.isVisible()) {
+                Intent intent = new Intent(this, PlaylistNameActivity.class);
+                startActivity(intent);
+            } else {
+                if(playlistUuid == null) {
+                    throw new IllegalStateException("missing uuid");
+                }
+                Intent intent = new Intent(this, PlaylistCreateActivity.class);
+                Bundle b = new Bundle();
+                b.putString(PlaylistCreateActivity.KEY_MODE, PlaylistCreateActivity.MODE_ADD);
+                b.putString(PlaylistCreateActivity.KEY_PLAYLIST_UUID, playlistUuid);
+                intent.putExtras(b);
+                startActivity(intent);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -527,6 +543,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentTab(String tab) {
         this.currentTab = tab;
+    }
+
+    public void setPlaylistUuid(String uuid) {
+        this.playlistUuid = uuid;
     }
 
     public MediaMetadataCompat getMetadata() {

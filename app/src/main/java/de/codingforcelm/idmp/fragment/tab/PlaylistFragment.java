@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
@@ -83,6 +84,9 @@ public class PlaylistFragment extends NameAwareFragment {
                     ControlsFragment.class.getSimpleName()
             ).commit();
         }
+
+        ((MainActivity)getActivity()).setPlaylistUuid(listId);
+
         searchView =  view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -120,5 +124,11 @@ public class PlaylistFragment extends NameAwareFragment {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onDetach() {
+        ((MainActivity)getActivity()).setPlaylistUuid(null);
+        super.onDetach();
     }
 }
