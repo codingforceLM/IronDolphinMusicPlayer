@@ -237,7 +237,7 @@ public class BigPlayerFragment extends NameAwareFragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-               ((MainActivity) getActivity()).placeFragment(TabFragment.class, R.id.mainFrame);
+               ((MainActivity) getActivity()).onBackPressed();
         }
     }
 

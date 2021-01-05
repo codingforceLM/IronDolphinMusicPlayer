@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
             for (Fragment f : fragments) {
                 if (f != null && !f.isDetached())
                     fragmentTransaction.detach(f);
-                    Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
+                Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
             }
         }
 
@@ -417,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.add(frameId, fragment, simpleName);
             Log.e(LOG_TAG, simpleName+" added");
         }
+        fragmentTransaction.addToBackStack(simpleName);
         fragmentTransaction.commit();
     }
 
@@ -448,6 +449,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.add(frameId, fragment, simpleName);
             Log.e(LOG_TAG, simpleName+" added");
         }
+        fragmentTransaction.addToBackStack(simpleName);
         fragmentTransaction.commit();
     }
 
@@ -466,21 +468,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-    // Pass any configuration change to the drawer toggles
+        // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig);
-}
+    }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout layout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (layout.isDrawerOpen(GravityCompat.START)) {
-            layout.closeDrawer(GravityCompat.START);
-        } else if (getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName()).isVisible()) {
-            placeFragment(TabFragment.class, R.id.mainFrame);
-        } else {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count == 0) {
             super.onBackPressed();
+        } else {
+            getSupportFragmentManager().popBackStack();
         }
     }
+
     private void requestStoragePermission() {
         new AlertDialog.Builder(this)
                 .setTitle("Permission needed")
