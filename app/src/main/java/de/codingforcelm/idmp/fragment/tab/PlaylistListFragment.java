@@ -1,14 +1,10 @@
 package de.codingforcelm.idmp.fragment.tab;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -20,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.codingforcelm.idmp.MenuIdentifier;
 import de.codingforcelm.idmp.PhysicalAlbum;
@@ -28,6 +25,8 @@ import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
+import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
+import de.codingforcelm.idmp.structure.playlist.model.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
 
 public class PlaylistListFragment extends NameAwareFragment {
@@ -95,20 +94,21 @@ public class PlaylistListFragment extends NameAwareFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-        contextMenu.add(MenuIdentifier.MENU_PLAYLISTLIST, DELETE_PLAYLIST, 0, "Delete Playlist");
+        contextMenu.add(MenuIdentifier.GROUP_PLAYLISTLIST, MenuIdentifier.DELETE_PLAYLIST, 1, R.string.delete_playlist);
         super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
     }
 
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getGroupId() != MenuIdentifier.MENU_PLAYLISTLIST){
+        if(item.getGroupId() != MenuIdentifier.GROUP_PLAYLISTLIST){
             return false;
         }
         Log.e(LOG_TAG, "--onContextItemSelected--");
 
         switch (item.getItemId()) {
-            case DELETE_PLAYLIST:
+
+            case MenuIdentifier.DELETE_PLAYLIST:
                 Log.e(LOG_TAG, "menu item: "+item.toString()+" selected");
                  playlistViewModel.getPlaylist(playlistID).observe(getViewLifecycleOwner(), playlistWithEntries -> {
                      if(playlistWithEntries != null){
