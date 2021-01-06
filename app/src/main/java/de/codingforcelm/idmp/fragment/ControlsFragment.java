@@ -49,6 +49,7 @@ public class ControlsFragment  extends NameAwareFragment {
         } else {
             playPauseButton.setImageResource(R.drawable.ic_control_play);
         }
+        applyMetadata(((MainActivity)getActivity()).getMetadata());
     }
 
     public void applyMetadata(MediaMetadataCompat metadata) {
