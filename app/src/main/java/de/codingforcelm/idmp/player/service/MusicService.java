@@ -2,17 +2,14 @@ package de.codingforcelm.idmp.player.service;
 
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.icu.text.Transliterator;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
@@ -20,7 +17,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.ResultReceiver;
-import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -28,31 +24,24 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
-import android.widget.MediaController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
 import java.io.IOException;
-import java.io.PipedWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Random;
 
 import de.codingforcelm.idmp.MainActivity;
-import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
 import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
+import de.codingforcelm.idmp.structure.queue.SongQueue;
 
 public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 
@@ -114,7 +103,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private AudioLoader audioLoader;
     private IntentFilter intentFilter;
     private BecomingNoisyReceiver noisyReceiver;
-    private Queue<String> queue;
+    private SongQueue queue;
     private long currMediaId;
 
     @Override
@@ -123,7 +112,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         super.onCreate();
         songPosition = 0;
         player = new MediaPlayer();
-        queue = new LinkedList<>();
+        queue = SongQueue.getInstance();
         initMusicPlayer();
 
         paused = true;
@@ -384,7 +373,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         Log.e(LOG_TAG, "nextSong");
         int nextpos = -1;
         if(!queue.isEmpty()) {
-            String next = queue.remove();
+            String next = queue.dequeue();
             Uri trackUri = null;
             try {
                 trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.valueOf(next));
@@ -644,7 +633,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         throw new IllegalStateException("missing mediaid");
                     }
                     String mediaId = extras.getString(KEY_MEDIA_ID);
-                    queue.add(mediaId);
+                    queue.enqueue(mediaId);
                     break;
             }
         }
