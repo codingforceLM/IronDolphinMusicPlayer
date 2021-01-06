@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.structure.queue.OnQueueChangedListener;
 
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
     private List<PhysicalSong> songList;

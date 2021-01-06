@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
 import de.codingforcelm.idmp.PhysicalAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.player.service.MusicService;
 import de.codingforcelm.idmp.structure.playlist.Playlist;
 import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
 import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
@@ -130,7 +132,16 @@ public class AlbumListFragment extends NameAwareFragment {
                 Log.e(LOG_TAG, "waiting for submenu");
                 break;
             case MenuIdentifier.ADD_TO_QUEUE:
-                //TODO implement
+                AudioLoader audioLoader = new AudioLoader(this.getContext());
+                ArrayList<PhysicalSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
+                MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+                for(PhysicalSong song : list) {
+                    Bundle b = new Bundle();
+                    String currSongId = String.valueOf(song.getId());
+                    b.putString(MusicService.KEY_MEDIA_ID, currSongId);
+                    controller.sendCommand(MusicService.COMMAND_ENQUEUE, b, null);
+                    Log.e(LOG_TAG, "added mediaID: "+currSongId+ "to Queue");
+                }
                 Log.e(LOG_TAG, "added albumID: "+currAlbumID+ " to Queue");
                 break;
             default:

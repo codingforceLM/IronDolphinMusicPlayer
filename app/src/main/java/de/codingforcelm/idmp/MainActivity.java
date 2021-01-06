@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -36,9 +35,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -52,13 +49,14 @@ import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
+
 import de.codingforcelm.idmp.fragment.tab.AlbumFragment;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
+
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
-import de.codingforcelm.idmp.fragment.TestFragment;
+import de.codingforcelm.idmp.fragment.QueueFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -400,11 +398,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_tabPlayer:
                 fragmentClass = TabFragment.class;
                 break;
-            case R.id.nav_statistics:
-                fragmentClass = StatisticsFragment.class;
+            case R.id.nav_queue:
+                fragmentClass = QueueFragment.class;
                 break;
             case R.id.nav_test:
-                fragmentClass = TestFragment.class;
+                fragmentClass = StatisticsFragment.class;
                 break;
             default:
                 Log.e(LOG_TAG, "unknown navigation selected");

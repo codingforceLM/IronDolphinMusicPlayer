@@ -2,6 +2,7 @@ package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
 
+import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 
@@ -192,8 +193,11 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
             case MenuIdentifier.ADD_TO_PLAYLIST:
                 Log.e(LOG_TAG, "waiting for submenu");
             case MenuIdentifier.ADD_TO_QUEUE:
-                //TODO implement
-                Log.e(LOG_TAG, "added mediaID: " + currSongId + "to Queue");
+                Bundle b = new Bundle();
+                b.putString(MusicService.KEY_MEDIA_ID, String.valueOf(currSongId));
+                MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+                controller.sendCommand(MusicService.COMMAND_ENQUEUE, b, null);
+                Log.e(LOG_TAG, "added mediaID: "+currSongId+ "to Queue");
                 break;
             default:
                 Log.e(LOG_TAG, "unexpected menu item clicked" + item.toString());
