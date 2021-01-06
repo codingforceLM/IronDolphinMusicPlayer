@@ -288,28 +288,15 @@ public class MainActivity extends AppCompatActivity {
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             BigPlayerFragment bpf = (BigPlayerFragment) fragmentManager.findFragmentByTag(BigPlayerFragment.class.getSimpleName());
-            TabFragment tab = (TabFragment) fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName());
-            AlbumFragment album = (AlbumFragment) fragmentManager.findFragmentByTag(AlbumFragment.class.getSimpleName());
             ControlsFragment ctrl = null;
 
             if (bpf != null) {
                 bpf.applyMetadata(metadata);
             }
-            if(tab != null){
-                ctrl = (ControlsFragment) tab.getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName());
-                if (ctrl != null) {
-                    ctrl.applyMetadata(metadata);
-                }
-            }
-            if(album != null){
-                ctrl = (ControlsFragment) album.getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName());
-                if (ctrl != null) {
-                    ctrl.applyMetadata(metadata);
-                }
-            }
+
             List<Fragment> fragments = fragmentManager.getFragments();
             for (Fragment f : fragments) {
-                if (f instanceof PlaylistFragment && f != null && !f.isDetached()) {
+                if (f != null && !f.isDetached()) {
                     ctrl = (ControlsFragment) f.getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName());
                     if (ctrl != null) {
                         ctrl.applyMetadata(metadata);
