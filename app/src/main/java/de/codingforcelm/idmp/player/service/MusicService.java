@@ -684,17 +684,20 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             @Override
                             public void run() {
                                 repo.getPlaylist(listId).observeForever(playlistWithEntries -> {
-                                    List<PhysicalSong> songs = new ArrayList<>();
-                                    for(PlaylistEntry entry : playlistWithEntries.getEntries()) {
-                                        PhysicalSong s = audioLoader.getSong(entry.getMediaId());
-                                        if(s != null) {
-                                            songs.add(s);
+                                    if(context.startsWith(CONTEXT_PREFIX_PLAYLIST)) {
+                                        Log.e(LOG_TAG, "Load playlist");
+                                        List<PhysicalSong> songs = new ArrayList<>();
+                                        for(PlaylistEntry entry : playlistWithEntries.getEntries()) {
+                                            PhysicalSong s = audioLoader.getSong(entry.getMediaId());
+                                            if(s != null) {
+                                                songs.add(s);
+                                            }
                                         }
+                                        songList = songs;
+                                        setSongPositionFromMediaId(Long.valueOf(mediaId));
+                                        updateSession();
+                                        notifyLoadedAndPlay(mediaId, finalTrackUri, player.isPlaying());
                                     }
-                                    songList = songs;
-                                    setSongPositionFromMediaId(Long.valueOf(mediaId));
-                                    updateSession();
-                                    notifyLoadedAndPlay(mediaId, finalTrackUri, player.isPlaying());
                                 });
                             }
                         });
