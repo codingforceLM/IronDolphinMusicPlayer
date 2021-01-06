@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,11 @@ public interface PlayListDao {
     @Query("DELETE FROM playlist")
     void deletePlaylist();
 
+    @Transaction
     @Query("SELECT * FROM playlist")
     LiveData<List<PlaylistWithEntries>> getAll();
 
+    @Transaction
     @Query("SELECT * FROM playlist WHERE listId = :id")
     LiveData<PlaylistWithEntries> getPlaylist(String id);
 }
