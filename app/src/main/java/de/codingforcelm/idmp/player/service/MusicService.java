@@ -115,6 +115,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private IntentFilter intentFilter;
     private BecomingNoisyReceiver noisyReceiver;
     private Queue<String> queue;
+    private long currMediaId;
 
     @Override
     public void onCreate() {
@@ -341,6 +342,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         audioLoader = new AudioLoader(this);
         this.setSongList(audioLoader.getSongs());
 
+        currMediaId = songList.get(songPosition).getId();
+
         player.reset();
         long curr = songList.get(songPosition).getId();
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, curr);
@@ -389,6 +392,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 Log.e(LOG_TAG, "Couldnt parse MediaId");
                 throw new IllegalStateException("Couldnt parse MediaId");
             }
+            currMediaId = Long.valueOf(next);
             playSong(trackUri, true);
             return;
         }
@@ -404,6 +408,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             }
         }
         if(nextpos >= 0 && nextpos < songList.size()) {
+            currMediaId = songList.get(songPosition).getId();
             this.playSong(nextpos, true);
         }
     }
@@ -413,6 +418,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         if(nextpos < 0) {
             nextpos = songList.size() - 1;
         }
+        currMediaId = songList.get(songPosition).getId();
         this.playSong(nextpos, false);
     }
 
@@ -491,7 +497,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, player.getCurrentPosition(), 1.0f);
         }
 
-        PhysicalSong song = songList.get(songPosition);
+        PhysicalSong song = audioLoader.getSong(currMediaId);
 
         MediaMetadataCompat.Builder dataBuilder = new MediaMetadataCompat.Builder();
 
@@ -547,6 +553,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         if(index > -1) {
             Log.e(LOG_TAG, "update songPosition");
             songPosition = index;
+            currMediaId = mediaId;
         } else {
             Log.e(LOG_TAG, "song wasnt found in given songList");
             throw new IllegalStateException("song not loaded");
