@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -127,7 +128,10 @@ public class SongListFragment extends NameAwareFragment {
             case MenuIdentifier.ADD_TO_PLAYLIST:
                 Log.e(LOG_TAG, "waiting for submenu");
             case MenuIdentifier.ADD_TO_QUEUE:
-                //TODO implement
+                Bundle b = new Bundle();
+                b.putString(MusicService.KEY_MEDIA_ID, String.valueOf(currSongId));
+                MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
+                controller.sendCommand(MusicService.COMMAND_ENQUEUE, b, null);
                 Log.e(LOG_TAG, "added mediaID: "+currSongId+ "to Queue");
                 break;
             default:

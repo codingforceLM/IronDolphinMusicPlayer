@@ -40,7 +40,9 @@ import androidx.media.session.MediaButtonReceiver;
 import java.io.IOException;
 import java.io.PipedWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 import de.codingforcelm.idmp.MainActivity;
@@ -67,6 +69,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String COMMAND_LOAD_SONGLIST = "de.codingforcelm.idmp.player.service.LOAD_SONGLIST";
     public static final String COMMAND_LOAD_ALBUM = "de.codingforcelm.idmp.player.service.LOAD_ALBUM";
     public static final String COMMAND_RELOAD_PLAYLIST = "de.codingforcelm.idmp.player.service.RELOAD_PLAYLIST";
+    public static final String COMMAND_ENQUEUE = "de.codingforcelm.idmp.player.service.ENQUEUE";
 
     public static final String KEY_ARTIST = "de.codingforcelm.idmp.player.service.ARTIST";
     public static final String KEY_ALBUM = "de.codingforcelm.idmp.player.service.ALBUM";
@@ -79,6 +82,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public static final String KEY_CONTEXT_TYPE = "de.codingforcelm.idmp.player.service.CONTEXT_TYPE";
     public static final String KEY_ALBUM_ID = "de.codingforcelm.idmp.player.service.ALBUM_ID";
     public static final String KEY_PLAYLIST_ID = "de.codingforcelm.idmp.player.service.PLAYLIST_ID";
+    public static final String KEY_MEDIA_ID = "de.codingforcelm.idmp.player.service.MEDIA_ID";
 
     public static final String CONTEXT_TYPE_SONGLIST = "de.codingforcelm.idmp.player.service.TYPE_SONGLIST";
     public static final String CONTEXT_TYPE_ALBUM = "de.codingforcelm.idmp.player.service.TYPE_ALBUM";
@@ -110,6 +114,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private AudioLoader audioLoader;
     private IntentFilter intentFilter;
     private BecomingNoisyReceiver noisyReceiver;
+    private Queue<String> queue;
 
     @Override
     public void onCreate() {
@@ -117,6 +122,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         super.onCreate();
         songPosition = 0;
         player = new MediaPlayer();
+        queue = new LinkedList<>();
         initMusicPlayer();
 
         paused = true;
@@ -374,6 +380,18 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public void nextSong() {
         Log.e(LOG_TAG, "nextSong");
         int nextpos = -1;
+        if(!queue.isEmpty()) {
+            String next = queue.remove();
+            Uri trackUri = null;
+            try {
+                trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.valueOf(next));
+            } catch(NumberFormatException nfe) {
+                Log.e(LOG_TAG, "Couldnt parse MediaId");
+                throw new IllegalStateException("Couldnt parse MediaId");
+            }
+            playSong(trackUri, true);
+            return;
+        }
         if(shuffle) {
             Log.e(LOG_TAG, "shuffle next song");
             nextpos = new Random().nextInt(songList.size());
@@ -581,6 +599,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                     if(!context.equals(String.valueOf(id))) {
                         songList = new AudioLoader(getApplicationContext()).getSongsFromAlbum(id);
                     }
+                    break;
                 case COMMAND_RELOAD_PLAYLIST:
                     Log.e(LOG_TAG, "received COMMAND_RELOAD_ALBUM");
                     if(!extras.containsKey(KEY_CONTEXT)) {
@@ -611,6 +630,15 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             }
                         });
                     }
+                    break;
+                case COMMAND_ENQUEUE:
+                    Log.e(LOG_TAG, "received COMMAND_ENQUEUE");
+                    if(!extras.containsKey(KEY_MEDIA_ID)) {
+                        throw new IllegalStateException("missing mediaid");
+                    }
+                    String mediaId = extras.getString(KEY_MEDIA_ID);
+                    queue.add(mediaId);
+                    break;
             }
         }
 
