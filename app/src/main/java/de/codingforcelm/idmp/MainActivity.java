@@ -47,10 +47,13 @@ import java.util.List;
 
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
+import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.StatisticsFragment;
+import de.codingforcelm.idmp.fragment.tab.AlbumFragment;
+import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.fragment.TestFragment;
@@ -283,9 +286,35 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
-            BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            BigPlayerFragment bpf = (BigPlayerFragment) fragmentManager.findFragmentByTag(BigPlayerFragment.class.getSimpleName());
+            TabFragment tab = (TabFragment) fragmentManager.findFragmentByTag(TabFragment.class.getSimpleName());
+            AlbumFragment album = (AlbumFragment) fragmentManager.findFragmentByTag(AlbumFragment.class.getSimpleName());
+            ControlsFragment ctrl = null;
+
             if (bpf != null) {
                 bpf.applyMetadata(metadata);
+            }
+            if(tab != null){
+                ctrl = (ControlsFragment) tab.getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName());
+                if (ctrl != null) {
+                    ctrl.applyMetadata(metadata);
+                }
+            }
+            if(album != null){
+                ctrl = (ControlsFragment) album.getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName());
+                if (ctrl != null) {
+                    ctrl.applyMetadata(metadata);
+                }
+            }
+            List<Fragment> fragments = fragmentManager.getFragments();
+            for (Fragment f : fragments) {
+                if (f instanceof PlaylistFragment && f != null && !f.isDetached()) {
+                    ctrl = (ControlsFragment) f.getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName());
+                    if (ctrl != null) {
+                        ctrl.applyMetadata(metadata);
+                    }
+                }
             }
             mediaMetadata = metadata;
         }

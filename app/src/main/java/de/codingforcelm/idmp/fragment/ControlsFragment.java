@@ -1,23 +1,26 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import de.codingforcelm.idmp.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.TabFragment;
+import de.codingforcelm.idmp.player.service.MusicService;
 
 public class ControlsFragment  extends NameAwareFragment {
     private ImageView playPauseButton;
-    private ImageView nextButton;
-    private ImageView prevButton;
     private ImageView image;
+    private TextView songTitle;
+    private TextView songArtist;
 
     public ControlsFragment() {
         setFragmentname(this.getClass().getSimpleName());
@@ -34,12 +37,12 @@ public class ControlsFragment  extends NameAwareFragment {
 
         playPauseButton = view.findViewById(R.id.tp_playPauseButton);
         playPauseButton.setOnClickListener(new ControlsFragment.PlayPauseOnClickListener());
-        nextButton = view.findViewById(R.id.tp_nextButton);
-        nextButton.setOnClickListener(new ControlsFragment.NextOnClickListener());
-        prevButton = view.findViewById(R.id.tp_prevButton);
-        prevButton.setOnClickListener(new ControlsFragment.PrevOnClickListener());
         image = view.findViewById(R.id.tp_image);
         image.setOnClickListener(new ControlsFragment.ImageOnClickListener());
+        songTitle = view.findViewById(R.id.tp_songTitle);
+        songTitle.setSelected(true);
+        songArtist = view.findViewById(R.id.tp_songArtist);
+        songArtist.setSelected(true);
 
         if(((MainActivity)getActivity()).isPlaying()) {
             playPauseButton.setImageResource(R.drawable.ic_control_pause);
@@ -48,6 +51,12 @@ public class ControlsFragment  extends NameAwareFragment {
         }
     }
 
+    public void applyMetadata(MediaMetadataCompat metadata) {
+        String title = metadata.getString(MusicService.KEY_TITLE);
+        String artist = metadata.getString(MusicService.KEY_ARTIST);
+        songTitle.setText(title);
+        songArtist.setText(artist);
+    }
 
 
     private class NextOnClickListener implements View.OnClickListener {
