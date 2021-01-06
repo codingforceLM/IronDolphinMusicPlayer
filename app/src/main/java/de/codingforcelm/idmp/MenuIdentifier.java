@@ -12,7 +12,8 @@ public final class MenuIdentifier {
     public static final int ADD_TO_PLAYLIST = 101;
     public static final int ADD_TO_QUEUE = 102;
     public static final int DELETE_PLAYLIST = 103;
-
+    public static final int REMOVE_FROM_PLAYLIST = 104;
     //OFFSET
     public static final int OFFSET_PLAYLISTID = 100000;
+
 }

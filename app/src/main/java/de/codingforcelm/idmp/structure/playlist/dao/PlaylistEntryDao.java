@@ -16,10 +16,10 @@ import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
 @Dao
 public interface PlaylistEntryDao {
     @Insert
-    void insertAll(PlaylistEntry... playlistentries);
+    void insertAll(PlaylistEntry... entries);
 
     @Delete
-    void delete(PlaylistEntry playlist);
+    void delete(PlaylistEntry entry);
 
     @Query("DELETE FROM playlistentry")
     void deletePlaylistEntries();
