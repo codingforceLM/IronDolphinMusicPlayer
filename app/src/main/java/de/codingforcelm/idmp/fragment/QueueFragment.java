@@ -6,10 +6,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.codingforcelm.idmp.PhysicalAlbum;
+import de.codingforcelm.idmp.PhysicalSong;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.fragment.adapter.QueueCardAdapter;
+import de.codingforcelm.idmp.structure.queue.SongQueue;
 
 public class QueueFragment extends NameAwareFragment {
+
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView recyclerView;
+    private AudioLoader audioLoader;
+    private QueueCardAdapter adapter;
 
     public QueueFragment() {
         //needed default constructor
@@ -43,6 +58,25 @@ public class QueueFragment extends NameAwareFragment {
             ).commit();
         }
 
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView = view.findViewById(R.id.recyclerView);
+        audioLoader = new AudioLoader(getContext());
 
+        SongQueue queue = SongQueue.getInstance();
+        List<PhysicalSong> songs = new ArrayList<>();
+        List<String> ids = queue.getListRepresentation();
+
+        for(String id : ids) {
+            PhysicalSong s = audioLoader.getSong(Long.parseLong(id));
+            if(s != null) {
+                songs.add(s);
+            }
+        }
+
+        adapter = new QueueCardAdapter(songs, getContext());
+        queue.registerOnQueueChangedListener(adapter);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
     }
 }

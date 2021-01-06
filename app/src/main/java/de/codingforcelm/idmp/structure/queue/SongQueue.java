@@ -2,6 +2,7 @@ package de.codingforcelm.idmp.structure.queue;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import de.codingforcelm.idmp.music.Song;
@@ -9,8 +10,8 @@ import de.codingforcelm.idmp.music.Song;
 public class SongQueue {
 
     private static volatile SongQueue INSTANCE;
-
-    private Queue<String> queue;
+    private LinkedList<String> queue;
+    private OnQueueChangedListener listener;
 
     protected SongQueue() {
         queue = new LinkedList<>();
@@ -25,10 +26,17 @@ public class SongQueue {
 
     public void enqueue(String id) {
         queue.add(id);
+        if(listener != null) {
+            listener.onQueueChanged(queue);
+        }
     }
 
     public String dequeue() {
-        return queue.remove();
+        String item = queue.remove();
+        if(listener != null) {
+            listener.onQueueChanged(queue);
+        }
+        return item;
     }
 
     public Iterator<String> iterator() {
@@ -39,4 +47,11 @@ public class SongQueue {
         return queue.isEmpty();
     }
 
+    public List<String> getListRepresentation() {
+        return queue;
+    }
+
+    public void registerOnQueueChangedListener(OnQueueChangedListener listener) {
+        this.listener = listener;
+    }
 }
