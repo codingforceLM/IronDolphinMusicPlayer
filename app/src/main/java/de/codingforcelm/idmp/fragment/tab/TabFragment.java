@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +47,8 @@ public class TabFragment extends NameAwareFragment {
         ((MainActivity)getContext()).setTitle("TabPlayer");
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
-            fragmentTransaction.attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()));
+        if (fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
+            fragmentTransaction.attach(fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()));
         } else {
             fragmentTransaction.add(R.id.tp_controls_frame, new ControlsFragment(), ControlsFragment.class.getSimpleName());
         }
@@ -111,5 +112,9 @@ public class TabFragment extends NameAwareFragment {
         for(int i=0; i<tabTexts.length; i++) {
             layout.getTabAt(i).setText(tabTexts[i]);
         }
+    }
+
+    public void applyMetadata(MediaMetadataCompat metadata) {
+
     }
 }
