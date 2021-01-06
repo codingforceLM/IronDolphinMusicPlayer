@@ -27,4 +27,5 @@
     <string name="delete_playlist">Delete Playlist</string>
     <string name="remove_from_playlist">Remove from Playlist</string>
     <string name="queue">Queue</string>
+    <string name="playpausebutton">playPauseButton</string>
 </resources>
