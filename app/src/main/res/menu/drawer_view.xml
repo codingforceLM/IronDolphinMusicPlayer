@@ -5,11 +5,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_tabPlayer"
-            android:icon="@drawable/ic_baseline_outdoor_grill_24"
+            android:icon="@drawable/ic_tabplayer"
             android:title="@string/tabplayer" />
         <item
             android:id="@+id/nav_queue"
-            android:icon="@drawable/ic_baseline_outdoor_grill_24"
+            android:icon="@drawable/ic_queue"
             android:title="@string/queue" />
     </group>
 </menu>

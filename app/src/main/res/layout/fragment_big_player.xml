@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="70"
-        android:src="@drawable/ic_baseline_outdoor_grill_24" />
+        android:src="@drawable/ic_item_default_image" />
 
     <Space
         android:layout_width="match_parent"
