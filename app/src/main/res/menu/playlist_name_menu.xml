@@ -5,6 +5,6 @@
         android:id="@+id/apn_action_accept"
         android:icon="@drawable/ic_accept"
         android:orderInCategory="100"
-        app:showAsAction="always"
-        android:title="Accept"/>
+        android:title="Accept"
+        app:showAsAction="always" />
 </menu>

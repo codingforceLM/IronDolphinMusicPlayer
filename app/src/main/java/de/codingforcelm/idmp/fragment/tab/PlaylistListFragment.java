@@ -16,23 +16,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import de.codingforcelm.idmp.MenuIdentifier;
-import de.codingforcelm.idmp.PhysicalAlbum;
+import de.codingforcelm.idmp.activity.MenuIdentifier;
+import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistEntryViewModel;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
 
 public class PlaylistListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "PlaylistListFragment";
-    private static final int DELETE_PLAYLIST = 0;
-    private ArrayList<PhysicalAlbum> albumList;
+    private ArrayList<LocaleAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private PlaylistCardAdapter adapter;
@@ -57,7 +53,7 @@ public class PlaylistListFragment extends NameAwareFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         albumList = new AudioLoader(this.getContext()).getAlbums();
-        searchView =  view.findViewById(R.id.searchView);
+        searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
@@ -69,8 +65,8 @@ public class PlaylistListFragment extends NameAwareFragment {
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
             adapter.setData(playlistWithEntries);
         });
-        adapter.setOnLongItemClickListener((v, position,listID) -> {
-            currItemPos=position;
+        adapter.setOnLongItemClickListener((v, position, listID) -> {
+            currItemPos = position;
             playlistID = listID;
             v.showContextMenu();
 
@@ -101,7 +97,7 @@ public class PlaylistListFragment extends NameAwareFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getGroupId() != MenuIdentifier.GROUP_PLAYLISTLIST){
+        if (item.getGroupId() != MenuIdentifier.GROUP_PLAYLISTLIST) {
             return false;
         }
         Log.e(LOG_TAG, "--onContextItemSelected--");
@@ -109,30 +105,30 @@ public class PlaylistListFragment extends NameAwareFragment {
         switch (item.getItemId()) {
 
             case MenuIdentifier.DELETE_PLAYLIST:
-                Log.e(LOG_TAG, "menu item: "+item.toString()+" selected");
-                 playlistViewModel.getPlaylist(playlistID).observe(getViewLifecycleOwner(), playlistWithEntries -> {
-                     if(playlistWithEntries != null){
-                         Playlist playlist = playlistWithEntries.getPlaylist();
-                         AlertDialog alertDialog = new AlertDialog.Builder(this.getContext()).create();
-                         alertDialog.setTitle("Warning deleting Playlist");
-                         alertDialog.setMessage("Are you sure you want to delete\n\""+playlist.getName()+"\"\nThis action can not be undone!");
-                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "YES",
-                                 (dialog, which) -> {
-                                     playlistViewModel.deletePlaylist(playlist);
-                                     Fragment fragment = getChildFragmentManager().findFragmentByTag(PlaylistFragment.class.getSimpleName()+"_"+currItemPos);
-                                     if(fragment != null){
-                                         getChildFragmentManager().beginTransaction().remove(fragment).commit();
-                                     }
-                                     dialog.dismiss();
-                                 });
-                         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
-                                 (dialog, which) -> dialog.dismiss());
-                         alertDialog.show();
-                     }
+                Log.e(LOG_TAG, "menu item: " + item.toString() + " selected");
+                playlistViewModel.getPlaylist(playlistID).observe(getViewLifecycleOwner(), playlistWithEntries -> {
+                    if (playlistWithEntries != null) {
+                        Playlist playlist = playlistWithEntries.getPlaylist();
+                        AlertDialog alertDialog = new AlertDialog.Builder(this.getContext()).create();
+                        alertDialog.setTitle("Warning deleting Playlist");
+                        alertDialog.setMessage("Are you sure you want to delete\n\"" + playlist.getName() + "\"\nThis action can not be undone!");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "YES",
+                                (dialog, which) -> {
+                                    playlistViewModel.deletePlaylist(playlist);
+                                    Fragment fragment = getChildFragmentManager().findFragmentByTag(PlaylistFragment.class.getSimpleName() + "_" + currItemPos);
+                                    if (fragment != null) {
+                                        getChildFragmentManager().beginTransaction().remove(fragment).commit();
+                                    }
+                                    dialog.dismiss();
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                                (dialog, which) -> dialog.dismiss());
+                        alertDialog.show();
+                    }
                 });
                 break;
             default:
-                Log.e(LOG_TAG, "unexpected menu item clicked"+item.toString());
+                Log.e(LOG_TAG, "unexpected menu item clicked" + item.toString());
                 break;
         }
         return true;

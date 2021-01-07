@@ -5,19 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.PhysicalAlbum;
-import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.QueueCardAdapter;
-import de.codingforcelm.idmp.structure.queue.SongQueue;
+import de.codingforcelm.idmp.queue.SongQueue;
 
 public class QueueFragment extends NameAwareFragment {
 
@@ -41,7 +39,6 @@ public class QueueFragment extends NameAwareFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_queue, container, false);
     }
 
@@ -63,12 +60,12 @@ public class QueueFragment extends NameAwareFragment {
         audioLoader = new AudioLoader(getContext());
 
         SongQueue queue = SongQueue.getInstance();
-        List<PhysicalSong> songs = new ArrayList<>();
+        List<LocaleSong> songs = new ArrayList<>();
         List<String> ids = queue.getListRepresentation();
 
-        for(String id : ids) {
-            PhysicalSong s = audioLoader.getSong(Long.parseLong(id));
-            if(s != null) {
+        for (String id : ids) {
+            LocaleSong s = audioLoader.getSong(Long.parseLong(id));
+            if (s != null) {
                 songs.add(s);
             }
         }

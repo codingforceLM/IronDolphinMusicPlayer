@@ -1,8 +1,6 @@
 package de.codingforcelm.idmp.database;
 
 import android.content.Context;
-import android.provider.MediaStore;
-import android.support.v4.app.INotificationSideChannel;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,16 +9,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import de.codingforcelm.idmp.audio.AudioLoader;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
-import de.codingforcelm.idmp.structure.playlist.dao.PlayListDao;
-import de.codingforcelm.idmp.structure.playlist.dao.PlaylistEntryDao;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
+import de.codingforcelm.idmp.database.dao.PlayListDao;
+import de.codingforcelm.idmp.database.dao.PlaylistEntryDao;
 
 @Database(
         entities = {
@@ -32,15 +27,9 @@ import de.codingforcelm.idmp.structure.playlist.dao.PlaylistEntryDao;
 public abstract class IDMPRoomDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = "IDMPRoomDatabase";
-
-    public abstract PlayListDao playListDao();
-    public abstract PlaylistEntryDao playlistEntryDao();
-
-    private static volatile IDMPRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-
-    private static RoomDatabase.Callback databaseCallback = new RoomDatabase.Callback() {
+    private static final RoomDatabase.Callback databaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             Log.e(LOG_TAG, "onCreate");
@@ -50,7 +39,7 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
             // Comment this out in production as it will delete the whole database on startup
             // You may need to adjust the values depending on you accessible local files
             databaseWriteExecutor.execute(() -> {
-                Log.e(LOG_TAG,"Add initial testing data");
+                Log.e(LOG_TAG, "Add initial testing data");
                 /*
                 PlayListDao pld = INSTANCE.playListDao();
                 PlaylistEntryDao ped = INSTANCE.playlistEntryDao();
@@ -80,11 +69,12 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
         }
 
     };
+    private static volatile IDMPRoomDatabase INSTANCE;
 
     public static IDMPRoomDatabase getInstance(Context context) {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             synchronized (IDMPRoomDatabase.class) {
-                if(INSTANCE == null) {
+                if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(), IDMPRoomDatabase.class, "idmp_database")
                             .addCallback(databaseCallback)
                             .build();
@@ -93,5 +83,9 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract PlayListDao playListDao();
+
+    public abstract PlaylistEntryDao playlistEntryDao();
 
 }

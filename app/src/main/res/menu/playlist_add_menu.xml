@@ -5,6 +5,6 @@
         android:id="@+id/ma_action_add"
         android:icon="@drawable/ic_add"
         android:orderInCategory="100"
-        app:showAsAction="always"
-        android:title="Add"/>
+        android:title="Add"
+        app:showAsAction="always" />
 </menu>

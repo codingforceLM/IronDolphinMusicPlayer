@@ -18,25 +18,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.MenuIdentifier;
-import de.codingforcelm.idmp.PhysicalSong;
-import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.activity.MenuIdentifier;
+import de.codingforcelm.idmp.locale.LocaleAlbum;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
-import de.codingforcelm.idmp.PhysicalAlbum;
-import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
-import de.codingforcelm.idmp.player.service.MusicService;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistEntryViewModel;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
+import de.codingforcelm.idmp.service.MusicService;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
+import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
+import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
+import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
 
 public class AlbumListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "AlbumListFragment";
     private static final int ADD_TO_PLAYLIST = 0;
-    private ArrayList<PhysicalAlbum> albumList;
+    private ArrayList<LocaleAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private AlbumCardAdapter adapter;
@@ -46,10 +44,10 @@ public class AlbumListFragment extends NameAwareFragment {
     private List<PlaylistWithEntries> currPlaylistWithEntries;
     private long currAlbumID;
 
-  public AlbumListFragment() {
-      //needed default constructor
-      setFragmentname(this.getClass().getSimpleName());
-  }
+    public AlbumListFragment() {
+        //needed default constructor
+        setFragmentname(this.getClass().getSimpleName());
+    }
 
 
     @Override
@@ -60,14 +58,14 @@ public class AlbumListFragment extends NameAwareFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         albumList = new AudioLoader(this.getContext()).getAlbums();
-        searchView =  view.findViewById(R.id.searchView);
+        searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
 
         layoutManager = new LinearLayoutManager(view.getContext());
 
-        adapter = new AlbumCardAdapter(albumList,this.getContext());
+        adapter = new AlbumCardAdapter(albumList, this.getContext());
 
         adapter.setOnLongItemClickListener((v, position, album) -> {
             currAlbumID = album;
@@ -98,9 +96,9 @@ public class AlbumListFragment extends NameAwareFragment {
         contextMenu.add(MenuIdentifier.GROUP_ALBUMLIST, MenuIdentifier.ADD_TO_QUEUE, 0, R.string.add_to_queue);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_ALBUMLIST, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
-            currPlaylistWithEntries=playlistWithEntries;
-            for(int i=0; i < playlistWithEntries.size(); i++){
-                subMenu.add(MenuIdentifier.GROUP_ALBUMLIST, i+MenuIdentifier.OFFSET_PLAYLISTID, i, playlistWithEntries.get(i).getPlaylist().getName());
+            currPlaylistWithEntries = playlistWithEntries;
+            for (int i = 0; i < playlistWithEntries.size(); i++) {
+                subMenu.add(MenuIdentifier.GROUP_ALBUMLIST, i + MenuIdentifier.OFFSET_PLAYLISTID, i, playlistWithEntries.get(i).getPlaylist().getName());
             }
             super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
         });
@@ -108,22 +106,22 @@ public class AlbumListFragment extends NameAwareFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getGroupId() != MenuIdentifier.GROUP_ALBUMLIST){
+        if (item.getGroupId() != MenuIdentifier.GROUP_ALBUMLIST) {
             return false;
         }
-        Log.e(LOG_TAG, "--onContextItemSelected--"+item.getItemId());
+        Log.e(LOG_TAG, "--onContextItemSelected--" + item.getItemId());
 
-        if(item.getItemId() >= MenuIdentifier.OFFSET_PLAYLISTID){
-            String playlistID = currPlaylistWithEntries.get(item.getItemId()-MenuIdentifier.OFFSET_PLAYLISTID).getPlaylist().getListId();
+        if (item.getItemId() >= MenuIdentifier.OFFSET_PLAYLISTID) {
+            String playlistID = currPlaylistWithEntries.get(item.getItemId() - MenuIdentifier.OFFSET_PLAYLISTID).getPlaylist().getListId();
             PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
             AudioLoader audioLoader = new AudioLoader(this.getContext());
-            ArrayList<PhysicalSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
+            ArrayList<LocaleSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
             ArrayList<PlaylistEntry> new_entries = new ArrayList<>();
-            for(PhysicalSong song: list){
-                new_entries.add(new PlaylistEntry(song.getId(),playlistID));
+            for (LocaleSong song : list) {
+                new_entries.add(new PlaylistEntry(song.getId(), playlistID));
             }
             playlistEntryViewModel.insertAll(new_entries.toArray(new PlaylistEntry[0]));
-            Log.e(LOG_TAG, "added album with albumID: "+ currAlbumID +", to playlistID: "+playlistID);
+            Log.e(LOG_TAG, "added album with albumID: " + currAlbumID + ", to playlistID: " + playlistID);
             return true;
         }
 
@@ -133,19 +131,19 @@ public class AlbumListFragment extends NameAwareFragment {
                 break;
             case MenuIdentifier.ADD_TO_QUEUE:
                 AudioLoader audioLoader = new AudioLoader(this.getContext());
-                ArrayList<PhysicalSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
+                ArrayList<LocaleSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
                 MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-                for(PhysicalSong song : list) {
+                for (LocaleSong song : list) {
                     Bundle b = new Bundle();
                     String currSongId = String.valueOf(song.getId());
                     b.putString(MusicService.KEY_MEDIA_ID, currSongId);
                     controller.sendCommand(MusicService.COMMAND_ENQUEUE, b, null);
-                    Log.e(LOG_TAG, "added mediaID: "+currSongId+ "to Queue");
+                    Log.e(LOG_TAG, "added mediaID: " + currSongId + "to Queue");
                 }
-                Log.e(LOG_TAG, "added albumID: "+currAlbumID+ " to Queue");
+                Log.e(LOG_TAG, "added albumID: " + currAlbumID + " to Queue");
                 break;
             default:
-                Log.e(LOG_TAG, "unexpected menu item clicked"+item.toString());
+                Log.e(LOG_TAG, "unexpected menu item clicked" + item.toString());
                 break;
         }
         return true;

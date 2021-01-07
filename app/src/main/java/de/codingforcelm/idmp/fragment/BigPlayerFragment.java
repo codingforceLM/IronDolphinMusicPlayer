@@ -14,12 +14,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
-
-import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.fragment.tab.TabFragment;
-import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.service.MusicService;
 
 public class BigPlayerFragment extends NameAwareFragment {
 
@@ -38,7 +35,6 @@ public class BigPlayerFragment extends NameAwareFragment {
     private TextView bp_currentTime;
     private TextView bp_duration;
     private int duration;
-    private SeekBar bp_seekbar;
 
 
     public BigPlayerFragment() {
@@ -56,7 +52,6 @@ public class BigPlayerFragment extends NameAwareFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_big_player, container, false);
     }
 
@@ -86,7 +81,7 @@ public class BigPlayerFragment extends NameAwareFragment {
         bp_duration = view.findViewById(R.id.bp_duration);
 
 
-        if(((MainActivity)getActivity()).isPlaying()) {
+        if (((MainActivity) getActivity()).isPlaying()) {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_pause);
         } else {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_play);
@@ -95,28 +90,28 @@ public class BigPlayerFragment extends NameAwareFragment {
     }
 
     public void applyMetadata(MediaMetadataCompat metadata) {
-        if(!metadata.containsKey(MusicService.KEY_ARTIST)) {
+        if (!metadata.containsKey(MusicService.KEY_ARTIST)) {
             throw new IllegalStateException("Missing artist");
         }
-        if(!metadata.containsKey(MusicService.KEY_ALBUM)) {
+        if (!metadata.containsKey(MusicService.KEY_ALBUM)) {
             throw new IllegalStateException("Missing album");
         }
-        if(!metadata.containsKey(MusicService.KEY_TITLE)) {
+        if (!metadata.containsKey(MusicService.KEY_TITLE)) {
             throw new IllegalStateException("Missing title");
         }
-        if(!metadata.containsKey(MusicService.KEY_DURATION)) {
+        if (!metadata.containsKey(MusicService.KEY_DURATION)) {
             throw new IllegalStateException("Missing duration");
         }
-        if(!metadata.containsKey(MusicService.KEY_SHUFFLE)) {
+        if (!metadata.containsKey(MusicService.KEY_SHUFFLE)) {
             throw new IllegalStateException("Missing shuffle");
         }
-        if(!metadata.containsKey(MusicService.KEY_REPEAT)) {
+        if (!metadata.containsKey(MusicService.KEY_REPEAT)) {
             throw new IllegalStateException("Missing repeat");
         }
 
         String title = metadata.getString(MusicService.KEY_TITLE);
         String artist = metadata.getString(MusicService.KEY_ARTIST);
-        String album =  metadata.getString(MusicService.KEY_ALBUM);
+        String album = metadata.getString(MusicService.KEY_ALBUM);
         boolean shuffle = Boolean.parseBoolean(metadata.getString(MusicService.KEY_SHUFFLE));
         boolean repeat = Boolean.parseBoolean(metadata.getString(MusicService.KEY_REPEAT));
         duration = Integer.parseInt(metadata.getString(MusicService.KEY_DURATION));
@@ -125,41 +120,34 @@ public class BigPlayerFragment extends NameAwareFragment {
         bp_title.setText(title);
         bp_artist.setText(artist);
         bp_album.setText(album);
-        bp_seekBar.setMax(duration/1000);
-        if(seconds<10){
-            bp_duration.setText(minutes+":0"+seconds);
-        }else {
-            bp_duration.setText(minutes+":"+seconds);
+        bp_seekBar.setMax(duration / 1000);
+        if (seconds < 10) {
+            bp_duration.setText(minutes + ":0" + seconds);
+        } else {
+            bp_duration.setText(minutes + ":" + seconds);
         }
 
 
-        if(shuffle){
+        if (shuffle) {
             bp_shuffleButton.setImageResource(R.drawable.ic_control_shuffle_active);
-        }else{
+        } else {
             bp_shuffleButton.setImageResource(R.drawable.ic_control_shuffle);
         }
-        if(repeat){
+        if (repeat) {
             bp_repeatButton.setImageResource(R.drawable.ic_control_repeat_active);
-        }else {
+        } else {
             bp_repeatButton.setImageResource(R.drawable.ic_control_repeat);
         }
 
     }
 
     @Override
-    public void onStart () {
+    public void onStart() {
         super.onStart();
         MediaMetadataCompat c = ((MainActivity) getActivity()).getMetadata();
         applyMetadata(c);
     }
 
-    public void setPlaybackState(boolean play) {
-        if(play) {
-            bp_playPauseButton.setImageResource(R.drawable.ic_control_pause);
-        } else {
-            bp_playPauseButton.setImageResource(R.drawable.ic_control_play);
-        }
-    }
 
     public void setSeekBarTo(int pos) {
         bp_seekBar.setProgress(pos);
@@ -168,10 +156,10 @@ public class BigPlayerFragment extends NameAwareFragment {
     public void setCurrentTime(int time) {
         int seconds = (int) ((time / 1000) % 60);
         int minutes = (int) ((time / 1000) / 60);
-        if(seconds<10){
-            bp_currentTime.setText(minutes+":0"+seconds);
-        }else{
-            bp_currentTime.setText(minutes+":"+seconds);
+        if (seconds < 10) {
+            bp_currentTime.setText(minutes + ":0" + seconds);
+        } else {
+            bp_currentTime.setText(minutes + ":" + seconds);
         }
 
     }
@@ -180,10 +168,10 @@ public class BigPlayerFragment extends NameAwareFragment {
         @Override
         public void onClick(View v) {
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-            if(controller != null) {
+            if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
-                if(tc != null) {
-                    if(((MainActivity)getActivity()).isPlaying()) {
+                if (tc != null) {
+                    if (((MainActivity) getActivity()).isPlaying()) {
                         tc.pause();
                     } else {
                         tc.play();
@@ -204,9 +192,9 @@ public class BigPlayerFragment extends NameAwareFragment {
         @Override
         public void onClick(View v) {
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-            if(controller != null) {
+            if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
-                if(tc != null) {
+                if (tc != null) {
                     tc.skipToNext();
                 }
             }
@@ -217,9 +205,9 @@ public class BigPlayerFragment extends NameAwareFragment {
         @Override
         public void onClick(View v) {
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-            if(controller != null) {
+            if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
-                if(tc != null) {
+                if (tc != null) {
                     tc.skipToPrevious();
                 }
             }
@@ -237,16 +225,16 @@ public class BigPlayerFragment extends NameAwareFragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-               ((MainActivity) getActivity()).onBackPressed();
+            ((MainActivity) getActivity()).onBackPressed();
         }
     }
 
     private class SeekBarOnClickListener implements SeekBar.OnSeekBarChangeListener {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            if(fromUser) {
-                Log.e(LOG_TAG, "SeekBar changed to "+seekBar.getProgress());
-                MediaControllerCompat.getMediaController(getActivity()).getTransportControls().seekTo(seekBar.getProgress()*1000);
+            if (fromUser) {
+                Log.e(LOG_TAG, "SeekBar changed to " + seekBar.getProgress());
+                MediaControllerCompat.getMediaController(getActivity()).getTransportControls().seekTo(seekBar.getProgress() * 1000);
             }
         }
 
@@ -259,9 +247,9 @@ public class BigPlayerFragment extends NameAwareFragment {
         public void onStopTrackingTouch(SeekBar seekBar) {
 
         }
-        //TODO implement
-        }
+
     }
+}
 
 
 

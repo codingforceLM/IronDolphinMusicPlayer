@@ -9,14 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
-
-import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.fragment.tab.TabFragment;
-import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.service.MusicService;
 
-public class ControlsFragment  extends NameAwareFragment {
+public class ControlsFragment extends NameAwareFragment {
     private ImageView playPauseButton;
     private ImageView image;
     private TextView songTitle;
@@ -44,44 +41,33 @@ public class ControlsFragment  extends NameAwareFragment {
         songArtist = view.findViewById(R.id.tp_songArtist);
         songArtist.setSelected(true);
 
-        if(((MainActivity)getActivity()).isPlaying()) {
+        if (((MainActivity) getActivity()).isPlaying()) {
             playPauseButton.setImageResource(R.drawable.ic_control_pause);
         } else {
             playPauseButton.setImageResource(R.drawable.ic_control_play);
         }
-        applyMetadata(((MainActivity)getActivity()).getMetadata());
+        applyMetadata(((MainActivity) getActivity()).getMetadata());
     }
 
     public void applyMetadata(MediaMetadataCompat metadata) {
-        String title = metadata.getString(MusicService.KEY_TITLE);
-        String artist = metadata.getString(MusicService.KEY_ARTIST);
-        songTitle.setText(title);
-        songArtist.setText(artist);
-    }
-
-
-    private class NextOnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-            if(controller != null) {
-                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
-                if(tc != null) {
-                    tc.skipToNext();
-                }
-            }
+        if(metadata != null){
+            String title = metadata.getString(MusicService.KEY_TITLE);
+            String artist = metadata.getString(MusicService.KEY_ARTIST);
+            songTitle.setText(title);
+            songArtist.setText(artist);
         }
     }
+
 
     private class PlayPauseOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-            if(controller != null) {
+            if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
-                if(tc != null) {
-                    if(((MainActivity)getActivity()).isPlaying()) {
+                if (tc != null) {
+                    if (((MainActivity) getActivity()).isPlaying()) {
                         tc.pause();
                     } else {
                         tc.play();
@@ -91,23 +77,11 @@ public class ControlsFragment  extends NameAwareFragment {
         }
     }
 
-    private class PrevOnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-            if(controller != null) {
-                MediaControllerCompat.TransportControls tc = controller.getTransportControls();
-                if(tc != null) {
-                    tc.skipToPrevious();
-                }
-            }
-        }
-    }
 
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            ((MainActivity) getActivity()). placeFragment(BigPlayerFragment.class, R.id.mainFrame);
+            ((MainActivity) getActivity()).placeFragment(BigPlayerFragment.class, R.id.mainFrame);
         }
     }
 }

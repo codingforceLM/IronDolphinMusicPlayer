@@ -14,42 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.MainActivity;
-import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
-
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
+import de.codingforcelm.idmp.database.repository.PlaylistRepository;
+import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
+    public static final String LOG_TAG = "PlaylistCardAdapter";
+    private final Application application;
+    private final Context context;
+    private final PlaylistRepository repository;
     private List<PlaylistWithEntries> playlistList;
     private List<PlaylistWithEntries> playlistListCopy;
-    private Application application;
-    private Context context;
-    public static final String LOG_TAG = "PlaylistCardAdapter";
     private onLongItemClickListener longClickListener;
-    private PlaylistRepository repository;
-
-    public static class PlaylistCardViewHolder extends RecyclerView.ViewHolder {
-        public ImageView item_image;
-        public TextView item_title;
-        public TextView item_artist;
-
-        public PlaylistCardViewHolder(View itemView) {
-            super(itemView);
-            item_image = itemView.findViewById(R.id.item_image);
-            item_title = itemView.findViewById(R.id.item_title);
-            item_artist = itemView.findViewById(R.id.item_subtitle);
-        }
-
-        private void bind(PlaylistWithEntries playlist) {
-            item_title.setText(playlist.getPlaylist().getName());
-            item_artist.setText(playlist.getEntries().size()+" Songs");
-        }
-
-    }
 
     public PlaylistCardAdapter(Application application, Context context) {
         this.context = context;
@@ -77,7 +55,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         holder.itemView.setTag(position);
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
-                longClickListener.ItemLongClicked(v, position , currentItem.getPlaylist().getListId());
+                longClickListener.ItemLongClicked(v, position, currentItem.getPlaylist().getListId());
             }
             return true;
         });
@@ -87,8 +65,8 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             int itemPos = (int) v.getTag();
             if (context instanceof MainActivity) {
                 PlaylistFragment fragment = new PlaylistFragment((int) v.getTag(), playlistList.get(itemPos).getPlaylist().getListId());
-                ((MainActivity)context).placeFragment(fragment, R.id.mainFrame);
-                ((MainActivity)context).setTitle(playlistList.get(itemPos).getPlaylist().getName());
+                ((MainActivity) context).placeFragment(fragment, R.id.mainFrame);
+                ((MainActivity) context).setTitle(playlistList.get(itemPos).getPlaylist().getName());
             }
         });
     }
@@ -102,12 +80,8 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         this.longClickListener = onLongItemClickListener;
     }
 
-    public interface onLongItemClickListener {
-        void ItemLongClicked(View v, int position, String playlistID);
-    }
-
     public void setData(List<PlaylistWithEntries> data) {
-        if(playlistList != null) {
+        if (playlistList != null) {
             playlistList.clear();
             playlistList.addAll(data);
         } else {
@@ -121,17 +95,40 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
     public void filter(String text) {
         playlistList.clear();
-        if(text.isEmpty()){
+        if (text.isEmpty()) {
             playlistList.addAll(playlistListCopy);
-        } else{
+        } else {
             text = text.toLowerCase();
-            for(PlaylistWithEntries playlist: playlistListCopy){
-                if(playlist.getPlaylist().getName().toLowerCase().contains(text)){
+            for (PlaylistWithEntries playlist : playlistListCopy) {
+                if (playlist.getPlaylist().getName().toLowerCase().contains(text)) {
                     playlistList.add(playlist);
                 }
             }
         }
         notifyDataSetChanged();
+    }
+
+    public interface onLongItemClickListener {
+        void ItemLongClicked(View v, int position, String playlistID);
+    }
+
+    public static class PlaylistCardViewHolder extends RecyclerView.ViewHolder {
+        public ImageView item_image;
+        public TextView item_title;
+        public TextView item_artist;
+
+        public PlaylistCardViewHolder(View itemView) {
+            super(itemView);
+            item_image = itemView.findViewById(R.id.item_image);
+            item_title = itemView.findViewById(R.id.item_title);
+            item_artist = itemView.findViewById(R.id.item_subtitle);
+        }
+
+        private void bind(PlaylistWithEntries playlist) {
+            item_title.setText(playlist.getPlaylist().getName());
+            item_artist.setText(playlist.getEntries().size() + " Songs");
+        }
+
     }
 
 }

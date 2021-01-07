@@ -1,18 +1,15 @@
 package de.codingforcelm.idmp.fragment.tab;
 
 import android.os.Bundle;
-
 import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
 import android.view.ContextMenu;
-
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,36 +20,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
-import de.codingforcelm.idmp.MenuIdentifier;
-
-import de.codingforcelm.idmp.MainActivity;
-
-import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.activity.MainActivity;
+import de.codingforcelm.idmp.activity.MenuIdentifier;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
-
 import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
-import de.codingforcelm.idmp.player.service.MusicService;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistEntryViewModel;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
-
+import de.codingforcelm.idmp.service.MusicService;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
+import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
+import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
+import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
 
 
 public class PlaylistFragment extends NameAwareFragment implements OnManualDetachListener {
     private static final String LOG_TAG = "PlaylistFragment";
+    private final int position;
     private SongCardAdapter adapter;
     private PlaylistViewModel playlistViewModel;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private SearchView searchView;
-    private int position;
     private String listId;
     private AudioLoader loader;
     private long currSongId;
@@ -65,8 +57,8 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
         this.listId = listId;
 
         String name = this.getClass().getSimpleName();
-        if(position >= 0) {
-            name = name+"_"+position;
+        if (position >= 0) {
+            name = name + "_" + position;
         }
         setFragmentname(name);
     }
@@ -85,7 +77,6 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_playlist, container, false);
     }
 
@@ -101,10 +92,10 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
             ).commit();
         }
 
-        ((MainActivity)getActivity()).setPlaylistUuid(listId);
-        ((MainActivity)getActivity()).setInPlaylist(true);
+        ((MainActivity) getActivity()).setPlaylistUuid(listId);
+        ((MainActivity) getActivity()).setInPlaylist(true);
 
-        searchView =  view.findViewById(R.id.searchView);
+        searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
@@ -120,12 +111,12 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
         });
         playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
-            if(position < 0) {
+            if (position < 0) {
                 throw new IllegalStateException("missing position in PlaylistFragment");
             }
-            List<PhysicalSong> data = new ArrayList<>();
-            for(PlaylistEntry entry : playlistWithEntries.get(position).getEntries()) {
-                PhysicalSong s = loader.getSong(entry.getMediaId());
+            List<LocaleSong> data = new ArrayList<>();
+            for (PlaylistEntry entry : playlistWithEntries.get(position).getEntries()) {
+                LocaleSong s = loader.getSong(entry.getMediaId());
                 data.add(s);
             }
             adapter.setData(data);
@@ -154,9 +145,9 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
         contextMenu.add(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.REMOVE_FROM_PLAYLIST, 2, R.string.remove_from_playlist);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
-            currPlaylistWithEntries=playlistWithEntries;
-            for(int i=0; i < playlistWithEntries.size(); i++){
-                subMenu.add(MenuIdentifier.GROUP_PLAYLIST, i+MenuIdentifier.OFFSET_PLAYLISTID, i, playlistWithEntries.get(i).getPlaylist().getName());
+            currPlaylistWithEntries = playlistWithEntries;
+            for (int i = 0; i < playlistWithEntries.size(); i++) {
+                subMenu.add(MenuIdentifier.GROUP_PLAYLIST, i + MenuIdentifier.OFFSET_PLAYLISTID, i, playlistWithEntries.get(i).getPlaylist().getName());
             }
             super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
         });
@@ -183,7 +174,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
                 LiveData<PlaylistWithEntries> playlist = playlistViewModel.getPlaylist(listId);
                 AtomicBoolean removed = new AtomicBoolean(false);
                 playlist.observe(getViewLifecycleOwner(), entries -> {
-                    if(!removed.get()){
+                    if (!removed.get()) {
                         List<PlaylistEntry> entry = entries.getEntries();
                         playlistEntryViewModel.delete(entry.get(currItemPos));
                     }
@@ -197,7 +188,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
                 b.putString(MusicService.KEY_MEDIA_ID, String.valueOf(currSongId));
                 MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
                 controller.sendCommand(MusicService.COMMAND_ENQUEUE, b, null);
-                Log.e(LOG_TAG, "added mediaID: "+currSongId+ "to Queue");
+                Log.e(LOG_TAG, "added mediaID: " + currSongId + "to Queue");
                 break;
             default:
                 Log.e(LOG_TAG, "unexpected menu item clicked" + item.toString());
@@ -210,7 +201,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
     @Override
     public void onManualDetach() {
         Log.e(LOG_TAG, "onManualDetach");
-        ((MainActivity)getActivity()).setPlaylistUuid(null);
-        ((MainActivity)getActivity()).setInPlaylist(false);
+        ((MainActivity) getActivity()).setPlaylistUuid(null);
+        ((MainActivity) getActivity()).setInPlaylist(false);
     }
 }
