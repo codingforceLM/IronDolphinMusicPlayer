@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.activity.MainActivity;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
 
@@ -24,6 +26,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
     private List<LocaleSong> songList;
     private List<LocaleSong> songListCopy;
     private onLongItemClickListener longClickListener;
+    private AudioLoader audioLoader;
 
     public SongCardAdapter(ArrayList<LocaleSong> songList, Context context, String playContextType, String playContext) {
         this.songList = songList;
@@ -32,6 +35,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         this.songListCopy.addAll(songList);
         this.playContextType = playContextType;
         this.playContext = playContext;
+        audioLoader = new AudioLoader(context);
     }
 
     @Override
@@ -59,6 +63,13 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
                 ((MainActivity) context).songSelect(currentItem.getId(), playContext, playContextType);
             }
         });
+
+        holder.itemView.setTag(position);
+        Bitmap cover = audioLoader.getAlbumCoverForSong(currentItem.getId());
+        if(cover != null) {
+            ImageView img = holder.itemView.findViewById(R.id.item_image);
+            img.setImageBitmap(cover);
+        }
     }
 
     @Override

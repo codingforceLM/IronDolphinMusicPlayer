@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,11 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
         holder.bind(current);
 
         holder.itemView.setTag(position);
+        Bitmap cover = audioLoader.getAlbumCoverForSong(current.getId());
+        if(cover != null) {
+            ImageView img = holder.itemView.findViewById(R.id.item_image);
+            img.setImageBitmap(cover);
+        }
     }
 
     @Override
