@@ -105,6 +105,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private BecomingNoisyReceiver noisyReceiver;
     private SongQueue queue;
     private long currMediaId;
+    private boolean resumeAfterGain;
 
     @Override
     public void onCreate() {
@@ -115,6 +116,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         queue = SongQueue.getInstance();
         initMusicPlayer();
 
+        resumeAfterGain = false;
         paused = true;
         context = MainActivity.CONTEXT_SONGLIST;
 
@@ -778,6 +780,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                     Log.e(LOG_TAG, "Audio Focus loss transient");
                     MusicService.this.pauseSong(false);
+                    resumeAfterGain = true;
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                     Log.e(LOG_TAG, "Audio Focus loss transient can duck");
@@ -790,7 +793,10 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 case AudioManager.AUDIOFOCUS_GAIN:
                     Log.e(LOG_TAG, "Audio Focus gain");
                     player.setVolume(1.0f, 1.0f);
-                    MusicService.this.resumeSong();
+                    if(resumeAfterGain) {
+                        MusicService.this.resumeSong();
+                    }
+                    resumeAfterGain = false;
             }
         }
     }
