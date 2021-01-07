@@ -10,17 +10,17 @@ public class MainActivitySingleton {
     }
 
     public static MainActivitySingleton getInstance() {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new MainActivitySingleton();
         }
         return INSTANCE;
     }
 
-    public void setMainActivity(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
-    }
-
     public MainActivity getMainActivity() {
         return mainActivity;
+    }
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 }

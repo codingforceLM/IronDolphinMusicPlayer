@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.structure.playlist.dao;
+package de.codingforcelm.idmp.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -6,12 +6,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
 @Dao
 public interface PlaylistEntryDao {

@@ -42,8 +42,8 @@ public class PlaylistNameActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.apn_action_accept) {
             String name = text.getText().toString();
             name = name.trim();
-            if(name.equals("")) {
-                // TODO do something?
+            if (name.equals("")) {
+                return true;
             } else {
                 Bundle b = new Bundle();
                 b.putString(PlaylistCreateActivity.KEY_PLAYLIST_NAME, name);

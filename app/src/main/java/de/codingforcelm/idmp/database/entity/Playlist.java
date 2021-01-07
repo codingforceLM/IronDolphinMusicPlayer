@@ -1,14 +1,8 @@
-package de.codingforcelm.idmp.structure.playlist;
-
-import android.net.Uri;
+package de.codingforcelm.idmp.database.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
-import java.util.List;
-
-import de.codingforcelm.idmp.music.Song;
 
 @Entity(tableName = "playlist")
 public class Playlist {

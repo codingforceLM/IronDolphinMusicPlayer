@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.structure.playlist.model;
+package de.codingforcelm.idmp.database.viewmodel;
 
 import android.app.Application;
 
@@ -6,18 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.repository.PlaylistRepository;
+import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 
 public class PlaylistViewModel extends AndroidViewModel {
 
-    private PlaylistRepository repository;
-    private LiveData<List<PlaylistWithEntries>> playlists;
+    private final PlaylistRepository repository;
+    private final LiveData<List<PlaylistWithEntries>> playlists;
 
     public PlaylistViewModel(@NonNull Application application) {
         super(application);
@@ -33,7 +31,7 @@ public class PlaylistViewModel extends AndroidViewModel {
         return repository.getPlaylist(id);
     }
 
-    public void deletePlaylist(Playlist playlist){
+    public void deletePlaylist(Playlist playlist) {
         repository.deletePlaylist(playlist);
     }
 

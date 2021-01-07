@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.structure.playlist;
+package de.codingforcelm.idmp.database.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

@@ -1,30 +1,16 @@
 package de.codingforcelm.idmp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -38,29 +24,32 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
-import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
-import de.codingforcelm.idmp.fragment.HomeFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.OnManualDetachListener;
-import de.codingforcelm.idmp.fragment.StatisticsFragment;
-
-import de.codingforcelm.idmp.fragment.tab.AlbumFragment;
-import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
-import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
-
-import de.codingforcelm.idmp.fragment.tab.TabFragment;
 import de.codingforcelm.idmp.fragment.QueueFragment;
+import de.codingforcelm.idmp.fragment.TabFragment;
 import de.codingforcelm.idmp.player.service.MusicService;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String Broadcast_PLAY_NEW_AUDIO = "de.codingforcelm.idmp.PlayNewAudio";
     public static final String LOG_TAG = "MainActivity";
 
     public static final String TAB_SONGS = "de.codingforcelm.idmp.TAB_SONGS";
@@ -69,189 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String CONTEXT_SONGLIST = "de.codingforcelm.idmp.player.service.SONGLIST";
     private static final int STORAGE_PERMISSION_CODE = 1;
-
-    private List<PhysicalSong> songList;
     private boolean bound;
 
-    private MusicService service;
-    private Intent playIntent;
+
     private MediaBrowserCompat browser;
     private MediaControllerCompat.TransportControls transportControls;
-    private DrawerLayout drawerLayout;
-    private Toolbar toolbar;
-    private NavigationView navDrawer;
-    private ActionBarDrawerToggle drawerToggle;
-    private Handler delayHandler;
-    private boolean listview;
-    private boolean playstatus;//this
-    private MediaMetadataCompat mediaMetadata;
-    private int duration;
-    private String currentTab;
-    private boolean inPlaylist;
-    private String playlistUuid;
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean("ServiceState", bound);
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        bound = savedInstanceState.getBoolean("ServiceState");
-    }
-
-    public void checkStoragePermission(){
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MainActivity.this, "You have already granted this permission!",Toast.LENGTH_SHORT).show();
-            createBrowser();
-        } else {
-            requestStoragePermission();
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        checkStoragePermission();
-
-        MainActivitySingleton.getInstance().setMainActivity(this);
-
-        setContentView(R.layout.activity_main);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        currentTab = TAB_SONGS;
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navDrawer = (NavigationView) findViewById(R.id.navView);
-        drawerToggle = setupDrawerToggle();
-        setupDrawerContent(navDrawer);
-        // Setup toggle to display hamburger icon with animation
-        drawerToggle.setDrawerIndicatorEnabled(true);
-        drawerToggle.syncState();
-
-        drawerLayout.addDrawerListener(drawerToggle);
-
-        bound = false;
-
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.mainFrame, new HomeFragment(), HomeFragment.class.getSimpleName());
-
-        listview = true;
-        playstatus = false;
-
-        delayHandler = new Handler(getMainLooper());
-        runOnUiThread(new SeekBarRunner());
-
-        ft.commit();
-        this.createNotificationChannel();
-
-        //browser.connect();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-
-        int m = -1;
-        switch(currentTab) {
-            case TAB_SONGS:
-                // empty stud
-                break;
-            case TAB_ALBUMS:
-                // empty stud
-                break;
-            case TAB_PAYLISTS:
-                m = R.menu.playlist_add_menu;
-                break;
-        }
-        if(m >= 0) {
-            inflater.inflate(m, menu);
-        } else {
-            menu.clear();
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        if(item.getItemId() == R.id.ma_action_add) {
-            if(!inPlaylist) {
-                Intent intent = new Intent(this, PlaylistNameActivity.class);
-                startActivity(intent);
-            } else {
-                if(playlistUuid == null) {
-                    throw new IllegalStateException("missing uuid");
-                }
-                Intent intent = new Intent(this, PlaylistCreateActivity.class);
-                Bundle b = new Bundle();
-                b.putString(PlaylistCreateActivity.KEY_MODE, PlaylistCreateActivity.MODE_ADD);
-                b.putString(PlaylistCreateActivity.KEY_PLAYLIST_UUID, playlistUuid);
-                intent.putExtras(b);
-                startActivity(intent);
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        MediaControllerCompat con = MediaControllerCompat.getMediaController(this);
-        if(browser != null && browser.isConnected() && con != null) {
-            con.registerCallback(controllerCallback);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (MediaControllerCompat.getMediaController(this) != null) {
-            MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Intent stop = new Intent(this, MusicService.class);
-        stopService(stop);
-        browser.disconnect();
-    }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            songList = new AudioLoader(MainActivity.this).getSongs();
-            MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
-            MainActivity.this.service = binder.getService();
-            MainActivity.this.service.setSongList(songList);
-            bound = true;
-            Toast.makeText(MainActivity.this, "Service Bound", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            bound = false;
-        }
-    };
-
     private final MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
@@ -260,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             MediaControllerCompat.setMediaController(MainActivity.this, controller);
             transportControls = controller.getTransportControls();
 
-            // TODO utilize transport controls
 
             controller.sendCommand(MusicService.COMMAND_UPDATE_METADATA, null, new ResultReceiver(new Handler(getMainLooper())));
 
@@ -279,8 +89,18 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MainActivity", "Connection refused");
         }
     };
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private NavigationView navDrawer;
+    private ActionBarDrawerToggle drawerToggle;
+    private Handler delayHandler;
+    private boolean playstatus;
+    private MediaMetadataCompat mediaMetadata;
+    private String currentTab;
+    private boolean inPlaylist;
+    private String playlistUuid;
 
-    private MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
+    private final MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
@@ -345,14 +165,157 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean("ServiceState", bound);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        bound = savedInstanceState.getBoolean("ServiceState");
+    }
+
+    public void checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
+            createBrowser();
+        } else {
+            requestStoragePermission();
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        checkStoragePermission();
+
+        MainActivitySingleton.getInstance().setMainActivity(this);
+
+        setContentView(R.layout.activity_main);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        currentTab = TAB_SONGS;
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navDrawer = (NavigationView) findViewById(R.id.navView);
+        drawerToggle = setupDrawerToggle();
+        setupDrawerContent(navDrawer);
+        // Setup toggle to display hamburger icon with animation
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.syncState();
+
+        drawerLayout.addDrawerListener(drawerToggle);
+
+        bound = false;
+
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.mainFrame, new TabFragment(), TabFragment.class.getSimpleName());
+
+        playstatus = false;
+
+        delayHandler = new Handler(getMainLooper());
+        runOnUiThread(new SeekBarRunner());
+
+        ft.commit();
+        this.createNotificationChannel();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
+        int m = -1;
+        switch (currentTab) {
+            case TAB_SONGS:
+                // empty stud
+                break;
+            case TAB_ALBUMS:
+                // empty stud
+                break;
+            case TAB_PAYLISTS:
+                m = R.menu.playlist_add_menu;
+                break;
+        }
+        if (m >= 0) {
+            inflater.inflate(m, menu);
+        } else {
+            menu.clear();
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        if (item.getItemId() == R.id.ma_action_add) {
+            if (!inPlaylist) {
+                Intent intent = new Intent(this, PlaylistNameActivity.class);
+                startActivity(intent);
+            } else {
+                if (playlistUuid == null) {
+                    throw new IllegalStateException("missing uuid");
+                }
+                Intent intent = new Intent(this, PlaylistCreateActivity.class);
+                Bundle b = new Bundle();
+                b.putString(PlaylistCreateActivity.KEY_MODE, PlaylistCreateActivity.MODE_ADD);
+                b.putString(PlaylistCreateActivity.KEY_PLAYLIST_UUID, playlistUuid);
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        MediaControllerCompat con = MediaControllerCompat.getMediaController(this);
+        if (browser != null && browser.isConnected() && con != null) {
+            con.registerCallback(controllerCallback);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (MediaControllerCompat.getMediaController(this) != null) {
+            MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent stop = new Intent(this, MusicService.class);
+        stopService(stop);
+        browser.disconnect();
+    }
+
     public void songSelect(long songId, String playContext, String playContextType) {
         Bundle b = new Bundle();
 
-        if(playContextType.equals(MusicService.CONTEXT_TYPE_ALBUM)) {
+        if (playContextType.equals(MusicService.CONTEXT_TYPE_ALBUM)) {
             //Context for album must be the album id
             b.putLong(MusicService.KEY_ALBUM_ID, Long.parseLong(playContext));
             b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_ALBUM + playContext);
-        } else if(playContextType.equals(MusicService.CONTEXT_TYPE_PLAYLIST)) {
+        } else if (playContextType.equals(MusicService.CONTEXT_TYPE_PLAYLIST)) {
             b.putString(MusicService.KEY_PLAYLIST_ID, playContext);
             b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playContext);
         } else {
@@ -392,22 +355,16 @@ public class MainActivity extends AppCompatActivity {
         Class fragmentClass = null;
 
         switch (menuItem.getItemId()) {
-            case R.id.nav_home:
-                fragmentClass = HomeFragment.class;
-                break;
             case R.id.nav_tabPlayer:
                 fragmentClass = TabFragment.class;
                 break;
             case R.id.nav_queue:
                 fragmentClass = QueueFragment.class;
                 break;
-            case R.id.nav_test:
-                fragmentClass = StatisticsFragment.class;
-                break;
             default:
                 Log.e(LOG_TAG, "unknown navigation selected");
         }
-        Log.e(LOG_TAG, fragmentClass.getSimpleName()+" selected");
+        Log.e(LOG_TAG, fragmentClass.getSimpleName() + " selected");
         placeFragment(fragmentClass, R.id.mainFrame);
 
         // Highlight the selected item has been done by NavigationView
@@ -419,11 +376,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /** places a Fragment on a given layout id
+    /**
+     * places a Fragment on a given layout id
+     *
      * @param fragmentClass FragmentClass to display
-     * @param frameId layoutFrame to place Fragment on
+     * @param frameId       layoutFrame to place Fragment on
      */
-    public void placeFragment(Class fragmentClass, int frameId){
+    public void placeFragment(Class fragmentClass, int frameId) {
         Log.e(LOG_TAG, "--placeFragment--");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -435,10 +394,10 @@ public class MainActivity extends AppCompatActivity {
             for (Fragment f : fragments) {
                 if (f != null && !f.isDetached()) {
                     fragmentTransaction.detach(f);
-                    Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
-                    if(f instanceof OnManualDetachListener) {
+                    Log.e(LOG_TAG, f.getClass().getSimpleName() + " detatched");
+                    if (f instanceof OnManualDetachListener) {
                         Log.e(LOG_TAG, "Calling onManualDetach");
-                        ((OnManualDetachListener)f).onManualDetach();
+                        ((OnManualDetachListener) f).onManualDetach();
                     }
                     Log.e(LOG_TAG, f.getClass().getSimpleName() + " detatched");
                 }
@@ -449,37 +408,37 @@ public class MainActivity extends AppCompatActivity {
         // add/attach fragments
         if (fragmentManager.findFragmentByTag(simpleName) != null) {
             fragmentTransaction.attach(fragmentManager.findFragmentByTag(simpleName));
-            Log.e(LOG_TAG, simpleName+" attached");
+            Log.e(LOG_TAG, simpleName + " attached");
         } else {
             Fragment fragment = null;
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
-                Log.e(LOG_TAG, "Exception creating Fragment instance\n"+e.getMessage());
+                Log.e(LOG_TAG, "Exception creating Fragment instance\n" + e.getMessage());
             }
             fragmentTransaction.add(frameId, fragment, simpleName);
-            Log.e(LOG_TAG, simpleName+" added");
+            Log.e(LOG_TAG, simpleName + " added");
         }
         fragmentTransaction.addToBackStack(simpleName);
         fragmentTransaction.commit();
     }
 
-    public void placeFragment(Fragment fragment, int frameId){
+    public void placeFragment(Fragment fragment, int frameId) {
         Log.e(LOG_TAG, "--placeFragment--");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // detach fragments
         String simpleName = fragment.getClass().getSimpleName();
-        if(fragment instanceof NameAwareFragment) {
-            simpleName = ((NameAwareFragment)fragment).getFragmentname();
+        if (fragment instanceof NameAwareFragment) {
+            simpleName = ((NameAwareFragment) fragment).getFragmentname();
         }
         List<Fragment> fragments = fragmentManager.getFragments();
         if (fragments != null) {
             for (Fragment f : fragments) {
                 if (f != null && !f.isDetached())
                     fragmentTransaction.detach(f);
-                Log.e(LOG_TAG, f.getClass().getSimpleName()+" detatched");
+                Log.e(LOG_TAG, f.getClass().getSimpleName() + " detatched");
             }
         }
 
@@ -487,10 +446,10 @@ public class MainActivity extends AppCompatActivity {
         if (fragmentManager.findFragmentByTag(simpleName) != null) {
             Fragment f = fragmentManager.findFragmentByTag(simpleName);
             fragmentTransaction.attach(f);
-            Log.e(LOG_TAG, simpleName+" attached");
+            Log.e(LOG_TAG, simpleName + " attached");
         } else {
             fragmentTransaction.add(frameId, fragment, simpleName);
-            Log.e(LOG_TAG, simpleName+" added");
+            Log.e(LOG_TAG, simpleName + " added");
         }
         fragmentTransaction.addToBackStack(simpleName);
         fragmentTransaction.commit();
@@ -533,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -544,9 +503,10 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .create().show();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == STORAGE_PERMISSION_CODE)  {
+        if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
                 createBrowser();
@@ -556,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createBrowser(){
+    private void createBrowser() {
         browser = new MediaBrowserCompat(
                 this,
                 new ComponentName(this, MusicService.class),

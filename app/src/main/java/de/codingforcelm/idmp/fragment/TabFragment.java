@@ -1,13 +1,11 @@
-package de.codingforcelm.idmp.fragment.tab;
+package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
-import android.support.v4.media.MediaMetadataCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
@@ -24,7 +22,7 @@ import de.codingforcelm.idmp.fragment.adapter.TabFragmentAdapter;
 
 public class TabFragment extends NameAwareFragment {
 
-    private String[] tabTexts = new String[]{"Songs", "Albums", "Playlists"};
+    private final String[] tabTexts = new String[]{"Songs", "Albums", "Playlists"};
 
     private TabLayout layout;
     private TabItem songsTab;
@@ -44,7 +42,7 @@ public class TabFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        ((MainActivity)getContext()).setTitle("TabPlayer");
+        ((MainActivity) getContext()).setTitle("TabPlayer");
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (fragmentManager.findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
@@ -109,12 +107,9 @@ public class TabFragment extends NameAwareFragment {
     }
 
     public void initializeTabTexts() {
-        for(int i=0; i<tabTexts.length; i++) {
+        for (int i = 0; i < tabTexts.length; i++) {
             layout.getTabAt(i).setText(tabTexts[i]);
         }
     }
 
-    public void applyMetadata(MediaMetadataCompat metadata) {
-
-    }
 }

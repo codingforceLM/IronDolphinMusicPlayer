@@ -1,9 +1,12 @@
-package de.codingforcelm.idmp.structure.playlist;
+package de.codingforcelm.idmp.database.entity.relation;
 
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import java.util.List;
+
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
 public class PlaylistWithEntries {
     @Embedded

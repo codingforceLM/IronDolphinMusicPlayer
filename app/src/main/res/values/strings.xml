@@ -6,8 +6,6 @@
     <string name="channel_desc">Playbacks local music files</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="track">Track</string>
     <string name="album">Album</string>
     <string name="default_duration">0:00</string>

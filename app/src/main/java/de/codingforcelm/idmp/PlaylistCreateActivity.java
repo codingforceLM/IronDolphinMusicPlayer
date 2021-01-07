@@ -1,14 +1,12 @@
 package de.codingforcelm.idmp;
 
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,12 +19,10 @@ import java.util.UUID;
 import de.codingforcelm.idmp.audio.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
 import de.codingforcelm.idmp.player.service.MusicService;
-import de.codingforcelm.idmp.structure.playlist.Playlist;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistEntryViewModel;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistViewModel;
-import de.codingforcelm.idmp.structure.playlist.model.PlaylistWithEntriesViewModel;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
+import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
+import de.codingforcelm.idmp.database.viewmodel.PlaylistWithEntriesViewModel;
 
 public class PlaylistCreateActivity extends AppCompatActivity {
 
@@ -59,25 +55,25 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playlist_create);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        searchView =  findViewById(R.id.searchView);
+        searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.apc_recyclerview);
         searchView = findViewById(R.id.apc_searchview);
         layoutManager = new LinearLayoutManager(this);
 
         Bundle b = getIntent().getExtras();
-        if(!b.containsKey(KEY_MODE)) {
+        if (!b.containsKey(KEY_MODE)) {
             throw new IllegalStateException("Missing mode");
         }
         mode = b.getString(KEY_MODE);
-        switch(mode) {
+        switch (mode) {
             case MODE_ADD:
-                if(!b.containsKey(KEY_PLAYLIST_UUID)) {
+                if (!b.containsKey(KEY_PLAYLIST_UUID)) {
                     throw new IllegalStateException("Missing playlist name");
                 }
                 playlistUuid = b.getString(KEY_PLAYLIST_UUID);
                 break;
             case MODE_CREATE:
-                if(!b.containsKey(KEY_PLAYLIST_NAME)) {
+                if (!b.containsKey(KEY_PLAYLIST_NAME)) {
                     throw new IllegalStateException("Missing playlist name");
                 }
                 name = getIntent().getStringExtra(KEY_PLAYLIST_NAME);
@@ -87,7 +83,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         }
 
         audioLoader = new AudioLoader(this);
-        List<PhysicalSong> songs = audioLoader.getSongs();
+        List<LocaleSong> songs = audioLoader.getSongs();
         List<PlaylistSelection> selectionList = PlaylistSelection.createSelectionListFromList(songs);
 
         adapter = new PlaylistCreateCardAdapter(selectionList);
@@ -120,7 +116,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_accept) {
-            switch(mode) {
+            switch (mode) {
                 case MODE_ADD:
                     addSongsToPlaylist();
                     break;
@@ -139,8 +135,8 @@ public class PlaylistCreateActivity extends AppCompatActivity {
 
         List<PlaylistSelection> selected = adapter.getSelectedList();
         List<PlaylistEntry> entries = new ArrayList<>();
-        for(PlaylistSelection selection : selected) {
-            PhysicalSong song = selection.getSong();
+        for (PlaylistSelection selection : selected) {
+            LocaleSong song = selection.getSong();
             PlaylistEntry entry = new PlaylistEntry(song.getId(), playlistUuid);
             entries.add(entry);
         }
@@ -148,14 +144,12 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         playlistEntryViewModel.insertAll(entriesArr);
 
         MainActivity activity = MainActivitySingleton.getInstance().getMainActivity();
-        if(activity == null) {
+        if (activity == null) {
             throw new IllegalStateException("couldnt get MainActivity");
         }
-        MediaControllerCompat controller = MediaControllerCompat.getMediaController(activity);
         Bundle b = new Bundle();
         b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playlistUuid);
         b.putString(MusicService.KEY_PLAYLIST_ID, playlistUuid);
-        //controller.sendCommand(MusicService.COMMAND_RELOAD_PLAYLIST, b, null);
     }
 
     private void savePlaylist() {
@@ -166,8 +160,8 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         List<PlaylistEntry> entries = new ArrayList<>();
 
         Playlist playlist = new Playlist(uuid, name);
-        for(PlaylistSelection selection : selected) {
-            PhysicalSong song = selection.getSong();
+        for (PlaylistSelection selection : selected) {
+            LocaleSong song = selection.getSong();
             PlaylistEntry entry = new PlaylistEntry(song.getId(), playlist.getListId());
             entries.add(entry);
         }
@@ -179,12 +173,20 @@ public class PlaylistCreateActivity extends AppCompatActivity {
 
     public static class PlaylistSelection {
 
-        private PhysicalSong song;
+        private final LocaleSong song;
         private boolean isSelected;
 
-        protected PlaylistSelection(PhysicalSong song) {
+        protected PlaylistSelection(LocaleSong song) {
             this.song = song;
             this.setSelected(false);
+        }
+
+        public static List<PlaylistSelection> createSelectionListFromList(List<LocaleSong> songlist) {
+            List<PlaylistSelection> list = new ArrayList<>();
+            for (LocaleSong song : songlist) {
+                list.add(new PlaylistSelection(song));
+            }
+            return list;
         }
 
         public boolean isSelected() {
@@ -195,16 +197,8 @@ public class PlaylistCreateActivity extends AppCompatActivity {
             isSelected = selected;
         }
 
-        public PhysicalSong getSong() {
+        public LocaleSong getSong() {
             return song;
-        }
-
-        public static List<PlaylistSelection> createSelectionListFromList(List<PhysicalSong> songlist) {
-            List<PlaylistSelection> list = new ArrayList<>();
-            for(PhysicalSong song : songlist) {
-                list.add(new PlaylistSelection(song));
-            }
-            return list;
         }
     }
 

@@ -7,21 +7,20 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import de.codingforcelm.idmp.PhysicalAlbum;
-import de.codingforcelm.idmp.PhysicalSong;
+import de.codingforcelm.idmp.LocaleAlbum;
+import de.codingforcelm.idmp.LocaleSong;
 
 public class AudioLoader {
 
-    private Context context;
+    private final Context context;
 
     public AudioLoader(Context context) {
         this.context = context;
     }
 
-    public ArrayList<PhysicalSong> getSongs() {
-        ArrayList<PhysicalSong> songs = new ArrayList<>();
+    public ArrayList<LocaleSong> getSongs() {
+        ArrayList<LocaleSong> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -38,7 +37,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                songs.add(new PhysicalSong(id, data, title, album, artist));
+                songs.add(new LocaleSong(id, data, title, album, artist));
             }
         }
         cursor.close();
@@ -46,14 +45,14 @@ public class AudioLoader {
         return songs;
     }
 
-    public PhysicalSong getSong(long songId) {
+    public LocaleSong getSong(long songId) {
         ContentResolver contentResolver = context.getContentResolver();
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0 and " + MediaStore.Audio.Media._ID + " = " + songId;
         Cursor cursor = contentResolver.query(uri, null, selection, null, null);
 
-        PhysicalSong song = null;
+        LocaleSong song = null;
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -62,7 +61,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                song = new PhysicalSong(id, data, title, album, artist);
+                song = new LocaleSong(id, data, title, album, artist);
             }
         }
         cursor.close();
@@ -70,8 +69,8 @@ public class AudioLoader {
         return song;
     }
 
-    public ArrayList<PhysicalAlbum> getAlbums() {
-        ArrayList<PhysicalAlbum> songs = new ArrayList<>();
+    public ArrayList<LocaleAlbum> getAlbums() {
+        ArrayList<LocaleAlbum> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -86,7 +85,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
 
-                songs.add(new PhysicalAlbum(id, album, artist, false));
+                songs.add(new LocaleAlbum(id, album, artist, false));
             }
         }
         cursor.close();
@@ -94,8 +93,8 @@ public class AudioLoader {
         return songs;
     }
 
-    public ArrayList<PhysicalSong> getSongsFromAlbum(long albumId) {
-        ArrayList<PhysicalSong> songs = new ArrayList<>();
+    public ArrayList<LocaleSong> getSongsFromAlbum(long albumId) {
+        ArrayList<LocaleSong> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -112,7 +111,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                songs.add(new PhysicalSong(id, data, title, album, artist));
+                songs.add(new LocaleSong(id, data, title, album, artist));
             }
         }
         cursor.close();

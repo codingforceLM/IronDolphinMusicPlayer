@@ -1,13 +1,13 @@
 package de.codingforcelm.idmp;
 
-public class PhysicalAlbum {
+public class LocaleAlbum {
 
     private long id;
     private String title;
     private String artist;
     private boolean expanded;
 
-    public PhysicalAlbum(long id, String title, String artist, boolean expanded) {
+    public LocaleAlbum(long id, String title, String artist, boolean expanded) {
         this.setId(id);
         this.setTitle(title);
         this.setArtist(artist);
@@ -48,13 +48,13 @@ public class PhysicalAlbum {
 
     @Override
     public boolean equals(Object o) {
-        if(o == this) {
+        if (o == this) {
             return true;
         }
-        if(!(o instanceof PhysicalSong)) {
+        if (!(o instanceof LocaleSong)) {
             return false;
         }
-        PhysicalAlbum that = (PhysicalAlbum) o;
+        LocaleAlbum that = (LocaleAlbum) o;
         return this.getId() == that.getId();
     }
 }

@@ -2,11 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.codingforcelm.idmp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IronDolphinMusicPlayer">
 
-        <activity android:name=".MainActivity" android:screenOrientation = "portrait">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,10 +27,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".PlaylistNameActivity" android:screenOrientation = "portrait"/>
-        <activity android:name=".PlaylistCreateActivity" android:screenOrientation = "portrait"/>
+        <activity
+            android:name=".PlaylistNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PlaylistCreateActivity"
+            android:screenOrientation="portrait" />
 
-        <service android:name=".player.service.MusicService"
+        <service
+            android:name=".player.service.MusicService"
             android:label="MusicService">
             <intent-filter>
                 <action android:name="androidx.media.MediaBrowserServiceCompat" />
@@ -36,7 +44,7 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </service>
-        <receiver android:name="androidx.media.session.MediaButtonReceiver" >
+        <receiver android:name="androidx.media.session.MediaButtonReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

@@ -1,22 +1,22 @@
-package de.codingforcelm.idmp.structure.playlist;
+package de.codingforcelm.idmp.database.repository;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Room;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.database.IDMPRoomDatabase;
-import de.codingforcelm.idmp.structure.playlist.dao.PlayListDao;
+import de.codingforcelm.idmp.database.dao.PlayListDao;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 
 public class PlaylistRepository {
 
     private static volatile PlaylistRepository INSTANCE;
 
-    private PlayListDao playListDao;
-    private LiveData<List<PlaylistWithEntries>> playlists;
+    private final PlayListDao playListDao;
+    private final LiveData<List<PlaylistWithEntries>> playlists;
 
     protected PlaylistRepository(Application application) {
         IDMPRoomDatabase db = IDMPRoomDatabase.getInstance(application);
@@ -25,9 +25,9 @@ public class PlaylistRepository {
     }
 
     public static PlaylistRepository getInstance(Application application) {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             synchronized (PlaylistRepository.class) {
-                if(INSTANCE == null) {
+                if (INSTANCE == null) {
                     INSTANCE = new PlaylistRepository(application);
                 }
             }

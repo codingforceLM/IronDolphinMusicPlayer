@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.structure.playlist.model;
+package de.codingforcelm.idmp.database.viewmodel;
 
 import android.app.Application;
 
@@ -8,15 +8,13 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntry;
-import de.codingforcelm.idmp.structure.playlist.PlaylistEntryRepository;
-import de.codingforcelm.idmp.structure.playlist.PlaylistRepository;
-import de.codingforcelm.idmp.structure.playlist.PlaylistWithEntries;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
+import de.codingforcelm.idmp.database.repository.PlaylistEntryRepository;
 
 public class PlaylistEntryViewModel extends AndroidViewModel {
 
-    private PlaylistEntryRepository repository;
-    private LiveData<List<PlaylistEntry>> entries;
+    private final PlaylistEntryRepository repository;
+    private final LiveData<List<PlaylistEntry>> entries;
 
     public PlaylistEntryViewModel(@NonNull Application application) {
         super(application);

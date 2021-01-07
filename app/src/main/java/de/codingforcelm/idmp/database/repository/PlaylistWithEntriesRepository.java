@@ -1,17 +1,19 @@
-package de.codingforcelm.idmp.structure.playlist;
+package de.codingforcelm.idmp.database.repository;
 
 import android.app.Application;
 
 import de.codingforcelm.idmp.database.IDMPRoomDatabase;
-import de.codingforcelm.idmp.structure.playlist.dao.PlayListDao;
-import de.codingforcelm.idmp.structure.playlist.dao.PlaylistEntryDao;
+import de.codingforcelm.idmp.database.dao.PlayListDao;
+import de.codingforcelm.idmp.database.dao.PlaylistEntryDao;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
 public class PlaylistWithEntriesRepository {
 
     private static volatile PlaylistWithEntriesRepository INSTANCE;
 
-    private PlayListDao playListDao;
-    private PlaylistEntryDao playlistEntryDao;
+    private final PlayListDao playListDao;
+    private final PlaylistEntryDao playlistEntryDao;
 
     protected PlaylistWithEntriesRepository(Application application) {
         IDMPRoomDatabase db = IDMPRoomDatabase.getInstance(application);
@@ -20,9 +22,9 @@ public class PlaylistWithEntriesRepository {
     }
 
     public static PlaylistWithEntriesRepository getInstance(Application application) {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             synchronized (PlaylistRepository.class) {
-                if(INSTANCE == null) {
+                if (INSTANCE == null) {
                     INSTANCE = new PlaylistWithEntriesRepository(application);
                 }
             }

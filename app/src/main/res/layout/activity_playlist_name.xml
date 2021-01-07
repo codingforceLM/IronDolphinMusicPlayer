@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -13,7 +13,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- TODO make it look nice -->
         <TextView
             android:id="@+id/apn_header"
             android:layout_width="match_parent"
@@ -25,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Playlist Name" />
+            android:hint="Playlist Name"
+            android:inputType="textPersonName" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

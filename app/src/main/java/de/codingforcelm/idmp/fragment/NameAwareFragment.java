@@ -6,12 +6,12 @@ public class NameAwareFragment extends Fragment {
 
     private String fragmentname = this.getClass().getSimpleName();
 
-    protected void setFragmentname(String name) {
-        this.fragmentname = name;
-    }
-
     public String getFragmentname() {
         return fragmentname;
+    }
+
+    protected void setFragmentname(String name) {
+        this.fragmentname = name;
     }
 
 }
