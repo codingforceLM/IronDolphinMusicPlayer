@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,14 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.tab.AlbumFragment;
+import de.codingforcelm.idmp.locale.LocaleSong;
 
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     public static final String LOG_TAG = "AlbumCardAdapter";
@@ -23,6 +26,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
     private final ArrayList<LocaleAlbum> albumListCopy;
     private final Context context;
     private onLongItemClickListener longClickListener;
+    private AudioLoader audioLoader;
 
 
     public AlbumCardAdapter(ArrayList<LocaleAlbum> albumList, Context context) {
@@ -30,6 +34,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
         this.albumList = albumList;
         this.albumListCopy = new ArrayList<>();
         this.albumListCopy.addAll(albumList);
+        audioLoader = new AudioLoader(context);
     }
 
     @Override
@@ -59,6 +64,17 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             notifyItemChanged(position);
 
         });
+
+
+        List<LocaleSong> songs = audioLoader.getSongsFromAlbum(currentItem.getId());
+        if(songs.size() >= 1) {
+            LocaleSong s = songs.get(0);
+            Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
+            if(cover != null) {
+                ImageView image = holder.itemView.findViewById(R.id.item_image);
+                image.setImageBitmap(cover);
+            }
+        }
     }
 
     @Override
