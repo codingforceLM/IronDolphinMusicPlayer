@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         MediaControllerCompat con = MediaControllerCompat.getMediaController(this);
-        if(browser.isConnected() && con != null) {
+        if(browser != null && browser.isConnected() && con != null) {
             con.registerCallback(controllerCallback);
         }
     }
