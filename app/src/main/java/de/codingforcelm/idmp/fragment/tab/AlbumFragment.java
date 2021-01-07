@@ -82,7 +82,7 @@ public class AlbumFragment extends NameAwareFragment {
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new SongCardAdapter(songList, this.getContext(), MusicService.CONTEXT_TYPE_SONGLIST, MainActivity.CONTEXT_SONGLIST);
+        adapter = new SongCardAdapter(songList, this.getContext(), MusicService.CONTEXT_TYPE_ALBUM, String.valueOf(albumId));
         adapter.setOnLongItemClickListener((v, position, songId) -> {
             currSongId = songId;
             currItemPos = position;
