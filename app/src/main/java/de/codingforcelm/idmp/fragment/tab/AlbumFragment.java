@@ -37,6 +37,7 @@ public class AlbumFragment extends NameAwareFragment {
     private static final String LOG_TAG = "SongListFragment";
     private ListView songView;
     private ArrayList<LocaleSong> songList;
+    private long albumId;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private SongCardAdapter adapter;
@@ -46,9 +47,10 @@ public class AlbumFragment extends NameAwareFragment {
     private PlaylistViewModel playlistViewModel;
     private List<PlaylistWithEntries> currPlaylistWithEntries;
 
-    public AlbumFragment(ArrayList<LocaleSong> songList) {
+    public AlbumFragment(ArrayList<LocaleSong> songList, long albumID) {
         setFragmentname(this.getClass().getSimpleName());
         this.songList = songList;
+        this.albumId = albumID;
     }
 
     public AlbumFragment() {
@@ -80,7 +82,7 @@ public class AlbumFragment extends NameAwareFragment {
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new SongCardAdapter(songList, this.getContext(), MusicService.CONTEXT_TYPE_SONGLIST, MainActivity.CONTEXT_SONGLIST);
+        adapter = new SongCardAdapter(songList, this.getContext(), MusicService.CONTEXT_TYPE_ALBUM, String.valueOf(albumId));
         adapter.setOnLongItemClickListener((v, position, songId) -> {
             currSongId = songId;
             currItemPos = position;

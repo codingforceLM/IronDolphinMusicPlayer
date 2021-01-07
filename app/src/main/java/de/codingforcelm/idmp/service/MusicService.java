@@ -388,7 +388,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             }
         }
         if (nextpos >= 0 && nextpos < songList.size()) {
-            currMediaId = songList.get(songPosition).getId();
+            currMediaId = songList.get(nextpos).getId();
             this.playSong(nextpos, true);
         }
     }
@@ -398,7 +398,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         if (nextpos < 0) {
             nextpos = songList.size() - 1;
         }
-        currMediaId = songList.get(songPosition).getId();
+        currMediaId = songList.get(nextpos).getId();
         this.playSong(nextpos, false);
     }
 
