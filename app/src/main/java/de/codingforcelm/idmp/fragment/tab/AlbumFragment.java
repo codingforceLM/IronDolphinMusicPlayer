@@ -19,14 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.MainActivity;
-import de.codingforcelm.idmp.MenuIdentifier;
-import de.codingforcelm.idmp.LocaleSong;
+import de.codingforcelm.idmp.activity.MainActivity;
+import de.codingforcelm.idmp.activity.MenuIdentifier;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
-import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.service.MusicService;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;

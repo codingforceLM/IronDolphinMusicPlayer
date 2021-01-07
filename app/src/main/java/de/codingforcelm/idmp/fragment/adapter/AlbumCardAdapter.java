@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.MainActivity;
-import de.codingforcelm.idmp.LocaleAlbum;
+import de.codingforcelm.idmp.activity.MainActivity;
+import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.tab.AlbumFragment;
 
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {

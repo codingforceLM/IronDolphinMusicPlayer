@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.player.service;
+package de.codingforcelm.idmp.service;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -35,12 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.codingforcelm.idmp.MainActivity;
-import de.codingforcelm.idmp.LocaleSong;
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.activity.MainActivity;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;
-import de.codingforcelm.idmp.structure.queue.SongQueue;
+import de.codingforcelm.idmp.queue.SongQueue;
 
 public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 

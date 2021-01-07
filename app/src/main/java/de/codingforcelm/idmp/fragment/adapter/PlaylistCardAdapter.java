@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;

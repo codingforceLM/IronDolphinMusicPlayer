@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.structure.queue;
+package de.codingforcelm.idmp.queue;
 
 import java.util.Queue;
 

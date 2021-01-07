@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.LocaleSong;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.QueueCardAdapter;
-import de.codingforcelm.idmp.structure.queue.SongQueue;
+import de.codingforcelm.idmp.queue.SongQueue;
 
 public class QueueFragment extends NameAwareFragment {
 

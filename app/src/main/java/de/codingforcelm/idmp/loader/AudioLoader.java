@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp.audio;
+package de.codingforcelm.idmp.loader;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.provider.MediaStore;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.LocaleAlbum;
-import de.codingforcelm.idmp.LocaleSong;
+import de.codingforcelm.idmp.locale.LocaleAlbum;
+import de.codingforcelm.idmp.locale.LocaleSong;
 
 public class AudioLoader {
 

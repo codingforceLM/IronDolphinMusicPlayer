@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.fragment.tab.AlbumListFragment;
 import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
 import de.codingforcelm.idmp.fragment.tab.SongListFragment;

@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.LocaleSong;
-import de.codingforcelm.idmp.PlaylistCreateActivity;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.activity.playlist.PlaylistCreateActivity;
 import de.codingforcelm.idmp.R;
 
 public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCreateCardAdapter.SelectionCardViewHolder> {

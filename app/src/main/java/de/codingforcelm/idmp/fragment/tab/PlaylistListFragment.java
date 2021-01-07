@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.MenuIdentifier;
-import de.codingforcelm.idmp.LocaleAlbum;
+import de.codingforcelm.idmp.activity.MenuIdentifier;
+import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.database.entity.Playlist;

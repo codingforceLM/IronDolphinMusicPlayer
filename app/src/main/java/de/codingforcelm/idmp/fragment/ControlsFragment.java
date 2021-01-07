@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.service.MusicService;
 
 public class ControlsFragment extends NameAwareFragment {
     private ImageView playPauseButton;

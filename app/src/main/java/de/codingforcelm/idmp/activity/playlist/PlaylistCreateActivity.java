@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp;
+package de.codingforcelm.idmp.activity.playlist;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,9 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import de.codingforcelm.idmp.audio.AudioLoader;
+import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.activity.MainActivity;
+import de.codingforcelm.idmp.activity.MainActivitySingleton;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
-import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.service.MusicService;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;

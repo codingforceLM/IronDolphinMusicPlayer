@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp;
+package de.codingforcelm.idmp.activity;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -40,13 +40,16 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
+import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.activity.playlist.PlaylistCreateActivity;
+import de.codingforcelm.idmp.activity.playlist.PlaylistNameActivity;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.QueueFragment;
 import de.codingforcelm.idmp.fragment.TabFragment;
-import de.codingforcelm.idmp.player.service.MusicService;
+import de.codingforcelm.idmp.service.MusicService;
 
 public class MainActivity extends AppCompatActivity {
 

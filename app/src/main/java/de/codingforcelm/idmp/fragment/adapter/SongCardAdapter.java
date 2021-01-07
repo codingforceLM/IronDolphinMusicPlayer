@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.MainActivity;
-import de.codingforcelm.idmp.LocaleSong;
+import de.codingforcelm.idmp.activity.MainActivity;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
 
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {

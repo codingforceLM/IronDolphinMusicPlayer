@@ -1,4 +1,4 @@
-package de.codingforcelm.idmp;
+package de.codingforcelm.idmp.activity;
 
 public class MainActivitySingleton {
 

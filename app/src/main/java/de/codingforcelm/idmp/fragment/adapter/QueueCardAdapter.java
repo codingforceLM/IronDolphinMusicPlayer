@@ -15,10 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
-import de.codingforcelm.idmp.LocaleSong;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.audio.AudioLoader;
-import de.codingforcelm.idmp.structure.queue.OnQueueChangedListener;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.queue.OnQueueChangedListener;
 
 public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.QueueCardViewHolder> implements OnQueueChangedListener {
 

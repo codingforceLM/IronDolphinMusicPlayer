@@ -1,18 +1,17 @@
-package de.codingforcelm.idmp;
+package de.codingforcelm.idmp.locale;
 
-public class LocaleSong {
+public class LocaleAlbum {
+
     private long id;
-    private String data;
     private String title;
-    private String album;
     private String artist;
+    private boolean expanded;
 
-    public LocaleSong(long id, String data, String title, String album, String artist) {
-        this.id = id;
-        this.data = data;
-        this.title = title;
-        this.album = album;
-        this.artist = artist;
+    public LocaleAlbum(long id, String title, String artist, boolean expanded) {
+        this.setId(id);
+        this.setTitle(title);
+        this.setArtist(artist);
+        this.setExpanded(expanded);
     }
 
     public long getId() {
@@ -23,28 +22,12 @@ public class LocaleSong {
         this.id = id;
     }
 
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(String album) {
-        this.album = album;
     }
 
     public String getArtist() {
@@ -55,6 +38,14 @@ public class LocaleSong {
         this.artist = artist;
     }
 
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -63,7 +54,7 @@ public class LocaleSong {
         if (!(o instanceof LocaleSong)) {
             return false;
         }
-        LocaleSong that = (LocaleSong) o;
+        LocaleAlbum that = (LocaleAlbum) o;
         return this.getId() == that.getId();
     }
 }

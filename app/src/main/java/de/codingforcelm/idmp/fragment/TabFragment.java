@@ -14,10 +14,8 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import de.codingforcelm.idmp.MainActivity;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.fragment.ControlsFragment;
-import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.TabFragmentAdapter;
 
 public class TabFragment extends NameAwareFragment {
