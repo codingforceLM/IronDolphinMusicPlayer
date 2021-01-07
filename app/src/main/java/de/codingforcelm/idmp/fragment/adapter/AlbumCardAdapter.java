@@ -54,7 +54,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
 
         holder.itemView.setOnClickListener(v -> {
             AudioLoader audioLoader = new AudioLoader(context);
-            ((MainActivity) context).placeFragment(new AlbumFragment(audioLoader.getSongsFromAlbum(currentItem.getId())), R.id.mainFrame);
+            ((MainActivity) context).placeFragment(new AlbumFragment(audioLoader.getSongsFromAlbum(currentItem.getId()),currentItem.getId()), R.id.mainFrame);
             ((MainActivity) context).setTitle(currentItem.getTitle());
             notifyItemChanged(position);
 
