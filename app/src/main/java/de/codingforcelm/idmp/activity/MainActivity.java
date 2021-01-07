@@ -360,9 +360,11 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.nav_tabPlayer:
                 fragmentClass = TabFragment.class;
+                setTitle(R.string.idmp);
                 break;
             case R.id.nav_queue:
                 fragmentClass = QueueFragment.class;
+                setTitle(R.string.queue);
                 break;
             default:
                 Log.e(LOG_TAG, "unknown navigation selected");
@@ -372,8 +374,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
+
 
         drawerLayout.closeDrawers();
 
