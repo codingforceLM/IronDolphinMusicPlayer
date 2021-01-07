@@ -481,6 +481,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         String duration = String.valueOf(player.getDuration());
         String shuffleStr = String.valueOf(shuffle);
         String repeatStr = String.valueOf(repeat);
+        String mid = String.valueOf(currMediaId);
 
         dataBuilder.putString(KEY_ARTIST, artist);
         dataBuilder.putString(KEY_ALBUM, album);
@@ -488,6 +489,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         dataBuilder.putString(KEY_DURATION, duration);
         dataBuilder.putString(KEY_SHUFFLE, shuffleStr);
         dataBuilder.putString(KEY_REPEAT, repeatStr);
+        dataBuilder.putString(KEY_MEDIA_ID, mid);
 
         mediaSession.setPlaybackState(stateBuilder.build());
         mediaSession.setMetadata(dataBuilder.build());

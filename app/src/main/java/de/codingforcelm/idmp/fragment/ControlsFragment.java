@@ -1,5 +1,6 @@
 package de.codingforcelm.idmp.fragment;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.service.MusicService;
 
 public class ControlsFragment extends NameAwareFragment {
@@ -53,8 +55,14 @@ public class ControlsFragment extends NameAwareFragment {
         if(metadata != null){
             String title = metadata.getString(MusicService.KEY_TITLE);
             String artist = metadata.getString(MusicService.KEY_ARTIST);
+            String mediaId = metadata.getString(MusicService.KEY_MEDIA_ID);
             songTitle.setText(title);
             songArtist.setText(artist);
+            AudioLoader al = new AudioLoader(getContext());
+            Bitmap cover = al.getAlbumCoverForSong(Long.valueOf(mediaId));
+            if(cover != null) {
+                image.setImageBitmap(cover);
+            }
         }
     }
 
