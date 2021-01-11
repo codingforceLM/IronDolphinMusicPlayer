@@ -773,7 +773,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             switch (focusChange) {
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                     Log.e(LOG_TAG, "Audio Focus loss transient");
-                    MusicService.this.pauseSong(false);
+                    MusicService.this.pauseSong(true);
                     resumeAfterGain = player.isPlaying();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
