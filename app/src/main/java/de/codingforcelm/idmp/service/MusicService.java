@@ -774,7 +774,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                     Log.e(LOG_TAG, "Audio Focus loss transient");
                     MusicService.this.pauseSong(false);
-                    resumeAfterGain = true;
+                    resumeAfterGain = player.isPlaying();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                     Log.e(LOG_TAG, "Audio Focus loss transient can duck");
