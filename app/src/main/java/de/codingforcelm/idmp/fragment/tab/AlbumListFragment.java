@@ -65,7 +65,7 @@ public class AlbumListFragment extends NameAwareFragment {
 
         layoutManager = new LinearLayoutManager(view.getContext());
 
-        adapter = new AlbumCardAdapter(albumList, this.getContext());
+        adapter = new AlbumCardAdapter(albumList, getActivity());
 
         adapter.setOnLongItemClickListener((v, position, album) -> {
             currAlbumID = album;
