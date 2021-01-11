@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MenuIdentifier;
 import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.R;
@@ -59,6 +60,9 @@ public class PlaylistListFragment extends NameAwareFragment {
         registerForContextMenu(recyclerView);
 
         layoutManager = new LinearLayoutManager(view.getContext());
+
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
 
         adapter = new PlaylistCardAdapter(getActivity().getApplication(), getActivity());
         playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);

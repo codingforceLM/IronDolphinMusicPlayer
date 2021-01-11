@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAB_ALBUMS = "de.codingforcelm.idmp.TAB_ALBUMS";
     public static final String TAB_PAYLISTS = "de.codingforcelm.idmp.TAB_PLAYLISTS";
 
+    public static final String FRAGMENT_QUEUE = "de.codingforcelm.idmp.FRAGMENT_QUEUE";
+    public static final String FRAGMENT_TABS = "de.codingforcelm.idmp.FRAGMENT_TABS";
+    public static final String FRAGMENT_BIG_PLAYER = "de.codingforcelm.idmp.FRAGMENT_BIG_PLAYER";
+
     public static final String CONTEXT_SONGLIST = "de.codingforcelm.idmp.player.service.SONGLIST";
     private static final int STORAGE_PERMISSION_CODE = 1;
     private boolean bound;
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean playstatus;
     private MediaMetadataCompat mediaMetadata;
     private String currentTab;
+    private String currentFragment;
     private boolean inPlaylist;
     private String playlistUuid;
 
@@ -243,7 +248,9 @@ public class MainActivity extends AppCompatActivity {
                 // empty stud
                 break;
             case TAB_PAYLISTS:
-                m = R.menu.playlist_add_menu;
+                if(currentFragment.equals(FRAGMENT_TABS)) {
+                    m = R.menu.playlist_add_menu;
+                }
                 break;
         }
         if (m >= 0) {
@@ -535,6 +542,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setCurrentTab(String tab) {
         this.currentTab = tab;
+    }
+
+    public void setCurrentFragment(String fragment) {
+        this.currentFragment = fragment;
     }
 
     public void setInPlaylist(boolean inPlaylist) {

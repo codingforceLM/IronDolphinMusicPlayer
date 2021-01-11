@@ -90,6 +90,8 @@ public class BigPlayerFragment extends NameAwareFragment {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_play);
         }
 
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
     }
 
     public void applyMetadata(MediaMetadataCompat metadata) {

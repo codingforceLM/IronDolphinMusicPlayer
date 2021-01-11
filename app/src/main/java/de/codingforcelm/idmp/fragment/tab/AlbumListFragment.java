@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MenuIdentifier;
 import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.locale.LocaleSong;
@@ -62,6 +63,9 @@ public class AlbumListFragment extends NameAwareFragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
+
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
 
         layoutManager = new LinearLayoutManager(view.getContext());
 
