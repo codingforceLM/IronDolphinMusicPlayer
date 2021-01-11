@@ -90,7 +90,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         List<LocaleSong> songs = audioLoader.getSongs();
         List<PlaylistSelection> selectionList = PlaylistSelection.createSelectionListFromList(songs);
 
-        adapter = new PlaylistCreateCardAdapter(selectionList);
+        adapter = new PlaylistCreateCardAdapter(selectionList, getApplicationContext());
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

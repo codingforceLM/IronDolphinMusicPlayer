@@ -62,6 +62,8 @@ public class SongListFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
 
         songList = new AudioLoader(this.getContext()).getSongs();
         searchView = view.findViewById(R.id.searchView);

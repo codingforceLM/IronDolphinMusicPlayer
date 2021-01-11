@@ -2,6 +2,7 @@ package de.codingforcelm.idmp.fragment.adapter;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,13 @@ import java.util.List;
 
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
 
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
     public static final String LOG_TAG = "PlaylistCardAdapter";
@@ -28,6 +33,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
     private List<PlaylistWithEntries> playlistList;
     private List<PlaylistWithEntries> playlistListCopy;
     private onLongItemClickListener longClickListener;
+    private AudioLoader audioLoader;
 
     public PlaylistCardAdapter(Application application, Context context) {
         this.context = context;
@@ -36,6 +42,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         this.playlistListCopy = new ArrayList<>();
         this.playlistListCopy.addAll(playlistList);
         this.repository = PlaylistRepository.getInstance(application);
+        audioLoader = new AudioLoader(context);
     }
 
     @Override
@@ -69,6 +76,19 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
                 ((MainActivity) context).setTitle(playlistList.get(itemPos).getPlaylist().getName());
             }
         });
+
+        if(position == 0) {
+            List<PlaylistEntry> entries = currentItem.getEntries();
+            if(entries.size() >= 1) {
+                PlaylistEntry entry = entries.get(0);
+                LocaleSong s = audioLoader.getSong(entry.getMediaId());
+                Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
+                if(cover != null) {
+                    ImageView image = holder.itemView.findViewById(R.id.item_image);
+                    image.setImageBitmap(cover);
+                }
+            }
+        }
     }
 
     @Override

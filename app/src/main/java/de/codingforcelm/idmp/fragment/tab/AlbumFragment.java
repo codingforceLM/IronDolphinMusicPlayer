@@ -77,6 +77,9 @@ public class AlbumFragment extends NameAwareFragment {
             ).commit();
         }
 
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
+
         searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);

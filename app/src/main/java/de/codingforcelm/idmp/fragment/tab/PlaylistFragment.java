@@ -92,8 +92,11 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
             ).commit();
         }
 
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
         ((MainActivity) getActivity()).setPlaylistUuid(listId);
         ((MainActivity) getActivity()).setInPlaylist(true);
+        ((MainActivity) getActivity()).invalidateOptionsMenu();
 
         searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -203,5 +206,6 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
         Log.e(LOG_TAG, "onManualDetach");
         ((MainActivity) getActivity()).setPlaylistUuid(null);
         ((MainActivity) getActivity()).setInPlaylist(false);
+        ((MainActivity) getActivity()).invalidateOptionsMenu();
     }
 }

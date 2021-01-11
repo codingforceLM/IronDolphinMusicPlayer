@@ -1,5 +1,7 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.activity.playlist.PlaylistCreateActivity;
 import de.codingforcelm.idmp.R;
@@ -21,11 +24,13 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
 
     private final List<PlaylistCreateActivity.PlaylistSelection> selectionListCopy;
     private final List<PlaylistCreateActivity.PlaylistSelection> selectionList;
+    private AudioLoader audioLoader;
 
-    public PlaylistCreateCardAdapter(List<PlaylistCreateActivity.PlaylistSelection> selectionList) {
+    public PlaylistCreateCardAdapter(List<PlaylistCreateActivity.PlaylistSelection> selectionList, Context context) {
         this.selectionList = selectionList;
         this.selectionListCopy = new ArrayList<>();
         this.selectionListCopy.addAll(selectionList);
+        audioLoader = new AudioLoader(context);
     }
 
     @Override
@@ -57,6 +62,12 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
             color = Color.WHITE;
         }
         holder.itemView.setBackgroundColor(color);
+
+        Bitmap cover = audioLoader.getAlbumCoverForSong(selection.getSong().getId());
+        if(cover != null) {
+            ImageView img = holder.itemView.findViewById(R.id.item_image);
+            img.setImageBitmap(cover);
+        }
     }
 
     @Override

@@ -50,6 +50,9 @@ public class TabFragment extends NameAwareFragment {
         }
         fragmentTransaction.commit();
 
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
+
         layout = view.findViewById(R.id.tabLayout);
         songsTab = view.findViewById(R.id.songTab);
         playlistTab = view.findViewById(R.id.playlistTab);

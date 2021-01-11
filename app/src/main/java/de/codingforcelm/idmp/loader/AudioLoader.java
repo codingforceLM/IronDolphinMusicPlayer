@@ -1,10 +1,15 @@
 package de.codingforcelm.idmp.loader;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -14,6 +19,7 @@ import de.codingforcelm.idmp.locale.LocaleSong;
 public class AudioLoader {
 
     private final Context context;
+    private String LOG_TAG = "AudioLoader";
 
     public AudioLoader(Context context) {
         this.context = context;
@@ -117,5 +123,25 @@ public class AudioLoader {
         cursor.close();
 
         return songs;
+    }
+
+    public Bitmap getAlbumCoverForSong(long mediaId) {
+        Uri trackUri = null;
+        try {
+            trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaId);
+        } catch (NumberFormatException nfe) {
+            Log.e(LOG_TAG, "Couldnt parse MediaId");
+            throw new IllegalStateException("Couldnt parse MediaId");
+        }
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        retriever.setDataSource(context, trackUri);
+        byte[] bytes = retriever.getEmbeddedPicture();
+
+        if(bytes == null) {
+            return null;
+        }
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
 }

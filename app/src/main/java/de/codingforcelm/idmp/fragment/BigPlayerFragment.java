@@ -1,5 +1,7 @@
 package de.codingforcelm.idmp.fragment;
 
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.service.MusicService;
 
 public class BigPlayerFragment extends NameAwareFragment {
@@ -87,6 +90,8 @@ public class BigPlayerFragment extends NameAwareFragment {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_play);
         }
 
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
     }
 
     public void applyMetadata(MediaMetadataCompat metadata) {
@@ -108,6 +113,9 @@ public class BigPlayerFragment extends NameAwareFragment {
         if (!metadata.containsKey(MusicService.KEY_REPEAT)) {
             throw new IllegalStateException("Missing repeat");
         }
+        if (!metadata.containsKey(MusicService.KEY_MEDIA_ID)) {
+            throw new IllegalStateException("Missing mediaId");
+        }
 
         String title = metadata.getString(MusicService.KEY_TITLE);
         String artist = metadata.getString(MusicService.KEY_ARTIST);
@@ -115,6 +123,8 @@ public class BigPlayerFragment extends NameAwareFragment {
         boolean shuffle = Boolean.parseBoolean(metadata.getString(MusicService.KEY_SHUFFLE));
         boolean repeat = Boolean.parseBoolean(metadata.getString(MusicService.KEY_REPEAT));
         duration = Integer.parseInt(metadata.getString(MusicService.KEY_DURATION));
+        String mediaId = metadata.getString(MusicService.KEY_MEDIA_ID);
+
         int seconds = (int) ((duration / 1000) % 60);
         int minutes = (int) ((duration / 1000) / 60);
         bp_title.setText(title);
@@ -139,6 +149,11 @@ public class BigPlayerFragment extends NameAwareFragment {
             bp_repeatButton.setImageResource(R.drawable.ic_control_repeat);
         }
 
+        AudioLoader al = new AudioLoader(getContext());
+        Bitmap cover = al.getAlbumCoverForSong(Long.valueOf(mediaId));
+        if(cover != null) {
+            bp_image.setImageBitmap(cover);
+        }
     }
 
     @Override

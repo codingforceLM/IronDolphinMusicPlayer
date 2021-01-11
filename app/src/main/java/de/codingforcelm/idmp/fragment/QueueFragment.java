@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.loader.AudioLoader;
@@ -54,6 +55,9 @@ public class QueueFragment extends NameAwareFragment {
                     ControlsFragment.class.getSimpleName()
             ).commit();
         }
+
+        ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
+        ((MainActivity) getContext()).invalidateOptionsMenu();
 
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView = view.findViewById(R.id.recyclerView);

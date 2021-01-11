@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.locale.LocaleSong;
@@ -95,6 +96,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private SongQueue queue;
     private long currMediaId;
     private boolean resumeAfterGain;
+    private AtomicBoolean playNewSong;
 
     @Override
     public void onCreate() {
@@ -105,6 +107,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         queue = SongQueue.getInstance();
         initMusicPlayer();
 
+        playNewSong = new AtomicBoolean(false);
         resumeAfterGain = false;
         paused = true;
         context = MainActivity.CONTEXT_SONGLIST;
@@ -481,6 +484,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         String duration = String.valueOf(player.getDuration());
         String shuffleStr = String.valueOf(shuffle);
         String repeatStr = String.valueOf(repeat);
+        String mid = String.valueOf(currMediaId);
 
         dataBuilder.putString(KEY_ARTIST, artist);
         dataBuilder.putString(KEY_ALBUM, album);
@@ -488,6 +492,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         dataBuilder.putString(KEY_DURATION, duration);
         dataBuilder.putString(KEY_SHUFFLE, shuffleStr);
         dataBuilder.putString(KEY_REPEAT, repeatStr);
+        dataBuilder.putString(KEY_MEDIA_ID, mid);
 
         mediaSession.setPlaybackState(stateBuilder.build());
         mediaSession.setMetadata(dataBuilder.build());
@@ -663,7 +668,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                     case CONTEXT_TYPE_SONGLIST:
                         Log.e(LOG_TAG, "new context songlist");
                         songList = audioLoader.getSongs();
-                        notifyLoadedAndPlay(mediaId, trackUri, false);
+                        playNewSong.set(true);
+                        notifyLoadedAndPlay(mediaId, trackUri, playNewSong.getAndSet(false));
                         break;
                     case CONTEXT_TYPE_ALBUM:
                         Log.e(LOG_TAG, "new context album");
@@ -671,7 +677,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             throw new IllegalStateException("missing album id");
                         }
                         songList = audioLoader.getSongsFromAlbum(extras.getLong(KEY_ALBUM_ID));
-                        notifyLoadedAndPlay(mediaId, trackUri, false);
+                        playNewSong.set(true);
+                        notifyLoadedAndPlay(mediaId, trackUri, playNewSong.getAndSet(false));
                         break;
                     case CONTEXT_TYPE_PLAYLIST:
                         Log.e(LOG_TAG, "new context playlist");
@@ -682,6 +689,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         String listId = extras.getString(KEY_PLAYLIST_ID);
                         PlaylistRepository repo = PlaylistRepository.getInstance(getApplication());
                         Uri finalTrackUri = trackUri;
+                        playNewSong.set(true);
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
@@ -698,7 +706,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                                         songList = songs;
                                         setSongPositionFromMediaId(Long.valueOf(mediaId));
                                         updateSession();
-                                        notifyLoadedAndPlay(mediaId, finalTrackUri, player.isPlaying());
+                                        notifyLoadedAndPlay(mediaId, finalTrackUri, playNewSong.getAndSet(false));
                                     }
                                 });
                             }
@@ -707,13 +715,13 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 }
                 context = newContext;
             } else {
-                notifyLoadedAndPlay(mediaId, trackUri, false);
+                notifyLoadedAndPlay(mediaId, trackUri, true);
             }
         }
 
         private void notifyLoadedAndPlay(String mediaId, Uri trackUri, boolean isPlaying) {
             setSongPositionFromMediaId(Long.valueOf(mediaId));
-            if (!isPlaying) {
+            if (isPlaying) {
                 MusicService.this.playSong(trackUri, true);
             }
         }
