@@ -2,6 +2,7 @@ package de.codingforcelm.idmp.fragment.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,17 +54,19 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
 
     @Override
     public void onBindViewHolder(AlbumCardViewHolder holder, int position) {
+        Log.e(LOG_TAG, "-- onBindViewHolder --");
         LocaleAlbum currentItem = albumList.get(position);
         holder.bind(currentItem);
 
         holder.itemView.setTag(position);
+        Log.e(LOG_TAG, "Set on long click listener");
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
                 longClickListener.ItemLongClicked(v, position, currentItem.getId());
             }
             return true;
         });
-
+        Log.e(LOG_TAG, "Set on click listener");
         holder.itemView.setOnClickListener(v -> {
             ((MainActivity) context).placeFragment(new AlbumFragment(currentItem.getId()), R.id.mainFrame);
             ((MainActivity) context).setTitle(currentItem.getTitle());
