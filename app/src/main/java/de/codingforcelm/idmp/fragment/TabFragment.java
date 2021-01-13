@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,25 +11,25 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.fragment.adapter.TabFragmentAdapter;
-
+/**
+ * Fragment to display a tab layout, which embeds Fragments
+ */
 public class TabFragment extends NameAwareFragment {
-
+    private static final String LOG_TAG = "TabFragment";
     private final String[] tabTexts = new String[]{"Songs", "Albums", "Playlists"};
-
     private TabLayout layout;
-    private TabItem songsTab;
-    private TabItem playlistTab;
-    private TabItem albumTab;
     private ViewPager2 pager;
     private TabLayoutMediator mediator;
 
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public TabFragment() {
         setFragmentname(this.getClass().getSimpleName());
     }
@@ -40,6 +41,7 @@ public class TabFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(LOG_TAG, "--onViewCreated--");
         ((MainActivity) getContext()).setTitle(R.string.idmp);
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -54,9 +56,6 @@ public class TabFragment extends NameAwareFragment {
         ((MainActivity) getContext()).invalidateOptionsMenu();
 
         layout = view.findViewById(R.id.tabLayout);
-        songsTab = view.findViewById(R.id.songTab);
-        playlistTab = view.findViewById(R.id.playlistTab);
-        albumTab = view.findViewById(R.id.albumTab);
         pager = view.findViewById(R.id.tabFragmentPager);
 
         TabFragmentAdapter adapter = new TabFragmentAdapter(getChildFragmentManager(), this.getLifecycle(), (MainActivity) getActivity());
@@ -73,20 +72,24 @@ public class TabFragment extends NameAwareFragment {
         layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                Log.e(LOG_TAG, "--onTabSelected--");
                 MainActivity activity = (MainActivity) getActivity();
                 switch (tab.getPosition()) {
                     case 0:
                         // Songs
+                        Log.e(LOG_TAG, "set current tab: Songs");
                         activity.setCurrentTab(MainActivity.TAB_SONGS);
                         activity.invalidateOptionsMenu();
                         break;
                     case 1:
                         // Albums
+                        Log.e(LOG_TAG, "set current tab: Albums");
                         activity.setCurrentTab(MainActivity.TAB_ALBUMS);
                         activity.invalidateOptionsMenu();
                         break;
                     case 2:
                         // Playlists
+                        Log.e(LOG_TAG, "set current tab: Playlists");
                         activity.setCurrentTab(MainActivity.TAB_PAYLISTS);
                         activity.invalidateOptionsMenu();
                         break;
@@ -107,7 +110,7 @@ public class TabFragment extends NameAwareFragment {
         this.initializeTabTexts();
     }
 
-    public void initializeTabTexts() {
+    private void initializeTabTexts() {
         for (int i = 0; i < tabTexts.length; i++) {
             layout.getTabAt(i).setText(tabTexts[i]);
         }

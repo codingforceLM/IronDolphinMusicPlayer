@@ -92,6 +92,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "--onViewCreated--");
+        Log.e(LOG_TAG, "playlist fragmentname: "+this.getFragmentname());
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
             getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 
