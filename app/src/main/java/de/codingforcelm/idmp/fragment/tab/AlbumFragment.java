@@ -73,6 +73,7 @@ public class AlbumFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(LOG_TAG, "--onViewCreated--");
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
             getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 
@@ -120,6 +121,7 @@ public class AlbumFragment extends NameAwareFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        Log.e(LOG_TAG, "--onCreateContextMenu--");
         contextMenu.add(MenuIdentifier.GROUP_ALBUM, MenuIdentifier.ADD_TO_QUEUE, 0, R.string.add_to_queue);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_ALBUM, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {
