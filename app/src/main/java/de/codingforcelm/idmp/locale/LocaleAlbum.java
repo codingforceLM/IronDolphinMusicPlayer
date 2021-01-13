@@ -1,49 +1,72 @@
 package de.codingforcelm.idmp.locale;
 
+/**
+ * Representation object for a local stored album
+ */
 public class LocaleAlbum {
 
     private long id;
     private String title;
     private String artist;
-    private boolean expanded;
 
-    public LocaleAlbum(long id, String title, String artist, boolean expanded) {
+    /**
+     * Default constructor
+     * @param id id
+     * @param title title
+     * @param artist artist
+     */
+    public LocaleAlbum(long id, String title, String artist) {
         this.setId(id);
         this.setTitle(title);
         this.setArtist(artist);
-        this.setExpanded(expanded);
     }
 
+    /**
+     * Returns album id
+     * @return album id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Sets album id
+     * @param id album id
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     * Returns album title
+     * @return album title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Sets album title
+     * @param title album title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns album artist
+     * @return album artist
+     */
     public String getArtist() {
         return artist;
     }
 
+    /**
+     * Sets album artist
+     * @param artist album title
+     */
     public void setArtist(String artist) {
         this.artist = artist;
-    }
-
-    public boolean isExpanded() {
-        return expanded;
-    }
-
-    public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
     }
 
     @Override
