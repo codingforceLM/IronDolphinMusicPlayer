@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.activity.MainActivity;
-import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.fragment.tab.AlbumFragment;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.locale.LocaleSong;
 
+/**
+ * CardAdapter class for albums
+ */
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     public static final String LOG_TAG = "AlbumCardAdapter";
     private final ArrayList<LocaleAlbum> albumList;
@@ -28,7 +31,11 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
     private onLongItemClickListener longClickListener;
     private AudioLoader audioLoader;
 
-
+    /**
+     * Default constructor
+     * @param albumList LocaleAlbum list
+     * @param context context
+     */
     public AlbumCardAdapter(ArrayList<LocaleAlbum> albumList, Context context) {
         this.context = context;
         this.albumList = albumList;
@@ -58,13 +65,11 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
         });
 
         holder.itemView.setOnClickListener(v -> {
-            AudioLoader audioLoader = new AudioLoader(context);
-            ((MainActivity) context).placeFragment(new AlbumFragment(audioLoader.getSongsFromAlbum(currentItem.getId()),currentItem.getId()), R.id.mainFrame);
+            ((MainActivity) context).placeFragment(new AlbumFragment(currentItem.getId()), R.id.mainFrame);
             ((MainActivity) context).setTitle(currentItem.getTitle());
             notifyItemChanged(position);
 
         });
-
 
         List<LocaleSong> songs = audioLoader.getSongsFromAlbum(currentItem.getId());
         if(songs.size() >= 1) {
@@ -82,10 +87,19 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
         return albumList.size();
     }
 
+    /**
+     * Method to set the long click listener for an album card
+     * @param onLongItemClickListener interface onLongItemClickListener
+     */
     public void setOnLongItemClickListener(onLongItemClickListener onLongItemClickListener) {
         this.longClickListener = onLongItemClickListener;
     }
 
+    /**
+     * Method to filter the list inside RecyclerView.
+     * Checks if the album title contains a given String
+     * @param text text to filter
+     */
     public void filter(String text) {
         albumList.clear();
         if (text.isEmpty()) {
@@ -101,22 +115,30 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
         notifyDataSetChanged();
     }
 
+    /**
+     * Interface to get information from long click
+     */
     public interface onLongItemClickListener {
         void ItemLongClicked(View v, int position, long albumID);
     }
 
+    /**
+     * ViewHolder class for album cards
+     */
     public static class AlbumCardViewHolder extends RecyclerView.ViewHolder {
         public ImageView item_image;
         public TextView item_title;
         public TextView item_artist;
 
-
+        /**
+         * Default constructor
+         * @param itemView view
+         */
         public AlbumCardViewHolder(View itemView) {
             super(itemView);
             item_image = itemView.findViewById(R.id.item_image);
             item_title = itemView.findViewById(R.id.item_title);
             item_artist = itemView.findViewById(R.id.item_subtitle);
-
         }
 
         private void bind(LocaleAlbum album) {
