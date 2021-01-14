@@ -1,5 +1,8 @@
 package de.codingforcelm.idmp.activity;
 
+/**
+ * This class provides constant variables to identify context menu items
+ */
 public final class MenuIdentifier {
     //GROUPS
     public static final int GROUP_PLAYLISTLIST = 0;
