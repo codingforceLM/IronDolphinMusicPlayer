@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.activity.playlist;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,8 +29,11 @@ import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistWithEntriesViewModel;
 
+/**
+ * class
+ */
 public class PlaylistCreateActivity extends AppCompatActivity {
-
+    public static final String LOG_TAG = "PlaylistCreateActivity";
     public static final String KEY_PLAYLIST_NAME = "de.codingforcelm.idmp.PLAYLIST_NAME";
     public static final String KEY_PLAYLIST_UUID = "de.codingforcelm.idmp.PLAYLIST_UUID";
     public static final String KEY_MODE = "de.codingforcelm.idmp.MODE";
@@ -135,6 +139,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
     }
 
     private void addSongsToPlaylist() {
+        Log.e(LOG_TAG, "--addSongsToPlaylist--");
         PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
 
         List<PlaylistSelection> selected = adapter.getSelectedList();
@@ -154,9 +159,11 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playlistUuid);
         b.putString(MusicService.KEY_PLAYLIST_ID, playlistUuid);
+        Log.e(LOG_TAG, "Songs added to Playlist");
     }
 
     private void savePlaylist() {
+        Log.e(LOG_TAG, "--savePlaylist--");
         PlaylistWithEntriesViewModel viewModel = new ViewModelProvider(this).get(PlaylistWithEntriesViewModel.class);
 
         String uuid = UUID.randomUUID().toString();
@@ -172,6 +179,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
 
         PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
         viewModel.insert(playlist, entriesArr);
+        Log.e(LOG_TAG, "Playlist saved");
     }
 
 
