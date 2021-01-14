@@ -2,51 +2,68 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/tp_image"
+    <View
+        android:id="@+id/controlsDivider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="1dp"
         android:layout_weight="20"
-        android:contentDescription="@string/playpausebutton"
-        app:srcCompat="@drawable/ic_item_default_image" />
+        android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="12"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tp_songTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ellipsize="marquee"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:singleLine="true"
-            android:text="@string/title" />
-
-        <TextView
-            android:id="@+id/tp_songArtist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:ellipsize="marquee"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:singleLine="true"
-            android:text="@string/artist" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/tp_playPauseButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_weight="20"
-        android:contentDescription="@string/playpausebutton"
-        app:srcCompat="@drawable/ic_control_play" />
+        android:orientation="horizontal"
+        android:background="#f2f2f2">
+
+        <ImageView
+            android:id="@+id/tp_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:contentDescription="@string/playpausebutton"
+            app:srcCompat="@drawable/ic_item_default_image" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="12"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tp_songTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:text="@string/title" />
+
+            <TextView
+                android:id="@+id/tp_songArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:text="@string/artist" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/tp_playPauseButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:contentDescription="@string/playpausebutton"
+            app:srcCompat="@drawable/ic_control_play" />
+    </LinearLayout>
 
 </LinearLayout>
