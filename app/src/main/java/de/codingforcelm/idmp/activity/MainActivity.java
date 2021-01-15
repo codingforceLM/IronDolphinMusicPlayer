@@ -56,7 +56,7 @@ import de.codingforcelm.idmp.service.MusicService;
  */
 public class MainActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = "MainActivity";
+    private static final String LOG_TAG = "MainActivity";
 
     public static final String TAB_SONGS = "de.codingforcelm.idmp.TAB_SONGS";
     public static final String TAB_ALBUMS = "de.codingforcelm.idmp.TAB_ALBUMS";
