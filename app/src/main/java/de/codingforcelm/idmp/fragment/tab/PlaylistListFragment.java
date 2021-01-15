@@ -15,21 +15,19 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MenuIdentifier;
-import de.codingforcelm.idmp.locale.LocaleAlbum;
-import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.fragment.NameAwareFragment;
-import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.adapter.PlaylistCardAdapter;
 
+/**
+ * Fragment to display a list of all playlists
+ */
 public class PlaylistListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "PlaylistListFragment";
-    private ArrayList<LocaleAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private PlaylistCardAdapter adapter;
@@ -38,9 +36,10 @@ public class PlaylistListFragment extends NameAwareFragment {
     private int currItemPos;
     private String playlistID;
 
-
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public PlaylistListFragment() {
-        //needed default constructor
         setFragmentname(this.getClass().getSimpleName());
     }
 
@@ -52,8 +51,7 @@ public class PlaylistListFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
-        albumList = new AudioLoader(this.getContext()).getAlbums();
+        Log.e(LOG_TAG, "--onViewCreated--");
         searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -94,6 +92,7 @@ public class PlaylistListFragment extends NameAwareFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        Log.e(LOG_TAG, "--onCreateContextMenu--");
         contextMenu.add(MenuIdentifier.GROUP_PLAYLISTLIST, MenuIdentifier.DELETE_PLAYLIST, 1, R.string.delete_playlist);
         super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
     }

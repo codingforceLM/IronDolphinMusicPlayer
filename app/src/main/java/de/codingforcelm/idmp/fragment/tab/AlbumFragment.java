@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.SearchView;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -19,23 +18,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MenuIdentifier;
-import de.codingforcelm.idmp.locale.LocaleSong;
-import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.fragment.ControlsFragment;
-import de.codingforcelm.idmp.fragment.NameAwareFragment;
-import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
-import de.codingforcelm.idmp.service.MusicService;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
+import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.service.MusicService;
 
+/**
+ * Fragment to display an album as songlist
+ */
 public class AlbumFragment extends NameAwareFragment {
     private static final String LOG_TAG = "SongListFragment";
-    private ListView songView;
     private ArrayList<LocaleSong> songList;
     private long albumId;
     private RecyclerView recyclerView;
@@ -47,14 +49,19 @@ public class AlbumFragment extends NameAwareFragment {
     private PlaylistViewModel playlistViewModel;
     private List<PlaylistWithEntries> currPlaylistWithEntries;
 
-    public AlbumFragment(ArrayList<LocaleSong> songList, long albumID) {
+    /**
+     * Constructor, which sets the NameAwareFragment name
+     * @param albumID
+     */
+    public AlbumFragment(long albumID) {
         setFragmentname(this.getClass().getSimpleName());
-        this.songList = songList;
         this.albumId = albumID;
     }
 
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public AlbumFragment() {
-        //needed default constructor
         setFragmentname(this.getClass().getSimpleName());
     }
 
@@ -66,6 +73,7 @@ public class AlbumFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(LOG_TAG, "--onViewCreated--");
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
             getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 
@@ -85,6 +93,7 @@ public class AlbumFragment extends NameAwareFragment {
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
         layoutManager = new LinearLayoutManager(view.getContext());
+        songList = new AudioLoader(this.getContext()).getSongsFromAlbum(albumId);
         adapter = new SongCardAdapter(songList, this.getContext(), MusicService.CONTEXT_TYPE_ALBUM, String.valueOf(albumId));
         adapter.setOnLongItemClickListener((v, position, songId) -> {
             currSongId = songId;
@@ -112,6 +121,7 @@ public class AlbumFragment extends NameAwareFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        Log.e(LOG_TAG, "--onCreateContextMenu--");
         contextMenu.add(MenuIdentifier.GROUP_ALBUM, MenuIdentifier.ADD_TO_QUEUE, 0, R.string.add_to_queue);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_ALBUM, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {

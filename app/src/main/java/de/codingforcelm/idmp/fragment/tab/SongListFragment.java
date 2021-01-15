@@ -18,20 +18,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MenuIdentifier;
-import de.codingforcelm.idmp.locale.LocaleSong;
-import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.fragment.NameAwareFragment;
-import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
-import de.codingforcelm.idmp.service.MusicService;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.service.MusicService;
 
+/**
+ * Fragment to display a list of songs
+ */
 public class SongListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "SongListFragment";
     private ArrayList<LocaleSong> songList;
@@ -44,13 +47,10 @@ public class SongListFragment extends NameAwareFragment {
     private PlaylistViewModel playlistViewModel;
     private List<PlaylistWithEntries> currPlaylistWithEntries;
 
-    public SongListFragment(ArrayList<LocaleSong> songList) {
-        setFragmentname(this.getClass().getSimpleName());
-        this.songList = songList;
-    }
-
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public SongListFragment() {
-        //needed default constructor
         setFragmentname(this.getClass().getSimpleName());
     }
 
@@ -62,6 +62,7 @@ public class SongListFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(LOG_TAG, "--onViewCreated--");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 
@@ -98,6 +99,7 @@ public class SongListFragment extends NameAwareFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        Log.e(LOG_TAG, "--onCreateContextMenu--");
         contextMenu.add(MenuIdentifier.GROUP_SONGLIST, MenuIdentifier.ADD_TO_QUEUE, 0, R.string.add_to_queue);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_SONGLIST, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);
         playlistViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlistWithEntries -> {

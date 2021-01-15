@@ -1,7 +1,6 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,15 +15,17 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.service.MusicService;
 
+/**
+ * Fragment to display a big player
+ */
 public class BigPlayerFragment extends NameAwareFragment {
 
-    private final String LOG_TAG = BigPlayerFragment.class.getSimpleName();
-
+    private static final String LOG_TAG = "BigPlayerFragment";
     private ImageView bp_repeatButton;
     private ImageView bp_prevButton;
     private ImageView bp_playPauseButton;
@@ -39,9 +40,10 @@ public class BigPlayerFragment extends NameAwareFragment {
     private TextView bp_duration;
     private int duration;
 
-
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public BigPlayerFragment() {
-        //needed default constructor
         setFragmentname(this.getClass().getSimpleName());
     }
 
@@ -49,7 +51,6 @@ public class BigPlayerFragment extends NameAwareFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -60,7 +61,7 @@ public class BigPlayerFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        Log.e(LOG_TAG, "--onViewCreated--");
         bp_repeatButton = view.findViewById(R.id.bp_repeatButton);
         bp_repeatButton.setOnClickListener(new BigPlayerFragment.RepeatOnClickListener());
         bp_prevButton = view.findViewById(R.id.bp_prevButton);
@@ -94,7 +95,12 @@ public class BigPlayerFragment extends NameAwareFragment {
         ((MainActivity) getContext()).invalidateOptionsMenu();
     }
 
+    /**
+     * Function to apply metadata and update controls
+     * @param metadata metadata
+     */
     public void applyMetadata(MediaMetadataCompat metadata) {
+        Log.e(LOG_TAG, "--applyMetadata--");
         if (!metadata.containsKey(MusicService.KEY_ARTIST)) {
             throw new IllegalStateException("Missing artist");
         }
@@ -163,11 +169,18 @@ public class BigPlayerFragment extends NameAwareFragment {
         applyMetadata(c);
     }
 
-
+    /**
+     * Sets seekbar to a given position
+     * @param pos position
+     */
     public void setSeekBarTo(int pos) {
         bp_seekBar.setProgress(pos);
     }
 
+    /**
+     * Sets current time textfield
+     * @param time time
+     */
     public void setCurrentTime(int time) {
         int seconds = (int) ((time / 1000) % 60);
         int minutes = (int) ((time / 1000) / 60);
