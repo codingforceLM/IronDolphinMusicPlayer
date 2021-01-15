@@ -12,11 +12,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import de.codingforcelm.idmp.database.entity.Playlist;
-import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.dao.PlayListDao;
 import de.codingforcelm.idmp.database.dao.PlaylistEntryDao;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
+/**
+ * Database Object to handle connection to the inner sqlite database
+ */
 @Database(
         entities = {
                 Playlist.class,
@@ -28,7 +31,12 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = "IDMPRoomDatabase";
     private static final int NUMBER_OF_THREADS = 4;
+
+    /**
+     * Thread pool to run transactions on
+     */
     public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
     private static final RoomDatabase.Callback databaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
@@ -71,6 +79,11 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
     };
     private static volatile IDMPRoomDatabase INSTANCE;
 
+    /**
+     * Retrieve IDMPRoomDatabase Instance
+     * @param context context
+     * @return RoomDatabase instance
+     */
     public static IDMPRoomDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (IDMPRoomDatabase.class) {
@@ -84,8 +97,16 @@ public abstract class IDMPRoomDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    /**
+     * Abstract method that construct a functional PlaylistDao object
+     * @return dao object
+     */
     public abstract PlayListDao playListDao();
 
+    /**
+     * Abstract method that construct a functional PlaylistEntryDao object
+     * @return dao object
+     */
     public abstract PlaylistEntryDao playlistEntryDao();
 
 }
