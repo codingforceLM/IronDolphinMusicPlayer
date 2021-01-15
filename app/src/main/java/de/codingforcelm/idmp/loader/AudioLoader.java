@@ -16,18 +16,28 @@ import java.util.ArrayList;
 import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.locale.LocaleSong;
 
+/**
+ * Utility class to load local audio files
+ */
 public class AudioLoader {
-
     private final Context context;
     private String LOG_TAG = "AudioLoader";
 
+    /**
+     * Default constructor
+     * @param context context
+     */
     public AudioLoader(Context context) {
         this.context = context;
     }
 
+    /**
+     * Get all local songs from the MediaStore
+     * @return  ArrayList of all songs
+     */
     public ArrayList<LocaleSong> getSongs() {
+        Log.e(LOG_TAG, "--getSongs--");
         ArrayList<LocaleSong> songs = new ArrayList<>();
-
         ContentResolver contentResolver = context.getContentResolver();
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -51,7 +61,13 @@ public class AudioLoader {
         return songs;
     }
 
+    /**
+     * Get a LocalSong from a given mediaId
+     * @param songId song mediaId
+     * @return song
+     */
     public LocaleSong getSong(long songId) {
+        Log.e(LOG_TAG, "--getSong-- id: "+songId);
         ContentResolver contentResolver = context.getContentResolver();
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -75,13 +91,17 @@ public class AudioLoader {
         return song;
     }
 
+    /**
+     * Get all local albums from the MediaStore
+     * @return ArrayList of all albums
+     */
     public ArrayList<LocaleAlbum> getAlbums() {
+        Log.e(LOG_TAG, "--getAlbums--");
         ArrayList<LocaleAlbum> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
         Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-        //String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         String sortOrder = MediaStore.Audio.Albums.ALBUM + " ASC";
         Cursor cursor = contentResolver.query(uri, null, null, null, sortOrder);
 
@@ -91,7 +111,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
 
-                songs.add(new LocaleAlbum(id, album, artist, false));
+                songs.add(new LocaleAlbum(id, album, artist));
             }
         }
         cursor.close();
@@ -99,7 +119,13 @@ public class AudioLoader {
         return songs;
     }
 
+    /**
+     * Get all song from a specific album
+     * @param albumId album mediaId
+     * @return ArrayList of all album-songs
+     */
     public ArrayList<LocaleSong> getSongsFromAlbum(long albumId) {
+        Log.e(LOG_TAG, "--getSongsFromAlbum-- id: "+albumId);
         ArrayList<LocaleSong> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -125,7 +151,13 @@ public class AudioLoader {
         return songs;
     }
 
+    /**
+     * Get the album cover for a song
+     * @param mediaId song mediaId
+     * @return cover as bitmap
+     */
     public Bitmap getAlbumCoverForSong(long mediaId) {
+        Log.e(LOG_TAG, "--getAlbumCoverForSong-- id: "+mediaId);
         Uri trackUri = null;
         try {
             trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaId);
