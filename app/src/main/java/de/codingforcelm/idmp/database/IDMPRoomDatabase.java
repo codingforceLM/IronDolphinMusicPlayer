@@ -12,10 +12,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import de.codingforcelm.idmp.database.entity.Playlist;
-import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.dao.PlayListDao;
 import de.codingforcelm.idmp.database.dao.PlaylistEntryDao;
+import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
 @Database(
         entities = {
