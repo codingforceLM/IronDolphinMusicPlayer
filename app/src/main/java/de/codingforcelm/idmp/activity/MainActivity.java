@@ -51,16 +51,41 @@ import de.codingforcelm.idmp.fragment.QueueFragment;
 import de.codingforcelm.idmp.fragment.TabFragment;
 import de.codingforcelm.idmp.service.MusicService;
 
+/**
+ * Main Activity of the application
+ */
 public class MainActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = "MainActivity";
+    private static final String LOG_TAG = "MainActivity";
 
+    /**
+     * Constant representing songs tab
+     */
     public static final String TAB_SONGS = "de.codingforcelm.idmp.TAB_SONGS";
+
+    /**
+     * Constant representing albums tab
+     */
     public static final String TAB_ALBUMS = "de.codingforcelm.idmp.TAB_ALBUMS";
+
+    /**
+     * Constant representing playlists tab
+     */
     public static final String TAB_PAYLISTS = "de.codingforcelm.idmp.TAB_PLAYLISTS";
 
+    /**
+     * Constant representing queue fragment
+     */
     public static final String FRAGMENT_QUEUE = "de.codingforcelm.idmp.FRAGMENT_QUEUE";
+
+    /**
+     * Constant representing tab fragment
+     */
     public static final String FRAGMENT_TABS = "de.codingforcelm.idmp.FRAGMENT_TABS";
+
+    /**
+     * Constant representing big player fragment
+     */
     public static final String FRAGMENT_BIG_PLAYER = "de.codingforcelm.idmp.FRAGMENT_BIG_PLAYER";
 
     public static final String CONTEXT_SONGLIST = "de.codingforcelm.idmp.player.service.SONGLIST";
@@ -73,16 +98,18 @@ public class MainActivity extends AppCompatActivity {
     private final MediaBrowserCompat.ConnectionCallback connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
+            Log.e(LOG_TAG, "Service conntected");
+
+            Log.e(LOG_TAG, "get media controller and transportcontrols");
             MediaSessionCompat.Token token = browser.getSessionToken();
             MediaControllerCompat controller = new MediaControllerCompat(MainActivity.this, token);
             MediaControllerCompat.setMediaController(MainActivity.this, controller);
             transportControls = controller.getTransportControls();
 
-
+            Log.e(LOG_TAG, "inital metadata update");
             controller.sendCommand(MusicService.COMMAND_UPDATE_METADATA, null, new ResultReceiver(new Handler(getMainLooper())));
 
             controller.registerCallback(controllerCallback);
-            Toast.makeText(MainActivity.this, "Browser connected", Toast.LENGTH_SHORT).show();
             Log.e(LOG_TAG, "Browser connected");
         }
 
@@ -112,15 +139,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
+            Log.e(LOG_TAG, "onMetadataChange");
             FragmentManager fragmentManager = getSupportFragmentManager();
             BigPlayerFragment bpf = (BigPlayerFragment) fragmentManager.findFragmentByTag(BigPlayerFragment.class.getSimpleName());
             ControlsFragment ctrl = null;
 
             if (bpf != null) {
+                Log.e(LOG_TAG, "update metadata in big player");
                 bpf.applyMetadata(metadata);
             }
 
             List<Fragment> fragments = fragmentManager.getFragments();
+            Log.e(LOG_TAG, "update metadata in each controls");
             for (Fragment f : fragments) {
                 if (f != null && !f.isDetached()) {
                     ctrl = (ControlsFragment) f.getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName());
@@ -185,10 +215,14 @@ public class MainActivity extends AppCompatActivity {
         bound = savedInstanceState.getBoolean("ServiceState");
     }
 
+    /**
+     * Checks and requests storage permission
+     */
     public void checkStoragePermission() {
+        Log.e(LOG_TAG, "--checkStoragePermission--");
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MainActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
+            Log.e(LOG_TAG, "Permission already granted");
             createBrowser();
         } else {
             requestStoragePermission();
@@ -318,9 +352,18 @@ public class MainActivity extends AppCompatActivity {
         browser.disconnect();
     }
 
+
+    /**
+     * Play a selected song
+     * @param songId mediaId of the selected song
+     * @param playContext playback context of the song
+     * @param playContextType playback context type
+     */
     public void songSelect(long songId, String playContext, String playContextType) {
+        Log.e(LOG_TAG, "--songSelect--");
         Bundle b = new Bundle();
 
+        Log.e(LOG_TAG, "prepare bundle based on context type");
         if (playContextType.equals(MusicService.CONTEXT_TYPE_ALBUM)) {
             //Context for album must be the album id
             b.putLong(MusicService.KEY_ALBUM_ID, Long.parseLong(playContext));
@@ -334,12 +377,13 @@ public class MainActivity extends AppCompatActivity {
 
         b.putString(MusicService.KEY_CONTEXT_TYPE, playContextType);
 
+        Log.e(LOG_TAG, "send play command to MusicService");
         transportControls.playFromMediaId(String.valueOf(songId), b);
-        Log.e(LOG_TAG, "");
     }
 
     private void createNotificationChannel() {
-        // Create a NotificationChannel for Systems running Android 8+
+        Log.e(LOG_TAG, "--createNotificationChannel--");
+        Log.e(LOG_TAG, "Create a NotificationChannel for Systems running Android 8+");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
             String description = getString(R.string.channel_desc);
@@ -359,6 +403,10 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * The selected drawer fragment will be placed on the mainFrame
+     * @param menuItem menuItem
+     */
     public void selectDrawerItem(MenuItem menuItem) {
         Log.e(LOG_TAG, "--selectDrawerItem--");
 
@@ -382,14 +430,12 @@ public class MainActivity extends AppCompatActivity {
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
 
-
         drawerLayout.closeDrawers();
 
     }
 
     /**
-     * places a Fragment on a given layout id
-     *
+     * places an instance of a given Fragment.class on a given layout id
      * @param fragmentClass FragmentClass to display
      * @param frameId       layoutFrame to place Fragment on
      */
@@ -434,6 +480,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    /**
+     * places a given Fragment on a given layout id
+     * @param fragment Fragment to display
+     * @param frameId  layoutFrame to place Fragment on
+     */
     public void placeFragment(Fragment fragment, int frameId) {
         Log.e(LOG_TAG, "--placeFragment--");
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -496,6 +547,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestStoragePermission() {
+        Log.e(LOG_TAG, "--requestStoragePermission--");
         new AlertDialog.Builder(this)
                 .setTitle("Permission needed")
                 .setMessage(R.string.permission_info)
@@ -519,10 +571,10 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+                Log.e(LOG_TAG, "Permission granted");
                 createBrowser();
             } else {
-                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+                Log.e(LOG_TAG, "Permission denied");
             }
         }
     }
@@ -540,26 +592,50 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets current tab
+     * @param tab tab
+     */
     public void setCurrentTab(String tab) {
         this.currentTab = tab;
     }
 
+    /**
+     * Sets current fragment
+     * @param fragment fragment
+     */
     public void setCurrentFragment(String fragment) {
         this.currentFragment = fragment;
     }
 
+    /**
+     * Sets input playlist
+     * @param inPlaylist playlist
+     */
     public void setInPlaylist(boolean inPlaylist) {
         this.inPlaylist = inPlaylist;
     }
 
+    /**
+     * Sets playlist uuid
+     * @param uuid uuid
+     */
     public void setPlaylistUuid(String uuid) {
         this.playlistUuid = uuid;
     }
 
+    /**
+     * Return media metadata
+     * @return media metadata
+     */
     public MediaMetadataCompat getMetadata() {
         return mediaMetadata;
     }
 
+    /**
+     * Returns true if player is playing
+     * @return isPlaying
+     */
     public boolean isPlaying() {
         return playstatus;
     }
@@ -574,6 +650,7 @@ public class MainActivity extends AppCompatActivity {
                     protected void onReceiveResult(int resultCode, Bundle resultData) {
                         BigPlayerFragment bpf = (BigPlayerFragment) getSupportFragmentManager().findFragmentByTag(BigPlayerFragment.class.getSimpleName());
                         if (bpf != null) {
+                            Log.e(LOG_TAG, "update seekbar");
                             if (resultCode != 0 || !resultData.containsKey(MusicService.KEY_POSITION)) {
                                 throw new IllegalStateException("result code or data invalied");
                             }
