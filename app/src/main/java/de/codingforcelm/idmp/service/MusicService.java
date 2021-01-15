@@ -363,6 +363,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public void onSeekComplete(MediaPlayer mp) {
         Log.e(LOG_TAG, "onSeekComplete");
 
+        Log.e(LOG_TAG, "start playback");
         mp.start();
         paused = false;
 
@@ -381,14 +382,17 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
      * @return notification
      */
     private Notification buildNotification(boolean play) {
+        Log.e(LOG_TAG, "buildNotification");
         MediaControllerCompat controller = mediaSession.getController();
         MediaMetadataCompat mediaMetdata = controller.getMetadata();
         MediaDescriptionCompat desc = mediaMetdata.getDescription();
 
+        Log.e(LOG_TAG, "create Intent for notification cancel");
         Intent cancelIntent = new Intent(this, MusicService.class);
         cancelIntent.setAction(MusicService.ACTION_CANCEL_NOTIFICATION);
         PendingIntent cancelPendingIntent = PendingIntent.getService(this, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        Log.e(LOG_TAG, "build the notification");
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
         builder.setContentTitle(mediaMetdata.getString(KEY_TITLE));
@@ -402,6 +406,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         builder.setShowWhen(false);
         builder.setOnlyAlertOnce(true);
 
+        Log.e(LOG_TAG, "add intents for media buttons");
         builder.addAction(new NotificationCompat.Action(
                 android.R.drawable.ic_media_previous,
                 "Previous",
@@ -428,12 +433,14 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
         ));
 
+        Log.e(LOG_TAG, "set MediaStyle style");
         builder.setStyle(
                 new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0, 1, 2)
                         .setMediaSession(mediaSession.getSessionToken())
         );
 
+        Log.e(LOG_TAG, "actually build notification");
         notification = builder.build();
         return notification;
     }
@@ -442,16 +449,19 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
      * Initializes player
      */
     public void initMusicPlayer() {
+        Log.e(LOG_TAG, "initMusicPlayer");
         player.setOnErrorListener(this);
         player.setOnCompletionListener(this);
         player.setOnPreparedListener(this);
         player.setOnSeekCompleteListener(this);
 
+        Log.e(LOG_TAG, "Get initial song list");
         audioLoader = new AudioLoader(this);
         this.setSongList(audioLoader.getSongs());
 
         currMediaId = songList.get(songPosition).getId();
 
+        Log.e(LOG_TAG, "prepare player for first playback");
         player.reset();
         long curr = songList.get(songPosition).getId();
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, curr);
@@ -483,9 +493,13 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
      * @param postNotification postNotification
      */
     public void pauseSong(boolean postNotification) {
+        Log.e(LOG_TAG, "pauseSong");
         position = player.getCurrentPosition();
+        Log.e(LOG_TAG, "stop playback");
         player.stop();
         paused = true;
+
+        Log.e(LOG_TAG, "update notification and session");
         if (postNotification) {
             notification = buildNotification(true);
             startForeground(NOTIFICATION_ID, notification);
@@ -498,7 +512,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
      * Resumes the song
      */
     public void resumeSong() {
+        Log.e(LOG_TAG, "resumeSong");
         if (!player.isPlaying()) {
+            Log.e(LOG_TAG, "restart playback");
             player.prepareAsync();
         }
     }
@@ -510,6 +526,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         Log.e(LOG_TAG, "nextSong");
         int nextpos = -1;
         if (!queue.isEmpty()) {
+            Log.e(LOG_TAG, "select song from queue");
             String next = queue.dequeue();
             Uri trackUri = null;
             try {
@@ -519,6 +536,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                 throw new IllegalStateException("Couldnt parse MediaId");
             }
             currMediaId = Long.valueOf(next);
+            Log.e(LOG_TAG, "play queued song");
             playSong(trackUri, true);
             return;
         }
@@ -535,6 +553,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         }
         if (nextpos >= 0 && nextpos < songList.size()) {
             currMediaId = songList.get(nextpos).getId();
+            Log.e(LOG_TAG, "play next song");
             this.playSong(nextpos, true);
         }
     }
@@ -543,6 +562,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
      * Plays previous song in list
      */
     public void prevSong() {
+        Log.e(LOG_TAG, "prevSong");
         int nextpos = songPosition - 1;
         if (nextpos < 0) {
             nextpos = songList.size() - 1;
@@ -555,16 +575,17 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
      * Plays a song
      */
     public void playSong() {
+        Log.e(LOG_TAG,"play song from last saved position");
         this.playSong(songPosition, false);
     }
 
-    //TODO
     /**
-     *
-     * @param pos
-     * @param fromStart
+     * Play the song siting on the given position
+     * @param pos index where song is located in arraylist
+     * @param fromStart if playback shall start from the beginning of the spng
      */
     public void playSong(int pos, boolean fromStart) {
+        Log.e(LOG_TAG, "play song from position "+pos);
         this.setSong(pos);
         LocaleSong song = songList.get(songPosition);
         long curr = song.getId();
@@ -575,6 +596,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     public void playSong(Uri trackUri, boolean fromStart) {
+        Log.e(LOG_TAG, "playSong");
         player.reset();
         if (fromStart) {
             position = 0;
@@ -585,6 +607,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         } catch (IOException e) {
             Log.e("MusicService", "Failed to set DataSource");
         }
+        Log.e(LOG_TAG, "prepare player for playback");
         player.prepareAsync();
     }
 
@@ -599,8 +622,8 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     /**
-     *
-     * @param pos
+     * Set position of the current song in the songlist
+     * @param pos index of song in list
      */
     public void setSong(int pos) {
         this.songPosition = pos;
@@ -627,6 +650,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     }
 
     private void updateSession() {
+        Log.e(LOG_TAG, "updateSession");
         PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
 
         stateBuilder = new PlaybackStateCompat.Builder().setActions(
@@ -637,6 +661,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         PlaybackStateCompat.ACTION_STOP
         );
 
+        Log.e(LOG_TAG, "set playback state");
         if (player.isPlaying()) {
             stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, player.getCurrentPosition(), 1.0f);
         } else {
@@ -647,6 +672,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         MediaMetadataCompat.Builder dataBuilder = new MediaMetadataCompat.Builder();
 
+        Log.e(LOG_TAG, "get current metadata");
         String artist = song.getArtist();
         String album = song.getAlbum();
         String title = song.getTitle();
@@ -655,6 +681,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         String repeatStr = String.valueOf(repeat);
         String mid = String.valueOf(currMediaId);
 
+        Log.e(LOG_TAG, "put metadata in container");
         dataBuilder.putString(KEY_ARTIST, artist);
         dataBuilder.putString(KEY_ALBUM, album);
         dataBuilder.putString(KEY_TITLE, title);
@@ -663,11 +690,13 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         dataBuilder.putString(KEY_REPEAT, repeatStr);
         dataBuilder.putString(KEY_MEDIA_ID, mid);
 
+        Log.e(LOG_TAG, "update playback state and metadata");
         mediaSession.setPlaybackState(stateBuilder.build());
         mediaSession.setMetadata(dataBuilder.build());
     }
 
     private boolean requestAudioFocus() {
+        Log.e(LOG_TAG, "requestAudioFocus");
         int res = -1;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             AudioFocusRequest.Builder builder = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN);
@@ -682,10 +711,12 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             res = audioManager.requestAudioFocus(afcl, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         }
 
+        Log.e(LOG_TAG, "return whether audio focus is granted");
         return res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
     private void abondonAudioFocus() {
+        Log.e(LOG_TAG, "release audio focus");
         if (!(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)) {
             audioManager.abandonAudioFocus(afcl);
         }
@@ -758,6 +789,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         throw new IllegalStateException("missing context");
                     }
                     String reloadContext = extras.getString(KEY_CONTEXT);
+                    Log.e(LOG_TAG, "check if new context is different from the current");
                     if (context.equals(reloadContext)) {
                         if (!extras.containsKey(KEY_PLAYLIST_ID)) {
                             throw new IllegalStateException("missing playlist id");
@@ -768,6 +800,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             @Override
                             public void run() {
                                 repo.getPlaylist(listId).observeForever(playlistWithEntries -> {
+                                    Log.e(LOG_TAG, "reload playlist");
                                     LocaleSong prev = songList.get(songPosition);
                                     List<LocaleSong> songs = new ArrayList<>();
                                     for (PlaylistEntry entry : playlistWithEntries.getEntries()) {
@@ -796,12 +829,15 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         @Override
         public void onPause() {
+            Log.e(LOG_TAG, "pause playback");
             MusicService.this.pauseSong(true);
         }
 
         @Override
         public void onPlay() {
+            Log.e(LOG_TAG, "play playback");
             Intent intent = new Intent(MusicService.this, MusicService.class);
+            Log.e(LOG_TAG, "make sure the service is started");
             startService(intent);
             MusicService.this.playSong();
         }
@@ -825,7 +861,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
             String newContext = extras.getString(KEY_CONTEXT);
             String contextType = extras.getString(KEY_CONTEXT_TYPE);
-            WaitForLoadObject load = new WaitForLoadObject();
+            Log.e(LOG_TAG, "check if new context is different from the current");
             if (!context.equals(newContext)) {
                 switch (contextType) {
                     case CONTEXT_TYPE_SONGLIST:
@@ -845,13 +881,14 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                         break;
                     case CONTEXT_TYPE_PLAYLIST:
                         Log.e(LOG_TAG, "new context playlist");
-                        load.setWaitForLoad(true);
                         if (!extras.containsKey(KEY_PLAYLIST_ID)) {
                             throw new IllegalStateException("missing album id");
                         }
                         String listId = extras.getString(KEY_PLAYLIST_ID);
                         PlaylistRepository repo = PlaylistRepository.getInstance(getApplication());
                         Uri finalTrackUri = trackUri;
+
+                        Log.e(LOG_TAG, "set play status to true so playlist load start playback after loading");
                         playNewSong.set(true);
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
@@ -883,6 +920,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         }
 
         private void notifyLoadedAndPlay(String mediaId, Uri trackUri, boolean isPlaying) {
+            Log.e(LOG_TAG, "update songPosition");
             setSongPositionFromMediaId(Long.valueOf(mediaId));
             if (isPlaying) {
                 MusicService.this.playSong(trackUri, true);
@@ -891,6 +929,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
 
         private void notifyReload(LocaleSong prev) {
             long mediaId = prev.getId();
+            Log.e(LOG_TAG, "update songPosition");
             setSongPositionFromMediaId(mediaId);
         }
 
@@ -963,24 +1002,10 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         @Override
         public void onReceive(Context context, Intent intent) {
             if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
+                Log.e(LOG_TAG, "device became noisy - stop playback");
                 mediaSession.getController().getTransportControls().pause();
             }
         }
     }
 
-    private class WaitForLoadObject {
-        private boolean waiting;
-
-        public WaitForLoadObject() {
-            waiting = false;
-        }
-
-        public boolean isWaiting() {
-            return waiting;
-        }
-
-        public void setWaitForLoad(boolean waiting) {
-            this.waiting = waiting;
-        }
-    }
 }
