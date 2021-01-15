@@ -51,7 +51,7 @@ public class AlbumFragment extends NameAwareFragment {
 
     /**
      * Constructor, which sets the NameAwareFragment name
-     * @param albumID
+     * @param albumID albumId
      */
     public AlbumFragment(long albumID) {
         setFragmentname(this.getClass().getSimpleName());
@@ -85,6 +85,7 @@ public class AlbumFragment extends NameAwareFragment {
             ).commit();
         }
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 

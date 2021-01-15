@@ -52,6 +52,7 @@ public class TabFragment extends NameAwareFragment {
         }
         fragmentTransaction.commit();
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 

@@ -69,6 +69,7 @@ public class AlbumListFragment extends NameAwareFragment {
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 

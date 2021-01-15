@@ -20,7 +20,7 @@ import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.locale.LocaleSong;
 
 /**
- * CardAdapter class for songs
+ * CardAdapter for songs list
  */
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
     private static final String LOG_TAG = "SongCardAdapter";

@@ -84,13 +84,14 @@ public class BigPlayerFragment extends NameAwareFragment {
         bp_currentTime = view.findViewById(R.id.bp_currentTime);
         bp_duration = view.findViewById(R.id.bp_duration);
 
-
+        Log.e(LOG_TAG, "get initial playstatus from mainactivity");
         if (((MainActivity) getActivity()).isPlaying()) {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_pause);
         } else {
             bp_playPauseButton.setImageResource(R.drawable.ic_control_play);
         }
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
         ((MainActivity) getContext()).invalidateOptionsMenu();
     }
@@ -195,6 +196,7 @@ public class BigPlayerFragment extends NameAwareFragment {
     private class PlayPauseOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
             if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
@@ -212,6 +214,7 @@ public class BigPlayerFragment extends NameAwareFragment {
     private class RepeatOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             MediaControllerCompat.getMediaController(getActivity()).sendCommand(MusicService.COMMAND_SET_REPEAT, null, new ResultReceiver(new Handler(Looper.getMainLooper())));
         }
     }
@@ -219,6 +222,7 @@ public class BigPlayerFragment extends NameAwareFragment {
     private class NextOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
             if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
@@ -232,6 +236,7 @@ public class BigPlayerFragment extends NameAwareFragment {
     private class PrevOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
             if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();

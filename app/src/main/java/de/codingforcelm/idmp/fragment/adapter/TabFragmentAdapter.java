@@ -14,7 +14,7 @@ import de.codingforcelm.idmp.fragment.tab.PlaylistListFragment;
 import de.codingforcelm.idmp.fragment.tab.SongListFragment;
 
 /**
- * Adapter class to hold Fragments as tabs
+ * Adapter class to retrieve fragments for tabs
  */
 public class TabFragmentAdapter extends FragmentStateAdapter {
     private static final String LOG_TAG = "TabFragmentAdapter";

@@ -19,7 +19,7 @@ public class NameAwareFragment extends Fragment {
 
     /**
      * Sets the fragmentname
-     * @param name
+     * @param name name
      */
     protected void setFragmentname(String name) {
         this.fragmentname = name;

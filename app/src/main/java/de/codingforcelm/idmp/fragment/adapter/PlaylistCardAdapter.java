@@ -24,7 +24,7 @@ import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.locale.LocaleSong;
 /**
- * CardAdapter class for playlists
+ * CardAdapter for playlists list
  */
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
     private static final String LOG_TAG = "PlaylistCardAdapter";
@@ -87,6 +87,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         if(position == 0) {
             List<PlaylistEntry> entries = currentItem.getEntries();
             if(entries.size() >= 1) {
+                Log.e(LOG_TAG, "Set playlist cover as the cover of the first entry");
                 PlaylistEntry entry = entries.get(0);
                 LocaleSong s = audioLoader.getSong(entry.getMediaId());
                 Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
@@ -111,6 +112,10 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         this.longClickListener = onLongItemClickListener;
     }
 
+    /**
+     * Explicitly set the data of the adapter
+     * @param data data
+     */
     public void setData(List<PlaylistWithEntries> data) {
         if (playlistList != null) {
             playlistList.clear();

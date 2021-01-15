@@ -59,6 +59,7 @@ public class PlaylistListFragment extends NameAwareFragment {
 
         layoutManager = new LinearLayoutManager(view.getContext());
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 

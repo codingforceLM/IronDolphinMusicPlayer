@@ -22,7 +22,7 @@ import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.locale.LocaleSong;
 
 /**
- * CardAdapter class for create playlist activity
+ * CardAdapter for create playlist activity list
  */
 public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCreateCardAdapter.SelectionCardViewHolder> {
     private static final String LOG_TAG = "PlaylistCreateCAdapter";
@@ -76,6 +76,7 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
 
         Bitmap cover = audioLoader.getAlbumCoverForSong(selection.getSong().getId());
         if(cover != null) {
+            Log.e(LOG_TAG, "Set album cover for item");
             ImageView img = holder.itemView.findViewById(R.id.item_image);
             img.setImageBitmap(cover);
         }

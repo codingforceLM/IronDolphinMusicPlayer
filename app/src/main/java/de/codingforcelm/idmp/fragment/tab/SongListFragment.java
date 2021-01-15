@@ -63,6 +63,8 @@ public class SongListFragment extends NameAwareFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         Log.e(LOG_TAG, "--onViewCreated--");
+
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 

@@ -63,6 +63,7 @@ public class QueueFragment extends NameAwareFragment {
             ).commit();
         }
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 

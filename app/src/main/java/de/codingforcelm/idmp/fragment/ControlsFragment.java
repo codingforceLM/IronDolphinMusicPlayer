@@ -84,6 +84,7 @@ public class ControlsFragment extends NameAwareFragment {
 
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
             if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
@@ -102,6 +103,7 @@ public class ControlsFragment extends NameAwareFragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             ((MainActivity) getActivity()).placeFragment(BigPlayerFragment.class, R.id.mainFrame);
         }
     }

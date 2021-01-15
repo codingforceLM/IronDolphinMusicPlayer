@@ -22,7 +22,7 @@ import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.locale.LocaleSong;
 
 /**
- * CardAdapter class for albums
+ * CardAdapter for albums list
  */
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     private static final String LOG_TAG = "AlbumCardAdapter";
@@ -76,6 +76,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
 
         List<LocaleSong> songs = audioLoader.getSongsFromAlbum(currentItem.getId());
         if(songs.size() >= 1) {
+            Log.e(LOG_TAG, "Set album cover as the cover of the first entry");
             LocaleSong s = songs.get(0);
             Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
             if(cover != null) {

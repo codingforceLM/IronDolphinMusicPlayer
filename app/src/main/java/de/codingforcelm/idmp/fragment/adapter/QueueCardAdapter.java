@@ -23,7 +23,7 @@ import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.queue.OnQueueChangedListener;
 
 /**
- * CardAdapter class for queue
+ * CardAdapter for queue list
  */
 public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.QueueCardViewHolder> implements OnQueueChangedListener {
     private static final String LOG_TAG = "QueueCardAdapter";
@@ -57,6 +57,7 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
         holder.itemView.setTag(position);
         Bitmap cover = audioLoader.getAlbumCoverForSong(current.getId());
         if(cover != null) {
+            Log.e(LOG_TAG, "Set album cover for the item");
             ImageView img = holder.itemView.findViewById(R.id.item_image);
             img.setImageBitmap(cover);
         }
