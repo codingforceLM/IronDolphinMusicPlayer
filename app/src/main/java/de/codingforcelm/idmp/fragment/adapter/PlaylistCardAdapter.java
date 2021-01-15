@@ -27,7 +27,7 @@ import de.codingforcelm.idmp.locale.LocaleSong;
  * CardAdapter class for playlists
  */
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
-    public static final String LOG_TAG = "PlaylistCardAdapter";
+    private static final String LOG_TAG = "PlaylistCardAdapter";
     private final Application application;
     private final Context context;
     private final PlaylistRepository repository;

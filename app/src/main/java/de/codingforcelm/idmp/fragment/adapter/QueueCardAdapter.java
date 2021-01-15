@@ -26,7 +26,7 @@ import de.codingforcelm.idmp.queue.OnQueueChangedListener;
  * CardAdapter class for queue
  */
 public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.QueueCardViewHolder> implements OnQueueChangedListener {
-    public static final String LOG_TAG = "QueueCardAdapter";
+    private static final String LOG_TAG = "QueueCardAdapter";
     private final AudioLoader audioLoader;
     private List<LocaleSong> songList;
 

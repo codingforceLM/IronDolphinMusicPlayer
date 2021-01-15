@@ -25,7 +25,7 @@ import de.codingforcelm.idmp.locale.LocaleSong;
  * CardAdapter class for create playlist activity
  */
 public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCreateCardAdapter.SelectionCardViewHolder> {
-    public static final String LOG_TAG = "PlaylistCreateCAdapter";
+    private static final String LOG_TAG = "PlaylistCreateCAdapter";
     private final List<PlaylistCreateActivity.PlaylistSelection> selectionListCopy;
     private final List<PlaylistCreateActivity.PlaylistSelection> selectionList;
     private AudioLoader audioLoader;

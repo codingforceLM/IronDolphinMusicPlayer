@@ -17,7 +17,7 @@ import de.codingforcelm.idmp.fragment.tab.SongListFragment;
  * Adapter class to hold Fragments as tabs
  */
 public class TabFragmentAdapter extends FragmentStateAdapter {
-    public static final String LOG_TAG = "TabFragmentAdapter";
+    private static final String LOG_TAG = "TabFragmentAdapter";
     private final int numOfTabs;
     private final MainActivity activity;
 
