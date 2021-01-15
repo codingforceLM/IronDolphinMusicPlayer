@@ -53,12 +53,13 @@ public class PlaylistNameActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "no name input");
                 return true;
             } else {
-                Log.e(LOG_TAG, "creating playlist: "+name);
+                Log.e(LOG_TAG, "selected name: "+name);
                 Bundle b = new Bundle();
                 b.putString(PlaylistCreateActivity.KEY_PLAYLIST_NAME, name);
                 b.putString(PlaylistCreateActivity.KEY_MODE, PlaylistCreateActivity.MODE_CREATE);
                 Intent intent = new Intent(this, PlaylistCreateActivity.class);
                 intent.putExtras(b);
+                Log.e(LOG_TAG, "Start activity to select songs");
                 startActivity(intent);
                 finish();
             }

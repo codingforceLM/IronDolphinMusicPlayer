@@ -30,15 +30,34 @@ import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.service.MusicService;
 
 /**
- * This
+ * Activity to select multiple songs and either add them to an exisitng playlist or create a new one with those
  */
 public class PlaylistCreateActivity extends AppCompatActivity {
     private static final String LOG_TAG = "PlaylistCreateActivity";
+
+    /**
+     * Key to identify playlist name
+     */
     public static final String KEY_PLAYLIST_NAME = "de.codingforcelm.idmp.PLAYLIST_NAME";
+
+    /**
+     * Key to identify playlist uuid
+     */
     public static final String KEY_PLAYLIST_UUID = "de.codingforcelm.idmp.PLAYLIST_UUID";
+
+    /**
+     * Key to identify mode of this activity
+     */
     public static final String KEY_MODE = "de.codingforcelm.idmp.MODE";
 
+    /**
+     * Key to identify the activity was started to create a playlist
+     */
     public static final String MODE_CREATE = "de.codingforcelm.idmp.MODE_CREATE";
+
+    /**
+     * Key to identify the activity was started to add songs to a playlist
+     */
     public static final String MODE_ADD = "de.codingforcelm.idmp.MODE_ADD";
 
     private PlaylistCreateCardAdapter adapter;
@@ -143,20 +162,19 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         Log.e(LOG_TAG, "--addSongsToPlaylist--");
         PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
 
+        Log.e(LOG_TAG, "get every selected song");
         List<PlaylistSelection> selected = adapter.getSelectedList();
         List<PlaylistEntry> entries = new ArrayList<>();
+        Log.e(LOG_TAG, "Create PlaylistEntry's from selected songs");
         for (PlaylistSelection selection : selected) {
             LocaleSong song = selection.getSong();
             PlaylistEntry entry = new PlaylistEntry(song.getId(), playlistUuid);
             entries.add(entry);
         }
         PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
+        Log.e(LOG_TAG, "persist entries to exising playlist");
         playlistEntryViewModel.insertAll(entriesArr);
 
-        MainActivity activity = MainActivitySingleton.getInstance().getMainActivity();
-        if (activity == null) {
-            throw new IllegalStateException("couldnt get MainActivity");
-        }
         Bundle b = new Bundle();
         b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playlistUuid);
         b.putString(MusicService.KEY_PLAYLIST_ID, playlistUuid);
@@ -167,11 +185,15 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         Log.e(LOG_TAG, "--savePlaylist--");
         PlaylistWithEntriesViewModel viewModel = new ViewModelProvider(this).get(PlaylistWithEntriesViewModel.class);
 
+        Log.e(LOG_TAG, "create uuid for new playlist");
         String uuid = UUID.randomUUID().toString();
         List<PlaylistSelection> selected = adapter.getSelectedList();
         List<PlaylistEntry> entries = new ArrayList<>();
 
+        Log.e(LOG_TAG, "get every selected song");
+        Log.e(LOG_TAG, "Create playlist from uuid and name");
         Playlist playlist = new Playlist(uuid, name);
+        Log.e(LOG_TAG, "Create PlaylistEntry's from selected songs");
         for (PlaylistSelection selection : selected) {
             LocaleSong song = selection.getSong();
             PlaylistEntry entry = new PlaylistEntry(song.getId(), playlist.getListId());
@@ -179,6 +201,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         }
 
         PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
+        Log.e(LOG_TAG, "persist playlist and its entries into database");
         viewModel.insert(playlist, entriesArr);
         Log.e(LOG_TAG, "Playlist saved");
     }
@@ -202,8 +225,8 @@ public class PlaylistCreateActivity extends AppCompatActivity {
 
         /**
          * Returns a List of PlaylistSelection objects from a given LocaleSong List
-         * @param songlist
-         * @return
+         * @param songlist songlist
+         * @return SelectionList
          */
         public static List<PlaylistSelection> createSelectionListFromList(List<LocaleSong> songlist) {
             List<PlaylistSelection> list = new ArrayList<>();
