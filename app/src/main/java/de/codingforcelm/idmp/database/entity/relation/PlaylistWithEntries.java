@@ -9,7 +9,7 @@ import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
 /**
- *
+ * Relation object for the 1:n relation of {@link de.codingforcelm.idmp.database.dao.PlayListDao} and {@link de.codingforcelm.idmp.database.dao.PlaylistEntryDao}
  */
 public class PlaylistWithEntries {
     @Embedded
@@ -53,13 +53,5 @@ public class PlaylistWithEntries {
      */
     public List<PlaylistEntry> getEntries() {
         return entries;
-    }
-
-    /**
-     * Sets playlist entries
-     * @param entries list of playlist entries
-     */
-    public void setEntries(List<PlaylistEntry> entries) {
-        this.entries = entries;
     }
 }

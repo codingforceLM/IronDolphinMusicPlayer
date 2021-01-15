@@ -12,7 +12,7 @@ import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.repository.PlaylistEntryRepository;
 
 /**
- *
+ * ViewModel encapsulating {@link de.codingforcelm.idmp.database.repository.PlaylistEntryRepository}
  */
 public class PlaylistEntryViewModel extends AndroidViewModel {
 

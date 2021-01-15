@@ -11,7 +11,7 @@ import de.codingforcelm.idmp.database.dao.PlaylistEntryDao;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
 /**
- *
+ * Repository for the relation object {@link de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries}
  */
 public class PlaylistEntryRepository {
 
@@ -82,7 +82,7 @@ public class PlaylistEntryRepository {
 
     /**
      * Deletes a PlaylistEntry in database
-     * @param entry
+     * @param entry entry
      */
     public void delete(PlaylistEntry entry) {
         IDMPRoomDatabase.databaseWriteExecutor.execute(new Runnable() {

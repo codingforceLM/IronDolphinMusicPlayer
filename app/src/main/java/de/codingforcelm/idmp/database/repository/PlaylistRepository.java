@@ -12,7 +12,7 @@ import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 
 /**
- *
+ * Repository for the relation object {@link de.codingforcelm.idmp.database.entity.Playlist}
  */
 public class PlaylistRepository {
 

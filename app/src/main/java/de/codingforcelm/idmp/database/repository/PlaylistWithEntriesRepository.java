@@ -9,7 +9,7 @@ import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
 /**
- *
+ * Repository for the relation object {@link de.codingforcelm.idmp.database.entity.PlaylistEntry}
  */
 public class PlaylistWithEntriesRepository {
 

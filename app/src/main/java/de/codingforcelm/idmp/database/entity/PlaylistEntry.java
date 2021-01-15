@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 /**
- *
+ * PlaylistEntry entity class to represent a persisted playlist entry
  */
 @Entity(tableName = "playlistentry")
 public class PlaylistEntry {
