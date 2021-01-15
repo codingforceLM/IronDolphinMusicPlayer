@@ -33,7 +33,7 @@ import de.codingforcelm.idmp.service.MusicService;
  * This
  */
 public class PlaylistCreateActivity extends AppCompatActivity {
-    public static final String LOG_TAG = "PlaylistCreateActivity";
+    private static final String LOG_TAG = "PlaylistCreateActivity";
     public static final String KEY_PLAYLIST_NAME = "de.codingforcelm.idmp.PLAYLIST_NAME";
     public static final String KEY_PLAYLIST_UUID = "de.codingforcelm.idmp.PLAYLIST_UUID";
     public static final String KEY_MODE = "de.codingforcelm.idmp.MODE";
