@@ -43,39 +43,154 @@ import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.queue.SongQueue;
 
 /**
- *
+ * A child class of MediaBrowserServiceCompat responsible for audio playback
  */
 public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 
+    /**
+     * ID of the notification channel used by the service
+     */
     public static final String CHANNEL_ID = "idmp_player_notification";
+
+    /**
+     * Command to get the current position of the playback. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_GET_POSITION = "de.codingforcelm.idmp.player.service.GET_POSITION";
+
+    /**
+     * Command to set shuffle state. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_SET_SHUFFLE = "de.codingforcelm.idmp.player.service.SET_SHUFFLE";
+
+    /**
+     * Command to set repeat state. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_SET_REPEAT = "de.codingforcelm.idmp.player.service.SET_REPEAT";
+
+    /**
+     * Command to explicitly update the metadata. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_UPDATE_METADATA = "de.codingforcelm.idmp.player.service.UPDATE_METADATA";
+
+    /**
+     * Command to explicitly load the songlist. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_LOAD_SONGLIST = "de.codingforcelm.idmp.player.service.LOAD_SONGLIST";
+
+    /**
+     * Command to explicitly load a specific album. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_LOAD_ALBUM = "de.codingforcelm.idmp.player.service.LOAD_ALBUM";
+
+    /**
+     * Command to explicitly reload a playlist. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_RELOAD_PLAYLIST = "de.codingforcelm.idmp.player.service.RELOAD_PLAYLIST";
+
+    /**
+     * Command to put a song into the queue. To be used with {@link android.support.v4.media.session.MediaSessionCompat.Callback#onCommand(String, Bundle, ResultReceiver) onCommand} method
+     */
     public static final String COMMAND_ENQUEUE = "de.codingforcelm.idmp.player.service.ENQUEUE";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify an artist.
+     */
     public static final String KEY_ARTIST = "de.codingforcelm.idmp.player.service.ARTIST";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify an album
+     */
     public static final String KEY_ALBUM = "de.codingforcelm.idmp.player.service.ALBUM";
+    /**
+     * Key for {@link android.os.Bundle} to identify a song title
+     */
     public static final String KEY_TITLE = "de.codingforcelm.idmp.player.service.TITLE";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a song duration
+     */
     public static final String KEY_DURATION = "de.codingforcelm.idmp.player.service.DURATION";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a playback position
+     */
     public static final String KEY_POSITION = "de.codingforcelm.idmp.player.service.POSITION";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a shuffle state
+     */
     public static final String KEY_SHUFFLE = "de.codingforcelm.idmp.player.service.SHUFFLE";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a repeat state
+     */
     public static final String KEY_REPEAT = "de.codingforcelm.idmp.player.service.REPEAT";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a playback context
+     */
     public static final String KEY_CONTEXT = "de.codingforcelm.idmp.player.service.CONTEXT";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a playback context type
+     */
     public static final String KEY_CONTEXT_TYPE = "de.codingforcelm.idmp.player.service.CONTEXT_TYPE";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify an album id
+     */
     public static final String KEY_ALBUM_ID = "de.codingforcelm.idmp.player.service.ALBUM_ID";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a playlist id
+     */
     public static final String KEY_PLAYLIST_ID = "de.codingforcelm.idmp.player.service.PLAYLIST_ID";
+
+    /**
+     * Key for {@link android.os.Bundle} to identify a media id
+     */
     public static final String KEY_MEDIA_ID = "de.codingforcelm.idmp.player.service.MEDIA_ID";
+
+    /**
+     * Context type to be used for playback from the songlist
+     */
     public static final String CONTEXT_TYPE_SONGLIST = "de.codingforcelm.idmp.player.service.TYPE_SONGLIST";
+
+    /**
+     * Context type to be used for playback from an album
+     */
     public static final String CONTEXT_TYPE_ALBUM = "de.codingforcelm.idmp.player.service.TYPE_ALBUM";
+
+    /**
+     * Context type to be used for playback from a playlist
+     */
     public static final String CONTEXT_TYPE_PLAYLIST = "de.codingforcelm.idmp.player.service.TYPE_PLAYLIST";
+
+    /**
+     * Context prefix to be used in conjunction with an album id to create a unique context for an album
+     */
     public static final String CONTEXT_PREFIX_ALBUM = "de.codingforcelm.idmp.player.service.PREFIX_ALBUM_";
+
+    /**
+     * Context prefix to be used in conjunction with a playlist id to creae a unique context for a playlist
+     */
     public static final String CONTEXT_PREFIX_PLAYLIST = "de.codingforcelm.idmp.player.service.PREFIX_PLAYLIST_";
+
+    /**
+     * Custom action to identify play action
+     */
     public static final String ACTION_MUSIC_PLAY = "de.codingforcelm.idmp.player.service.MUSIC_PLAY";
+
+    /**
+     * Custom action to identify next song action
+     */
     public static final String ACTION_MUSIC_NEXT = "de.codingforcelm.idmp.player.service.MUSIC_NEXT";
+
+    /**
+     * Custom action to identify previous song action
+     */
     public static final String ACTION_MUSIC_PREV = "de.codingforcelm.idmp.player.service.MUSIC_PREV";
+
     private static final String MY_MEDIA_ROOT_ID = "My_Unique_Service";
     private static final int NOTIFICATION_ID = 666;
     private static final String LOG_TAG = "MusicService";
