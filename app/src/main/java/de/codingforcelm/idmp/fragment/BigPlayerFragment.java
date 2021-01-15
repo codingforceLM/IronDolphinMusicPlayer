@@ -160,6 +160,8 @@ public class BigPlayerFragment extends NameAwareFragment {
         Bitmap cover = al.getAlbumCoverForSong(Long.valueOf(mediaId));
         if(cover != null) {
             bp_image.setImageBitmap(cover);
+        } else {
+            bp_image.setImageResource(R.drawable.ic_item_default_image);
         }
     }
 
