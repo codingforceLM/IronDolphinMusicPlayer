@@ -936,8 +936,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         @Deprecated
         @Override
         public void onPlayFromUri(Uri uri, Bundle extras) {
-            Log.e(LOG_TAG, "onPlayFromUri");
-            MusicService.this.playSong(uri, true);
+            Log.e(LOG_TAG, "onPlayFromUri - this function is incompatible with the current service architecture");
         }
 
         @Override
