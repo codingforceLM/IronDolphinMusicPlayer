@@ -23,7 +23,7 @@ import de.codingforcelm.idmp.locale.LocaleSong;
  * CardAdapter class for songs
  */
 public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCardViewHolder> {
-    public static final String LOG_TAG = "SongCardAdapter";
+    private static final String LOG_TAG = "SongCardAdapter";
     private final Context context;
     private final String playContext;
     private final String playContextType;

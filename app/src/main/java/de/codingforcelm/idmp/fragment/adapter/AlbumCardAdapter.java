@@ -25,7 +25,7 @@ import de.codingforcelm.idmp.locale.LocaleSong;
  * CardAdapter class for albums
  */
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
-    public static final String LOG_TAG = "AlbumCardAdapter";
+    private static final String LOG_TAG = "AlbumCardAdapter";
     private final ArrayList<LocaleAlbum> albumList;
     private final ArrayList<LocaleAlbum> albumListCopy;
     private final Context context;
