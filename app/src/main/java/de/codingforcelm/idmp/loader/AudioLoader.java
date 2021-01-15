@@ -17,7 +17,7 @@ import de.codingforcelm.idmp.locale.LocaleAlbum;
 import de.codingforcelm.idmp.locale.LocaleSong;
 
 /**
- * Utility class to load local audio files
+ * Utility class to load data associated with local audio files
  */
 public class AudioLoader {
     private final Context context;
@@ -45,6 +45,7 @@ public class AudioLoader {
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
         Cursor cursor = contentResolver.query(uri, null, selection, null, sortOrder);
 
+        Log.e(LOG_TAG, "Retrieve data for found files");
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -75,6 +76,7 @@ public class AudioLoader {
         Cursor cursor = contentResolver.query(uri, null, selection, null, null);
 
         LocaleSong song = null;
+        Log.e(LOG_TAG, "Retrieve data for found files");
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -105,6 +107,7 @@ public class AudioLoader {
         String sortOrder = MediaStore.Audio.Albums.ALBUM + " ASC";
         Cursor cursor = contentResolver.query(uri, null, null, null, sortOrder);
 
+        Log.e(LOG_TAG, "Retrieve data for found files");
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
@@ -135,6 +138,7 @@ public class AudioLoader {
         String sortOrder = MediaStore.Audio.Media.TRACK + " ASC";
         Cursor cursor = contentResolver.query(uri, null, selection, null, sortOrder);
 
+        Log.e(LOG_TAG, "Retrieve data for found files");
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -166,14 +170,17 @@ public class AudioLoader {
             throw new IllegalStateException("Couldnt parse MediaId");
         }
 
+        Log.e(LOG_TAG, "Retrieve bytes of embedded art");
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         BitmapFactory.Options options = new BitmapFactory.Options();
         retriever.setDataSource(context, trackUri);
         byte[] bytes = retriever.getEmbeddedPicture();
 
         if(bytes == null) {
+            Log.e(LOG_TAG, "no embedded art found");
             return null;
         }
+        Log.e(LOG_TAG, "Return embedded art");
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
 }
