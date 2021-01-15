@@ -4,23 +4,31 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.service.MusicService;
 
+/**
+ * Fragment to display a small player control bar
+ */
 public class ControlsFragment extends NameAwareFragment {
+    private static final String LOG_TAG = "ControlsFragment";
     private ImageView playPauseButton;
     private ImageView image;
     private TextView songTitle;
     private TextView songArtist;
 
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public ControlsFragment() {
         setFragmentname(this.getClass().getSimpleName());
     }
@@ -33,7 +41,7 @@ public class ControlsFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        Log.e(LOG_TAG, "--onViewCreated--");
         playPauseButton = view.findViewById(R.id.tp_playPauseButton);
         playPauseButton.setOnClickListener(new ControlsFragment.PlayPauseOnClickListener());
         image = view.findViewById(R.id.tp_image);
@@ -51,7 +59,12 @@ public class ControlsFragment extends NameAwareFragment {
         applyMetadata(((MainActivity) getActivity()).getMetadata());
     }
 
+    /**
+     * Function to apply metadata and update controls
+     * @param metadata metadata
+     */
     public void applyMetadata(MediaMetadataCompat metadata) {
+        Log.e(LOG_TAG, "--applyMetadata--");
         if(metadata != null){
             String title = metadata.getString(MusicService.KEY_TITLE);
             String artist = metadata.getString(MusicService.KEY_ARTIST);
@@ -71,6 +84,7 @@ public class ControlsFragment extends NameAwareFragment {
 
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
             if (controller != null) {
                 MediaControllerCompat.TransportControls tc = controller.getTransportControls();
@@ -89,6 +103,7 @@ public class ControlsFragment extends NameAwareFragment {
     private class ImageOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.e(LOG_TAG, "onClick");
             ((MainActivity) getActivity()).placeFragment(BigPlayerFragment.class, R.id.mainFrame);
         }
     }

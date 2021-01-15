@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +12,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.activity.MainActivity;
-import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.fragment.adapter.QueueCardAdapter;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.queue.SongQueue;
 
+/**
+ * Fragment to display a queue of songs
+ */
 public class QueueFragment extends NameAwareFragment {
-
+    private static final String LOG_TAG = "QueueFragment";
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
     private AudioLoader audioLoader;
     private QueueCardAdapter adapter;
 
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public QueueFragment() {
-        //needed default constructor
         setFragmentname(this.getClass().getSimpleName());
     }
 
@@ -45,6 +51,7 @@ public class QueueFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(LOG_TAG, "--onViewCreated--");
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
             getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 
@@ -56,6 +63,7 @@ public class QueueFragment extends NameAwareFragment {
             ).commit();
         }
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 

@@ -15,18 +15,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.database.entity.Playlist;
+import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
-import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
-import de.codingforcelm.idmp.database.repository.PlaylistRepository;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
+import de.codingforcelm.idmp.database.repository.PlaylistRepository;
+import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.locale.LocaleSong;
-
+/**
+ * CardAdapter for playlists list
+ */
 public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapter.PlaylistCardViewHolder> {
-    public static final String LOG_TAG = "PlaylistCardAdapter";
+    private static final String LOG_TAG = "PlaylistCardAdapter";
     private final Application application;
     private final Context context;
     private final PlaylistRepository repository;
@@ -35,6 +36,11 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
     private onLongItemClickListener longClickListener;
     private AudioLoader audioLoader;
 
+    /**
+     * Default constructor
+     * @param application application
+     * @param context context
+     */
     public PlaylistCardAdapter(Application application, Context context) {
         this.context = context;
         this.application = application;
@@ -60,6 +66,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         holder.itemView.setTag(position);
 
         holder.itemView.setTag(position);
+        Log.e(LOG_TAG, "Set on long click listener");
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
                 longClickListener.ItemLongClicked(v, position, currentItem.getPlaylist().getListId());
@@ -67,7 +74,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             return true;
         });
 
-        Log.e(LOG_TAG, "Set the click listener");
+        Log.e(LOG_TAG, "Set on click listener");
         holder.itemView.setOnClickListener(v -> {
             int itemPos = (int) v.getTag();
             if (context instanceof MainActivity) {
@@ -80,6 +87,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         if(position == 0) {
             List<PlaylistEntry> entries = currentItem.getEntries();
             if(entries.size() >= 1) {
+                Log.e(LOG_TAG, "Set playlist cover as the cover of the first entry");
                 PlaylistEntry entry = entries.get(0);
                 LocaleSong s = audioLoader.getSong(entry.getMediaId());
                 Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
@@ -96,10 +104,18 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         return playlistList.size();
     }
 
+    /**
+     * Method to set the long click listener for a playlist card
+     * @param onLongItemClickListener interface onLongItemClickListener
+     */
     public void setOnLongItemClickListener(onLongItemClickListener onLongItemClickListener) {
         this.longClickListener = onLongItemClickListener;
     }
 
+    /**
+     * Explicitly set the data of the adapter
+     * @param data data
+     */
     public void setData(List<PlaylistWithEntries> data) {
         if (playlistList != null) {
             playlistList.clear();
@@ -112,7 +128,11 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
         notifyDataSetChanged();
     }
-
+    /**
+     * Method to filter the list inside RecyclerView.
+     * Checks if the album title contains a given String
+     * @param text text to filter
+     */
     public void filter(String text) {
         playlistList.clear();
         if (text.isEmpty()) {
@@ -128,15 +148,25 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         notifyDataSetChanged();
     }
 
+    /**
+     * Interface to get information from long click
+     */
     public interface onLongItemClickListener {
         void ItemLongClicked(View v, int position, String playlistID);
     }
 
+    /**
+     * ViewHolder class for playlist cards
+     */
     public static class PlaylistCardViewHolder extends RecyclerView.ViewHolder {
         public ImageView item_image;
         public TextView item_title;
         public TextView item_artist;
 
+        /**
+         * Default constructor
+         * @param itemView view
+         */
         public PlaylistCardViewHolder(View itemView) {
             super(itemView);
             item_image = itemView.findViewById(R.id.item_image);

@@ -18,23 +18,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MenuIdentifier;
-import de.codingforcelm.idmp.locale.LocaleAlbum;
-import de.codingforcelm.idmp.locale.LocaleSong;
-import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.fragment.NameAwareFragment;
-import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
-import de.codingforcelm.idmp.service.MusicService;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleAlbum;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.service.MusicService;
 
+/**
+ * Fragment to display a list of all albums
+ */
 public class AlbumListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "AlbumListFragment";
-    private static final int ADD_TO_PLAYLIST = 0;
     private ArrayList<LocaleAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
@@ -45,8 +47,10 @@ public class AlbumListFragment extends NameAwareFragment {
     private List<PlaylistWithEntries> currPlaylistWithEntries;
     private long currAlbumID;
 
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     */
     public AlbumListFragment() {
-        //needed default constructor
         setFragmentname(this.getClass().getSimpleName());
     }
 
@@ -58,12 +62,14 @@ public class AlbumListFragment extends NameAwareFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(LOG_TAG, "--onViewCreated--");
         albumList = new AudioLoader(this.getContext()).getAlbums();
         searchView = view.findViewById(R.id.searchView);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         registerForContextMenu(recyclerView);
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_QUEUE);
         ((MainActivity) getContext()).invalidateOptionsMenu();
 
@@ -96,6 +102,7 @@ public class AlbumListFragment extends NameAwareFragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        Log.e(LOG_TAG, "--onCreateContextMenu--");
         contextMenu.clear();
         contextMenu.add(MenuIdentifier.GROUP_ALBUMLIST, MenuIdentifier.ADD_TO_QUEUE, 0, R.string.add_to_queue);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_ALBUMLIST, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);

@@ -2,6 +2,7 @@ package de.codingforcelm.idmp.fragment.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +17,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
-import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.queue.OnQueueChangedListener;
 
+/**
+ * CardAdapter for queue list
+ */
 public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.QueueCardViewHolder> implements OnQueueChangedListener {
-
+    private static final String LOG_TAG = "QueueCardAdapter";
     private final AudioLoader audioLoader;
     private List<LocaleSong> songList;
 
+    /**
+     * Default constructor
+     * @param songList list of LocaleSongs
+     * @param context context
+     */
     public QueueCardAdapter(List<LocaleSong> songList, Context context) {
         this.songList = songList;
         audioLoader = new AudioLoader(context);
@@ -41,12 +50,14 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
 
     @Override
     public void onBindViewHolder(@NonNull QueueCardViewHolder holder, int position) {
+        Log.e(LOG_TAG, "-- onBindViewHolder --");
         LocaleSong current = songList.get(position);
         holder.bind(current);
 
         holder.itemView.setTag(position);
         Bitmap cover = audioLoader.getAlbumCoverForSong(current.getId());
         if(cover != null) {
+            Log.e(LOG_TAG, "Set album cover for the item");
             ImageView img = holder.itemView.findViewById(R.id.item_image);
             img.setImageBitmap(cover);
         }
@@ -75,6 +86,9 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
         notifyDataSetChanged();
     }
 
+    /**
+     * ViewHolder class for queue cards
+     */
     public static class QueueCardViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView item_image;
@@ -82,6 +96,10 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
         public TextView item_artist;
         public long currentSongID;
 
+        /**
+         * Default constructor
+         * @param itemView view
+         */
         public QueueCardViewHolder(@NonNull View itemView) {
             super(itemView);
             item_image = itemView.findViewById(R.id.item_image);

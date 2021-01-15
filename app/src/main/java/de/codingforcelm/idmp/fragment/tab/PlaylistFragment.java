@@ -20,23 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MenuIdentifier;
-import de.codingforcelm.idmp.locale.LocaleSong;
-import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.fragment.ControlsFragment;
-import de.codingforcelm.idmp.fragment.NameAwareFragment;
-import de.codingforcelm.idmp.fragment.OnManualDetachListener;
-import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
-import de.codingforcelm.idmp.service.MusicService;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
+import de.codingforcelm.idmp.fragment.ControlsFragment;
+import de.codingforcelm.idmp.fragment.NameAwareFragment;
+import de.codingforcelm.idmp.fragment.OnManualDetachListener;
+import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.service.MusicService;
 
-
+/**
+ * Fragment to display a Playlist
+ */
 public class PlaylistFragment extends NameAwareFragment implements OnManualDetachListener {
     private static final String LOG_TAG = "PlaylistFragment";
     private final int position;
@@ -52,6 +54,11 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
     private List<PlaylistWithEntries> currPlaylistWithEntries;
 
 
+    /**
+     * Default constructor, which sets the NameAwareFragment name
+     * @param position position
+     * @param listId playlistId
+     */
     public PlaylistFragment(int position, String listId) {
         this.position = position;
         this.listId = listId;
@@ -63,8 +70,10 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
         setFragmentname(name);
     }
 
+    /**
+     * Needed default constructor for FragmentManager
+     */
     public PlaylistFragment() {
-        //needed default constructor
         position = -1;
     }
 
@@ -80,7 +89,10 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
         return inflater.inflate(R.layout.fragment_playlist, container, false);
     }
 
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(LOG_TAG, "--onViewCreated--");
+        Log.e(LOG_TAG, "playlist fragmentname: "+this.getFragmentname());
         if (getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName()) != null) {
             getChildFragmentManager().beginTransaction().attach(getChildFragmentManager().findFragmentByTag(ControlsFragment.class.getSimpleName())).commit();
 
@@ -92,6 +104,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
             ).commit();
         }
 
+        Log.e(LOG_TAG, "tell MainActivity which fragment is currently visible");
         ((MainActivity) getContext()).setCurrentFragment(MainActivity.FRAGMENT_TABS);
         ((MainActivity) getContext()).invalidateOptionsMenu();
         ((MainActivity) getActivity()).setPlaylistUuid(listId);
@@ -144,6 +157,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        Log.e(LOG_TAG, "--onCreateContextMenu--");
         contextMenu.add(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.ADD_TO_QUEUE, 0, R.string.add_to_queue);
         contextMenu.add(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.REMOVE_FROM_PLAYLIST, 2, R.string.remove_from_playlist);
         SubMenu subMenu = contextMenu.addSubMenu(MenuIdentifier.GROUP_PLAYLIST, MenuIdentifier.ADD_TO_PLAYLIST, 1, R.string.add_to_playlist);
@@ -182,6 +196,7 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
                         playlistEntryViewModel.delete(entry.get(currItemPos));
                     }
                     removed.set(true);
+                    Log.e(LOG_TAG, "removed selected playlist");
                 });
                 break;
             case MenuIdentifier.ADD_TO_PLAYLIST:
