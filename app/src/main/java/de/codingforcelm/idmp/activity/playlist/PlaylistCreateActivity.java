@@ -1,6 +1,7 @@
 package de.codingforcelm.idmp.activity.playlist;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,17 +20,20 @@ import java.util.UUID;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.activity.MainActivitySingleton;
-import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
-import de.codingforcelm.idmp.locale.LocaleSong;
-import de.codingforcelm.idmp.service.MusicService;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistWithEntriesViewModel;
+import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.service.MusicService;
 
+/**
+ * This
+ */
 public class PlaylistCreateActivity extends AppCompatActivity {
-
+    private static final String LOG_TAG = "PlaylistCreateActivity";
     public static final String KEY_PLAYLIST_NAME = "de.codingforcelm.idmp.PLAYLIST_NAME";
     public static final String KEY_PLAYLIST_UUID = "de.codingforcelm.idmp.PLAYLIST_UUID";
     public static final String KEY_MODE = "de.codingforcelm.idmp.MODE";
@@ -119,6 +123,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.e(LOG_TAG, "--onContextItemSelected--" + item.getItemId());
         if (item.getItemId() == R.id.action_accept) {
             switch (mode) {
                 case MODE_ADD:
@@ -135,6 +140,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
     }
 
     private void addSongsToPlaylist() {
+        Log.e(LOG_TAG, "--addSongsToPlaylist--");
         PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
 
         List<PlaylistSelection> selected = adapter.getSelectedList();
@@ -154,9 +160,11 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putString(MusicService.KEY_CONTEXT, MusicService.CONTEXT_PREFIX_PLAYLIST + playlistUuid);
         b.putString(MusicService.KEY_PLAYLIST_ID, playlistUuid);
+        Log.e(LOG_TAG, "Songs added to Playlist");
     }
 
     private void savePlaylist() {
+        Log.e(LOG_TAG, "--savePlaylist--");
         PlaylistWithEntriesViewModel viewModel = new ViewModelProvider(this).get(PlaylistWithEntriesViewModel.class);
 
         String uuid = UUID.randomUUID().toString();
@@ -172,19 +180,31 @@ public class PlaylistCreateActivity extends AppCompatActivity {
 
         PlaylistEntry[] entriesArr = entries.toArray(new PlaylistEntry[0]);
         viewModel.insert(playlist, entriesArr);
+        Log.e(LOG_TAG, "Playlist saved");
     }
 
-
+    /**
+     *  This class is a wrapper for LocaleSong to receive selected items from a RecyclerView
+     */
     public static class PlaylistSelection {
 
         private final LocaleSong song;
         private boolean isSelected;
 
+        /**
+         * Default constructor
+         * @param song song
+         */
         protected PlaylistSelection(LocaleSong song) {
             this.song = song;
             this.setSelected(false);
         }
 
+        /**
+         * Returns a List of PlaylistSelection objects from a given LocaleSong List
+         * @param songlist
+         * @return
+         */
         public static List<PlaylistSelection> createSelectionListFromList(List<LocaleSong> songlist) {
             List<PlaylistSelection> list = new ArrayList<>();
             for (LocaleSong song : songlist) {
@@ -193,14 +213,26 @@ public class PlaylistCreateActivity extends AppCompatActivity {
             return list;
         }
 
+        /**
+         * Returns true if song is selected
+         * @return isSelected
+         */
         public boolean isSelected() {
             return isSelected;
         }
 
+        /**
+         * Set true idf song is selected
+         * @param selected isSelected
+         */
         public void setSelected(boolean selected) {
             isSelected = selected;
         }
 
+        /**
+         * Returns song
+         * @return song
+         */
         public LocaleSong getSong() {
             return song;
         }
