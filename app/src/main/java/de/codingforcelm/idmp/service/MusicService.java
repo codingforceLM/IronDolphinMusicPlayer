@@ -11,7 +11,6 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -37,12 +36,15 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.codingforcelm.idmp.activity.MainActivity;
-import de.codingforcelm.idmp.locale.LocaleSong;
-import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;
+import de.codingforcelm.idmp.loader.AudioLoader;
+import de.codingforcelm.idmp.locale.LocaleSong;
 import de.codingforcelm.idmp.queue.SongQueue;
 
+/**
+ *
+ */
 public class MusicService extends MediaBrowserServiceCompat implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 
     public static final String CHANNEL_ID = "idmp_player_notification";
@@ -258,6 +260,11 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         startForeground(NOTIFICATION_ID, notification);
     }
 
+    /**
+     * Builds notification
+     * @param play playstatus
+     * @return notification
+     */
     private Notification buildNotification(boolean play) {
         MediaControllerCompat controller = mediaSession.getController();
         MediaMetadataCompat mediaMetdata = controller.getMetadata();
@@ -316,6 +323,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         return notification;
     }
 
+    /**
+     * Initializes player
+     */
     public void initMusicPlayer() {
         player.setOnErrorListener(this);
         player.setOnCompletionListener(this);
@@ -337,14 +347,26 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         }
     }
 
+    /**
+     * Sets the song list
+     * @param songList songList
+     */
     public void setSongList(List<LocaleSong> songList) {
         this.songList = songList;
     }
 
+    /**
+     * Returns true if player is playing
+     * @return isPlaying
+     */
     public boolean isPlaying() {
         return player.isPlaying();
     }
 
+    /**
+     * Pauses the song
+     * @param postNotification postNotification
+     */
     public void pauseSong(boolean postNotification) {
         position = player.getCurrentPosition();
         player.stop();
@@ -357,12 +379,18 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         updateSession();
     }
 
+    /**
+     * Resumes the song
+     */
     public void resumeSong() {
         if (!player.isPlaying()) {
             player.prepareAsync();
         }
     }
 
+    /**
+     * Plays next song in list
+     */
     public void nextSong() {
         Log.e(LOG_TAG, "nextSong");
         int nextpos = -1;
@@ -396,6 +424,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         }
     }
 
+    /**
+     * Plays previous song in list
+     */
     public void prevSong() {
         int nextpos = songPosition - 1;
         if (nextpos < 0) {
@@ -405,10 +436,19 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         this.playSong(nextpos, false);
     }
 
+    /**
+     * Plays a song
+     */
     public void playSong() {
         this.playSong(songPosition, false);
     }
 
+    //TODO
+    /**
+     *
+     * @param pos
+     * @param fromStart
+     */
     public void playSong(int pos, boolean fromStart) {
         this.setSong(pos);
         LocaleSong song = songList.get(songPosition);
@@ -433,16 +473,27 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         player.prepareAsync();
     }
 
+    /**
+     * Seeks current song to position
+     * @param pos position
+     */
     public void seekTo(long pos) {
         position = (int) pos;
         Log.e(LOG_TAG, "Seek to " + pos);
         player.seekTo(position);
     }
 
+    /**
+     *
+     * @param pos
+     */
     public void setSong(int pos) {
         this.songPosition = pos;
     }
 
+    /**
+     * Toggles the shuffle mode
+     */
     public void toggleShuffle() {
         Log.e(LOG_TAG, "toggleShuffle");
         this.shuffle = !shuffle;
@@ -450,6 +501,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         updateSession();
     }
 
+    /**
+     * Toggles the repeat mode
+     */
     public void toggleRepeat() {
         Log.e(LOG_TAG, "toggleRepeat");
         this.repeat = !repeat;
@@ -542,12 +596,6 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         LocaleSong dummy = new LocaleSong(mediaId, null, null, null, null);
         Log.e(LOG_TAG, "finding index");
         return songList.indexOf(dummy);
-    }
-
-    public class MusicBinder extends Binder {
-        public MusicService getService() {
-            return MusicService.this;
-        }
     }
 
     private class MusicCallbackHandler extends MediaSessionCompat.Callback {
