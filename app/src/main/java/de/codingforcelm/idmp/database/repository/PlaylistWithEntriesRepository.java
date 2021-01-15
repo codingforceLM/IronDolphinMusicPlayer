@@ -8,6 +8,9 @@ import de.codingforcelm.idmp.database.dao.PlaylistEntryDao;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 
+/**
+ *
+ */
 public class PlaylistWithEntriesRepository {
 
     private static volatile PlaylistWithEntriesRepository INSTANCE;
@@ -15,12 +18,21 @@ public class PlaylistWithEntriesRepository {
     private final PlayListDao playListDao;
     private final PlaylistEntryDao playlistEntryDao;
 
+    /**
+     * Default constructor
+     * @param application application
+     */
     protected PlaylistWithEntriesRepository(Application application) {
         IDMPRoomDatabase db = IDMPRoomDatabase.getInstance(application);
         playListDao = db.playListDao();
         playlistEntryDao = db.playlistEntryDao();
     }
 
+    /**
+     * Returns PlaylistWithEntriesRepository instance
+     * @param application application
+     * @return PlaylistWithEntriesRepository instance
+     */
     public static PlaylistWithEntriesRepository getInstance(Application application) {
         if (INSTANCE == null) {
             synchronized (PlaylistRepository.class) {
@@ -32,6 +44,11 @@ public class PlaylistWithEntriesRepository {
         return INSTANCE;
     }
 
+    /**
+     * Inserts a playlist with entries into database
+     * @param playlist playlist
+     * @param playlistEntries playlistEntries
+     */
     public void insert(Playlist playlist, PlaylistEntry[] playlistEntries) {
         IDMPRoomDatabase.databaseWriteExecutor.execute(new Runnable() {
             @Override
