@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainFrameBigPlayer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/bp_image"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="70"
-        android:src="@drawable/ic_item_default_image" />
+        android:layout_height="wrap_content">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="5" />
+        <ImageView
+            android:id="@+id/bp_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/album_cover"
+            android:src="@drawable/ic_item_default_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/bp_track"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="5"
+        android:ellipsize="marquee"
         android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
         android:text="@string/track" />
 
     <TextView
@@ -32,6 +41,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="5"
         android:gravity="center"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
         android:text="@string/album" />
 
     <TextView
@@ -40,6 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="5"
         android:gravity="center"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
         android:text="@string/artist" />
 
     <SeekBar
@@ -50,7 +65,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="5">
 
         <TextView
             android:id="@+id/bp_currentTime"
@@ -76,58 +92,76 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Space
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="3" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_weight="10"
-        android:orientation="horizontal">
+        android:layout_weight="20">
 
         <ImageView
             android:id="@+id/bp_repeatButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_weight="10"
+            android:contentDescription="@string/repeat_button"
+            android:padding="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bp_prevButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_control_repeat" />
 
         <ImageView
             android:id="@+id/bp_prevButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_weight="20"
+            android:contentDescription="@string/previous_button"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bp_playPauseButton"
+            app:layout_constraintStart_toEndOf="@id/bp_repeatButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_control_prev" />
 
         <ImageView
             android:id="@+id/bp_playPauseButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_weight="40"
+            android:contentDescription="@string/play_pause_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bp_nextButton"
+            app:layout_constraintStart_toEndOf="@+id/bp_prevButton"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_control_play" />
 
         <ImageView
             android:id="@+id/bp_nextButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_weight="20"
+            android:contentDescription="@string/next_button"
+            android:paddingStart="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bp_shuffleButton"
+            app:layout_constraintStart_toEndOf="@+id/bp_playPauseButton"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_control_next" />
 
         <ImageView
             android:id="@+id/bp_shuffleButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_weight="10"
+            android:contentDescription="@string/shuffle_button"
+            android:cropToPadding="true"
+            android:padding="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bp_nextButton"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_control_shuffle" />
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

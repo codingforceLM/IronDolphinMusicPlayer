@@ -77,8 +77,11 @@ public class BigPlayerFragment extends NameAwareFragment {
         bp_image = view.findViewById(R.id.bp_image);
         bp_image.setOnClickListener(new BigPlayerFragment.ImageOnClickListener());
         bp_title = view.findViewById(R.id.bp_track);
+        bp_title.setSelected(true);
         bp_artist = view.findViewById(R.id.bp_artist);
+        bp_artist.setSelected(true);
         bp_album = view.findViewById(R.id.bp_album);
+        bp_album.setSelected(true);
         bp_seekBar = view.findViewById(R.id.bp_seekBar);
         bp_seekBar.setOnSeekBarChangeListener(new SeekBarOnClickListener());
         bp_currentTime = view.findViewById(R.id.bp_currentTime);
