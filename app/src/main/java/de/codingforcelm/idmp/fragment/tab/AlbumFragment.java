@@ -30,7 +30,7 @@ import de.codingforcelm.idmp.fragment.ControlsFragment;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.service.MusicService;
 
 /**
@@ -38,7 +38,7 @@ import de.codingforcelm.idmp.service.MusicService;
  */
 public class AlbumFragment extends NameAwareFragment {
     private static final String LOG_TAG = "SongListFragment";
-    private ArrayList<LocaleSong> songList;
+    private ArrayList<LocalSong> songList;
     private long albumId;
     private RecyclerView recyclerView;
     private SearchView searchView;

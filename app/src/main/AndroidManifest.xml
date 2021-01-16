@@ -31,7 +31,7 @@
             android:name=".activity.playlist.PlaylistNameActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.playlist.PlaylistCreateActivity"
+            android:name=".activity.playlist.PlaylistAddActivity"
             android:screenOrientation="portrait" />
 
         <service

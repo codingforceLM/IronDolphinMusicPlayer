@@ -39,7 +39,7 @@ import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.queue.SongQueue;
 
 /**
@@ -196,7 +196,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private static final String LOG_TAG = "MusicService";
     private static final String ACTION_CANCEL_NOTIFICATION = "de.codingforcelm.idmp.player.service.CANCEL_NOTIFICATION";
     private MediaPlayer player;
-    private List<LocaleSong> songList;
+    private List<LocalSong> songList;
     private int songPosition;
     private int position;
     private boolean paused;
@@ -290,10 +290,10 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
         AudioLoader al = new AudioLoader(this);
-        List<LocaleSong> l = al.getSongs();
+        List<LocalSong> l = al.getSongs();
 
         List<MediaBrowserCompat.MediaItem> items = new ArrayList<>();
-        for (LocaleSong s : l) {
+        for (LocalSong s : l) {
             items.add(
                     new MediaBrowserCompat.MediaItem(
                             new MediaDescriptionCompat.Builder()
@@ -476,7 +476,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
      * Sets the song list
      * @param songList songList
      */
-    public void setSongList(List<LocaleSong> songList) {
+    public void setSongList(List<LocalSong> songList) {
         this.songList = songList;
     }
 
@@ -587,7 +587,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     public void playSong(int pos, boolean fromStart) {
         Log.e(LOG_TAG, "play song from position "+pos);
         this.setSong(pos);
-        LocaleSong song = songList.get(songPosition);
+        LocalSong song = songList.get(songPosition);
         long curr = song.getId();
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, curr);
 
@@ -668,7 +668,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, player.getCurrentPosition(), 1.0f);
         }
 
-        LocaleSong song = audioLoader.getSong(currMediaId);
+        LocalSong song = audioLoader.getSong(currMediaId);
 
         MediaMetadataCompat.Builder dataBuilder = new MediaMetadataCompat.Builder();
 
@@ -739,7 +739,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
     private int getIndexForMediaId(long mediaId) {
         Log.e(LOG_TAG, "getIndexForMediaId");
         Log.e(LOG_TAG, "building dummy");
-        LocaleSong dummy = new LocaleSong(mediaId, null, null, null, null);
+        LocalSong dummy = new LocalSong(mediaId, null, null, null, null);
         Log.e(LOG_TAG, "finding index");
         return songList.indexOf(dummy);
     }
@@ -801,10 +801,10 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                             public void run() {
                                 repo.getPlaylist(listId).observeForever(playlistWithEntries -> {
                                     Log.e(LOG_TAG, "reload playlist");
-                                    LocaleSong prev = songList.get(songPosition);
-                                    List<LocaleSong> songs = new ArrayList<>();
+                                    LocalSong prev = songList.get(songPosition);
+                                    List<LocalSong> songs = new ArrayList<>();
                                     for (PlaylistEntry entry : playlistWithEntries.getEntries()) {
-                                        LocaleSong s = audioLoader.getSong(entry.getMediaId());
+                                        LocalSong s = audioLoader.getSong(entry.getMediaId());
                                         if (s != null) {
                                             songs.add(s);
                                         }
@@ -896,9 +896,9 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
                                 repo.getPlaylist(listId).observeForever(playlistWithEntries -> {
                                     if (context.startsWith(CONTEXT_PREFIX_PLAYLIST)) {
                                         Log.e(LOG_TAG, "Load playlist");
-                                        List<LocaleSong> songs = new ArrayList<>();
+                                        List<LocalSong> songs = new ArrayList<>();
                                         for (PlaylistEntry entry : playlistWithEntries.getEntries()) {
-                                            LocaleSong s = audioLoader.getSong(entry.getMediaId());
+                                            LocalSong s = audioLoader.getSong(entry.getMediaId());
                                             if (s != null) {
                                                 songs.add(s);
                                             }
@@ -927,7 +927,7 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
             }
         }
 
-        private void notifyReload(LocaleSong prev) {
+        private void notifyReload(LocalSong prev) {
             long mediaId = prev.getId();
             Log.e(LOG_TAG, "update songPosition");
             setSongPositionFromMediaId(mediaId);

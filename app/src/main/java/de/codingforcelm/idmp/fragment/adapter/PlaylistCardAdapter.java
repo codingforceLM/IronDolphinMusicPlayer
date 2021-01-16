@@ -22,7 +22,7 @@ import de.codingforcelm.idmp.database.entity.relation.PlaylistWithEntries;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;
 import de.codingforcelm.idmp.fragment.tab.PlaylistFragment;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 /**
  * CardAdapter for playlists list
  */
@@ -89,7 +89,7 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
             if(entries.size() >= 1) {
                 Log.e(LOG_TAG, "Set playlist cover as the cover of the first entry");
                 PlaylistEntry entry = entries.get(0);
-                LocaleSong s = audioLoader.getSong(entry.getMediaId());
+                LocalSong s = audioLoader.getSong(entry.getMediaId());
                 Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
                 ImageView image = holder.itemView.findViewById(R.id.item_image);
                 if(cover != null) {

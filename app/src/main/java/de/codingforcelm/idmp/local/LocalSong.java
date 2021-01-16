@@ -1,9 +1,9 @@
-package de.codingforcelm.idmp.locale;
+package de.codingforcelm.idmp.local;
 
 /**
  * Representation object for a local stored song
  */
-public class LocaleSong {
+public class LocalSong {
     private long id;
     private String data;
     private String title;
@@ -18,7 +18,7 @@ public class LocaleSong {
      * @param album album
      * @param artist artist
      */
-    public LocaleSong(long id, String data, String title, String album, String artist) {
+    public LocalSong(long id, String data, String title, String album, String artist) {
         this.id = id;
         this.data = data;
         this.title = title;
@@ -102,10 +102,10 @@ public class LocaleSong {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof LocaleSong)) {
+        if (!(o instanceof LocalSong)) {
             return false;
         }
-        LocaleSong that = (LocaleSong) o;
+        LocalSong that = (LocalSong) o;
         return this.getId() == that.getId();
     }
 }

@@ -22,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -41,7 +40,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.List;
 
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.activity.playlist.PlaylistCreateActivity;
+import de.codingforcelm.idmp.activity.playlist.PlaylistAddActivity;
 import de.codingforcelm.idmp.activity.playlist.PlaylistNameActivity;
 import de.codingforcelm.idmp.fragment.BigPlayerFragment;
 import de.codingforcelm.idmp.fragment.ControlsFragment;
@@ -310,10 +309,10 @@ public class MainActivity extends AppCompatActivity {
                 if (playlistUuid == null) {
                     throw new IllegalStateException("missing uuid");
                 }
-                Intent intent = new Intent(this, PlaylistCreateActivity.class);
+                Intent intent = new Intent(this, PlaylistAddActivity.class);
                 Bundle b = new Bundle();
-                b.putString(PlaylistCreateActivity.KEY_MODE, PlaylistCreateActivity.MODE_ADD);
-                b.putString(PlaylistCreateActivity.KEY_PLAYLIST_UUID, playlistUuid);
+                b.putString(PlaylistAddActivity.KEY_MODE, PlaylistAddActivity.MODE_ADD);
+                b.putString(PlaylistAddActivity.KEY_PLAYLIST_UUID, playlistUuid);
                 intent.putExtras(b);
                 startActivity(intent);
             }

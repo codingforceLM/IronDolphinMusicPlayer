@@ -28,8 +28,8 @@ import de.codingforcelm.idmp.database.viewmodel.PlaylistViewModel;
 import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.adapter.AlbumCardAdapter;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleAlbum;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalAlbum;
+import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.service.MusicService;
 
 /**
@@ -37,7 +37,7 @@ import de.codingforcelm.idmp.service.MusicService;
  */
 public class AlbumListFragment extends NameAwareFragment {
     private static final String LOG_TAG = "AlbumListFragment";
-    private ArrayList<LocaleAlbum> albumList;
+    private ArrayList<LocalAlbum> albumList;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private AlbumCardAdapter adapter;
@@ -126,9 +126,9 @@ public class AlbumListFragment extends NameAwareFragment {
             String playlistID = currPlaylistWithEntries.get(item.getItemId() - MenuIdentifier.OFFSET_PLAYLISTID).getPlaylist().getListId();
             PlaylistEntryViewModel playlistEntryViewModel = new ViewModelProvider(this).get(PlaylistEntryViewModel.class);
             AudioLoader audioLoader = new AudioLoader(this.getContext());
-            ArrayList<LocaleSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
+            ArrayList<LocalSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
             ArrayList<PlaylistEntry> new_entries = new ArrayList<>();
-            for (LocaleSong song : list) {
+            for (LocalSong song : list) {
                 new_entries.add(new PlaylistEntry(song.getId(), playlistID));
             }
             playlistEntryViewModel.insertAll(new_entries.toArray(new PlaylistEntry[0]));
@@ -142,9 +142,9 @@ public class AlbumListFragment extends NameAwareFragment {
                 break;
             case MenuIdentifier.ADD_TO_QUEUE:
                 AudioLoader audioLoader = new AudioLoader(this.getContext());
-                ArrayList<LocaleSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
+                ArrayList<LocalSong> list = audioLoader.getSongsFromAlbum(currAlbumID);
                 MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
-                for (LocaleSong song : list) {
+                for (LocalSong song : list) {
                     Bundle b = new Bundle();
                     String currSongId = String.valueOf(song.getId());
                     b.putString(MusicService.KEY_MEDIA_ID, currSongId);

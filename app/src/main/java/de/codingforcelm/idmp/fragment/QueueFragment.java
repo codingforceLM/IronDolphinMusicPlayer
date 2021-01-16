@@ -16,7 +16,7 @@ import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.fragment.adapter.QueueCardAdapter;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.queue.SongQueue;
 
 /**
@@ -72,11 +72,11 @@ public class QueueFragment extends NameAwareFragment {
         audioLoader = new AudioLoader(getContext());
 
         SongQueue queue = SongQueue.getInstance();
-        List<LocaleSong> songs = new ArrayList<>();
+        List<LocalSong> songs = new ArrayList<>();
         List<String> ids = queue.getListRepresentation();
 
         for (String id : ids) {
-            LocaleSong s = audioLoader.getSong(Long.parseLong(id));
+            LocalSong s = audioLoader.getSong(Long.parseLong(id));
             if (s != null) {
                 songs.add(s);
             }

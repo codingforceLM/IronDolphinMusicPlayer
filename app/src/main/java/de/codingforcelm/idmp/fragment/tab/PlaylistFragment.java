@@ -33,7 +33,7 @@ import de.codingforcelm.idmp.fragment.NameAwareFragment;
 import de.codingforcelm.idmp.fragment.OnManualDetachListener;
 import de.codingforcelm.idmp.fragment.adapter.SongCardAdapter;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.service.MusicService;
 
 /**
@@ -130,9 +130,9 @@ public class PlaylistFragment extends NameAwareFragment implements OnManualDetac
             if (position < 0) {
                 throw new IllegalStateException("missing position in PlaylistFragment");
             }
-            List<LocaleSong> data = new ArrayList<>();
+            List<LocalSong> data = new ArrayList<>();
             for (PlaylistEntry entry : playlistWithEntries.get(position).getEntries()) {
-                LocaleSong s = loader.getSong(entry.getMediaId());
+                LocalSong s = loader.getSong(entry.getMediaId());
                 data.add(s);
             }
             adapter.setData(data);
