@@ -7,6 +7,8 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;
@@ -405,6 +408,14 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setShowWhen(false);
         builder.setOnlyAlertOnce(true);
+
+        Bitmap cover = audioLoader.getAlbumCoverForSong(currMediaId);
+        if(cover != null) {
+            builder.setLargeIcon(cover);
+        } else {
+            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_item_default_image);
+            builder.setLargeIcon(icon);
+        }
 
         Log.e(LOG_TAG, "add intents for media buttons");
         builder.addAction(new NotificationCompat.Action(
