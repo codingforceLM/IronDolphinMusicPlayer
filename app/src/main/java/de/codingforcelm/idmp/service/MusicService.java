@@ -7,6 +7,10 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -26,6 +30,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
@@ -35,6 +41,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.repository.PlaylistRepository;
@@ -405,6 +412,20 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setShowWhen(false);
         builder.setOnlyAlertOnce(true);
+
+        Bitmap cover = audioLoader.getAlbumCoverForSong(currMediaId);
+        if(cover != null) {
+            builder.setLargeIcon(cover);
+        } else {
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_item_default_image);
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            builder.setLargeIcon(bitmap);
+        }
 
         Log.e(LOG_TAG, "add intents for media buttons");
         builder.addAction(new NotificationCompat.Action(
