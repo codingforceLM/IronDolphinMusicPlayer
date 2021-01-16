@@ -91,9 +91,11 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
                 PlaylistEntry entry = entries.get(0);
                 LocaleSong s = audioLoader.getSong(entry.getMediaId());
                 Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
+                ImageView image = holder.itemView.findViewById(R.id.item_image);
                 if(cover != null) {
-                    ImageView image = holder.itemView.findViewById(R.id.item_image);
                     image.setImageBitmap(cover);
+                } else {
+                    image.setImageResource(R.drawable.ic_item_default_image);
                 }
             }
         }

@@ -80,9 +80,11 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
 
         holder.itemView.setTag(position);
         Bitmap cover = audioLoader.getAlbumCoverForSong(currentItem.getId());
+        ImageView img = holder.itemView.findViewById(R.id.item_image);
         if(cover != null) {
-            ImageView img = holder.itemView.findViewById(R.id.item_image);
             img.setImageBitmap(cover);
+        } else {
+            img.setImageResource(R.drawable.ic_item_default_image);
         }
     }
 

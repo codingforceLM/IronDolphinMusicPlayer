@@ -74,11 +74,13 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
         }
         holder.itemView.setBackgroundColor(color);
 
+        ImageView img = holder.itemView.findViewById(R.id.item_image);
         Bitmap cover = audioLoader.getAlbumCoverForSong(selection.getSong().getId());
         if(cover != null) {
             Log.e(LOG_TAG, "Set album cover for item");
-            ImageView img = holder.itemView.findViewById(R.id.item_image);
             img.setImageBitmap(cover);
+        } else {
+            img.setImageResource(R.drawable.ic_item_default_image);
         }
     }
 

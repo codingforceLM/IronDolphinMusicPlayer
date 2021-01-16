@@ -75,6 +75,8 @@ public class ControlsFragment extends NameAwareFragment {
             Bitmap cover = al.getAlbumCoverForSong(Long.valueOf(mediaId));
             if(cover != null) {
                 image.setImageBitmap(cover);
+            } else {
+                image.setImageResource(R.drawable.ic_item_default_image);
             }
         }
     }

@@ -56,10 +56,12 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
 
         holder.itemView.setTag(position);
         Bitmap cover = audioLoader.getAlbumCoverForSong(current.getId());
+        ImageView img = holder.itemView.findViewById(R.id.item_image);
         if(cover != null) {
             Log.e(LOG_TAG, "Set album cover for the item");
-            ImageView img = holder.itemView.findViewById(R.id.item_image);
             img.setImageBitmap(cover);
+        } else {
+            img.setImageResource(R.drawable.ic_item_default_image);
         }
     }
 
