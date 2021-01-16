@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -28,6 +30,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
@@ -413,8 +417,14 @@ public class MusicService extends MediaBrowserServiceCompat implements MediaPlay
         if(cover != null) {
             builder.setLargeIcon(cover);
         } else {
-            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_item_default_image);
-            builder.setLargeIcon(icon);
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_item_default_image);
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            builder.setLargeIcon(bitmap);
         }
 
         Log.e(LOG_TAG, "add intents for media buttons");
