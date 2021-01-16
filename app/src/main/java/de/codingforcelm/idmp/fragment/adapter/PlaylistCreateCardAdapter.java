@@ -17,17 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.activity.playlist.PlaylistCreateActivity;
+import de.codingforcelm.idmp.activity.playlist.PlaylistAddActivity;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 
 /**
  * CardAdapter for create playlist activity list
  */
 public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCreateCardAdapter.SelectionCardViewHolder> {
     private static final String LOG_TAG = "PlaylistCreateCAdapter";
-    private final List<PlaylistCreateActivity.PlaylistSelection> selectionListCopy;
-    private final List<PlaylistCreateActivity.PlaylistSelection> selectionList;
+    private final List<PlaylistAddActivity.PlaylistSelection> selectionListCopy;
+    private final List<PlaylistAddActivity.PlaylistSelection> selectionList;
     private AudioLoader audioLoader;
 
     /**
@@ -35,7 +35,7 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
      * @param selectionList PlaylistSelection list
      * @param context context
      */
-    public PlaylistCreateCardAdapter(List<PlaylistCreateActivity.PlaylistSelection> selectionList, Context context) {
+    public PlaylistCreateCardAdapter(List<PlaylistAddActivity.PlaylistSelection> selectionList, Context context) {
         this.selectionList = selectionList;
         this.selectionListCopy = new ArrayList<>();
         this.selectionListCopy.addAll(selectionList);
@@ -52,7 +52,7 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
     @Override
     public void onBindViewHolder(@NonNull SelectionCardViewHolder holder, int position) {
         Log.e(LOG_TAG, "-- onBindViewHolder --");
-        PlaylistCreateActivity.PlaylistSelection selection = selectionList.get(position);
+        PlaylistAddActivity.PlaylistSelection selection = selectionList.get(position);
         holder.bind(selection);
         Log.e(LOG_TAG, "Set on click listener");
         holder.itemView.setOnClickListener(v -> {
@@ -89,10 +89,10 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
         return selectionList.size();
     }
 
-    public List<PlaylistCreateActivity.PlaylistSelection> getSelectedList() {
-        List<PlaylistCreateActivity.PlaylistSelection> selectedList = new ArrayList<>();
+    public List<PlaylistAddActivity.PlaylistSelection> getSelectedList() {
+        List<PlaylistAddActivity.PlaylistSelection> selectedList = new ArrayList<>();
 
-        for (PlaylistCreateActivity.PlaylistSelection selection : selectionListCopy) {
+        for (PlaylistAddActivity.PlaylistSelection selection : selectionListCopy) {
             if (selection.isSelected()) {
                 selectedList.add(selection);
             }
@@ -112,7 +112,7 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
             selectionList.addAll(selectionListCopy);
         } else {
             text = text.toLowerCase();
-            for (PlaylistCreateActivity.PlaylistSelection song : selectionListCopy) {
+            for (PlaylistAddActivity.PlaylistSelection song : selectionListCopy) {
                 if (song.getSong().getTitle().toLowerCase().contains(text)) {
                     selectionList.add(song);
                 }
@@ -141,8 +141,8 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
             item_artist = itemView.findViewById(R.id.item_subtitle);
         }
 
-        private void bind(PlaylistCreateActivity.PlaylistSelection selection) {
-            LocaleSong song = selection.getSong();
+        private void bind(PlaylistAddActivity.PlaylistSelection selection) {
+            LocalSong song = selection.getSong();
             if (song != null) {
                 item_title.setText(song.getTitle());
                 item_artist.setText(song.getArtist());

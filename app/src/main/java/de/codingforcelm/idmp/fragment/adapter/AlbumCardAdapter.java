@@ -18,26 +18,26 @@ import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.fragment.tab.AlbumFragment;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleAlbum;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalAlbum;
+import de.codingforcelm.idmp.local.LocalSong;
 
 /**
  * CardAdapter for albums list
  */
 public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.AlbumCardViewHolder> {
     private static final String LOG_TAG = "AlbumCardAdapter";
-    private final ArrayList<LocaleAlbum> albumList;
-    private final ArrayList<LocaleAlbum> albumListCopy;
+    private final ArrayList<LocalAlbum> albumList;
+    private final ArrayList<LocalAlbum> albumListCopy;
     private final Context context;
     private onLongItemClickListener longClickListener;
     private AudioLoader audioLoader;
 
     /**
      * Default constructor
-     * @param albumList LocaleAlbum list
+     * @param albumList LocalAlbum list
      * @param context context
      */
-    public AlbumCardAdapter(ArrayList<LocaleAlbum> albumList, Context context) {
+    public AlbumCardAdapter(ArrayList<LocalAlbum> albumList, Context context) {
         this.context = context;
         this.albumList = albumList;
         this.albumListCopy = new ArrayList<>();
@@ -55,7 +55,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
     @Override
     public void onBindViewHolder(AlbumCardViewHolder holder, int position) {
         Log.e(LOG_TAG, "-- onBindViewHolder --");
-        LocaleAlbum currentItem = albumList.get(position);
+        LocalAlbum currentItem = albumList.get(position);
         holder.bind(currentItem);
 
         holder.itemView.setTag(position);
@@ -74,10 +74,10 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
 
         });
 
-        List<LocaleSong> songs = audioLoader.getSongsFromAlbum(currentItem.getId());
+        List<LocalSong> songs = audioLoader.getSongsFromAlbum(currentItem.getId());
         if(songs.size() >= 1) {
             Log.e(LOG_TAG, "Set album cover as the cover of the first entry");
-            LocaleSong s = songs.get(0);
+            LocalSong s = songs.get(0);
             Bitmap cover = audioLoader.getAlbumCoverForSong(s.getId());
             ImageView image = holder.itemView.findViewById(R.id.item_image);
             if(cover != null) {
@@ -112,7 +112,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             albumList.addAll(albumListCopy);
         } else {
             text = text.toLowerCase();
-            for (LocaleAlbum album : albumListCopy) {
+            for (LocalAlbum album : albumListCopy) {
                 if (album.getTitle().toLowerCase().contains(text)) {
                     albumList.add(album);
                 }
@@ -147,7 +147,7 @@ public class AlbumCardAdapter extends RecyclerView.Adapter<AlbumCardAdapter.Albu
             item_artist = itemView.findViewById(R.id.item_subtitle);
         }
 
-        private void bind(LocaleAlbum album) {
+        private void bind(LocalAlbum album) {
             item_title.setText(album.getTitle());
             item_artist.setText(album.getArtist());
         }

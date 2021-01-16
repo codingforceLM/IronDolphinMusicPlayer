@@ -18,22 +18,20 @@ import java.util.List;
 import java.util.UUID;
 
 import de.codingforcelm.idmp.R;
-import de.codingforcelm.idmp.activity.MainActivity;
-import de.codingforcelm.idmp.activity.MainActivitySingleton;
 import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistWithEntriesViewModel;
 import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.service.MusicService;
 
 /**
  * Activity to select multiple songs and either add them to an exisitng playlist or create a new one with those
  */
-public class PlaylistCreateActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "PlaylistCreateActivity";
+public class PlaylistAddActivity extends AppCompatActivity {
+    private static final String LOG_TAG = "PlaylistAddActivity";
 
     /**
      * Key to identify playlist name
@@ -110,7 +108,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         }
 
         audioLoader = new AudioLoader(this);
-        List<LocaleSong> songs = audioLoader.getSongs();
+        List<LocalSong> songs = audioLoader.getSongs();
         List<PlaylistSelection> selectionList = PlaylistSelection.createSelectionListFromList(songs);
 
         adapter = new PlaylistCreateCardAdapter(selectionList, getApplicationContext());
@@ -167,7 +165,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         List<PlaylistEntry> entries = new ArrayList<>();
         Log.e(LOG_TAG, "Create PlaylistEntry's from selected songs");
         for (PlaylistSelection selection : selected) {
-            LocaleSong song = selection.getSong();
+            LocalSong song = selection.getSong();
             PlaylistEntry entry = new PlaylistEntry(song.getId(), playlistUuid);
             entries.add(entry);
         }
@@ -195,7 +193,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
         Playlist playlist = new Playlist(uuid, name);
         Log.e(LOG_TAG, "Create PlaylistEntry's from selected songs");
         for (PlaylistSelection selection : selected) {
-            LocaleSong song = selection.getSong();
+            LocalSong song = selection.getSong();
             PlaylistEntry entry = new PlaylistEntry(song.getId(), playlist.getListId());
             entries.add(entry);
         }
@@ -207,30 +205,30 @@ public class PlaylistCreateActivity extends AppCompatActivity {
     }
 
     /**
-     *  This class is a wrapper for LocaleSong to receive selected items from a RecyclerView
+     *  This class is a wrapper for LocalSong to receive selected items from a RecyclerView
      */
     public static class PlaylistSelection {
 
-        private final LocaleSong song;
+        private final LocalSong song;
         private boolean isSelected;
 
         /**
          * Default constructor
          * @param song song
          */
-        protected PlaylistSelection(LocaleSong song) {
+        protected PlaylistSelection(LocalSong song) {
             this.song = song;
             this.setSelected(false);
         }
 
         /**
-         * Returns a List of PlaylistSelection objects from a given LocaleSong List
+         * Returns a List of PlaylistSelection objects from a given LocalSong List
          * @param songlist songlist
          * @return SelectionList
          */
-        public static List<PlaylistSelection> createSelectionListFromList(List<LocaleSong> songlist) {
+        public static List<PlaylistSelection> createSelectionListFromList(List<LocalSong> songlist) {
             List<PlaylistSelection> list = new ArrayList<>();
-            for (LocaleSong song : songlist) {
+            for (LocalSong song : songlist) {
                 list.add(new PlaylistSelection(song));
             }
             return list;
@@ -256,7 +254,7 @@ public class PlaylistCreateActivity extends AppCompatActivity {
          * Returns song
          * @return song
          */
-        public LocaleSong getSong() {
+        public LocalSong getSong() {
             return song;
         }
     }

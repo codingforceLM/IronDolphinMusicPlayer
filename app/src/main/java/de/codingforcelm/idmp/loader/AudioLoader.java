@@ -13,8 +13,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import de.codingforcelm.idmp.locale.LocaleAlbum;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalAlbum;
+import de.codingforcelm.idmp.local.LocalSong;
 
 /**
  * Utility class to load data associated with local audio files
@@ -35,9 +35,9 @@ public class AudioLoader {
      * Get all local songs from the MediaStore
      * @return  ArrayList of all songs
      */
-    public ArrayList<LocaleSong> getSongs() {
+    public ArrayList<LocalSong> getSongs() {
         Log.e(LOG_TAG, "--getSongs--");
-        ArrayList<LocaleSong> songs = new ArrayList<>();
+        ArrayList<LocalSong> songs = new ArrayList<>();
         ContentResolver contentResolver = context.getContentResolver();
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -54,7 +54,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                songs.add(new LocaleSong(id, data, title, album, artist));
+                songs.add(new LocalSong(id, data, title, album, artist));
             }
         }
         cursor.close();
@@ -67,7 +67,7 @@ public class AudioLoader {
      * @param songId song mediaId
      * @return song
      */
-    public LocaleSong getSong(long songId) {
+    public LocalSong getSong(long songId) {
         Log.e(LOG_TAG, "--getSong-- id: "+songId);
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -75,7 +75,7 @@ public class AudioLoader {
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0 and " + MediaStore.Audio.Media._ID + " = " + songId;
         Cursor cursor = contentResolver.query(uri, null, selection, null, null);
 
-        LocaleSong song = null;
+        LocalSong song = null;
         Log.e(LOG_TAG, "Retrieve data for found files");
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -85,7 +85,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                song = new LocaleSong(id, data, title, album, artist);
+                song = new LocalSong(id, data, title, album, artist);
             }
         }
         cursor.close();
@@ -97,9 +97,9 @@ public class AudioLoader {
      * Get all local albums from the MediaStore
      * @return ArrayList of all albums
      */
-    public ArrayList<LocaleAlbum> getAlbums() {
+    public ArrayList<LocalAlbum> getAlbums() {
         Log.e(LOG_TAG, "--getAlbums--");
-        ArrayList<LocaleAlbum> songs = new ArrayList<>();
+        ArrayList<LocalAlbum> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -114,7 +114,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
 
-                songs.add(new LocaleAlbum(id, album, artist));
+                songs.add(new LocalAlbum(id, album, artist));
             }
         }
         cursor.close();
@@ -127,9 +127,9 @@ public class AudioLoader {
      * @param albumId album mediaId
      * @return ArrayList of all album-songs
      */
-    public ArrayList<LocaleSong> getSongsFromAlbum(long albumId) {
+    public ArrayList<LocalSong> getSongsFromAlbum(long albumId) {
         Log.e(LOG_TAG, "--getSongsFromAlbum-- id: "+albumId);
-        ArrayList<LocaleSong> songs = new ArrayList<>();
+        ArrayList<LocalSong> songs = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
 
@@ -147,7 +147,7 @@ public class AudioLoader {
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 Long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                songs.add(new LocaleSong(id, data, title, album, artist));
+                songs.add(new LocalSong(id, data, title, album, artist));
             }
         }
         cursor.close();

@@ -19,7 +19,7 @@ import java.util.Queue;
 
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.queue.OnQueueChangedListener;
 
 /**
@@ -28,14 +28,14 @@ import de.codingforcelm.idmp.queue.OnQueueChangedListener;
 public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.QueueCardViewHolder> implements OnQueueChangedListener {
     private static final String LOG_TAG = "QueueCardAdapter";
     private final AudioLoader audioLoader;
-    private List<LocaleSong> songList;
+    private List<LocalSong> songList;
 
     /**
      * Default constructor
      * @param songList list of LocaleSongs
      * @param context context
      */
-    public QueueCardAdapter(List<LocaleSong> songList, Context context) {
+    public QueueCardAdapter(List<LocalSong> songList, Context context) {
         this.songList = songList;
         audioLoader = new AudioLoader(context);
     }
@@ -51,7 +51,7 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
     @Override
     public void onBindViewHolder(@NonNull QueueCardViewHolder holder, int position) {
         Log.e(LOG_TAG, "-- onBindViewHolder --");
-        LocaleSong current = songList.get(position);
+        LocalSong current = songList.get(position);
         holder.bind(current);
 
         holder.itemView.setTag(position);
@@ -73,11 +73,11 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
     @Override
     public void onQueueChanged(Queue<String> queue) {
         Iterator<String> it = queue.iterator();
-        List<LocaleSong> songs = new ArrayList<>();
+        List<LocalSong> songs = new ArrayList<>();
 
         while (it.hasNext()) {
             String mediaId = it.next();
-            LocaleSong s = audioLoader.getSong(Long.parseLong(mediaId));
+            LocalSong s = audioLoader.getSong(Long.parseLong(mediaId));
             if (s != null) {
                 songs.add(s);
             }
@@ -109,7 +109,7 @@ public class QueueCardAdapter extends RecyclerView.Adapter<QueueCardAdapter.Queu
             item_artist = itemView.findViewById(R.id.item_subtitle);
         }
 
-        private void bind(LocaleSong song) {
+        private void bind(LocalSong song) {
             if (song != null) {
                 item_title.setText(song.getTitle());
                 item_artist.setText(song.getArtist());

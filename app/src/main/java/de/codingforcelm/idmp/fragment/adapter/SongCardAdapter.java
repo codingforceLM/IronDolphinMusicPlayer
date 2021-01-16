@@ -17,7 +17,7 @@ import java.util.List;
 import de.codingforcelm.idmp.R;
 import de.codingforcelm.idmp.activity.MainActivity;
 import de.codingforcelm.idmp.loader.AudioLoader;
-import de.codingforcelm.idmp.locale.LocaleSong;
+import de.codingforcelm.idmp.local.LocalSong;
 
 /**
  * CardAdapter for songs list
@@ -27,8 +27,8 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
     private final Context context;
     private final String playContext;
     private final String playContextType;
-    private List<LocaleSong> songList;
-    private List<LocaleSong> songListCopy;
+    private List<LocalSong> songList;
+    private List<LocalSong> songListCopy;
     private onLongItemClickListener longClickListener;
     private AudioLoader audioLoader;
 
@@ -39,7 +39,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
      * @param playContextType type of playContext
      * @param playContext playContext which songs are played from
      */
-    public SongCardAdapter(ArrayList<LocaleSong> songList, Context context, String playContextType, String playContext) {
+    public SongCardAdapter(ArrayList<LocalSong> songList, Context context, String playContextType, String playContext) {
         this.songList = songList;
         this.context = context;
         this.songListCopy = new ArrayList<>();
@@ -59,7 +59,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
     @Override
     public void onBindViewHolder(SongCardViewHolder holder, int position) {
         Log.e(LOG_TAG, "-- onBindViewHolder --");
-        LocaleSong currentItem = songList.get(position);
+        LocalSong currentItem = songList.get(position);
         holder.bind(currentItem);
 
         holder.itemView.setTag(position);
@@ -101,7 +101,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
         this.longClickListener = onLongItemClickListener;
     }
 
-    public void setData(List<LocaleSong> data) {
+    public void setData(List<LocalSong> data) {
         if (songList != null) {
             songList.clear();
             songList.addAll(data);
@@ -124,7 +124,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
             songList.addAll(songListCopy);
         } else {
             text = text.toLowerCase();
-            for (LocaleSong song : songListCopy) {
+            for (LocalSong song : songListCopy) {
                 if (song.getTitle().toLowerCase().contains(text)) {
                     songList.add(song);
                 }
@@ -160,7 +160,7 @@ public class SongCardAdapter extends RecyclerView.Adapter<SongCardAdapter.SongCa
             item_artist = itemView.findViewById(R.id.item_subtitle);
         }
 
-        private void bind(LocaleSong song) {
+        private void bind(LocalSong song) {
             if (song != null) {
                 item_title.setText(song.getTitle());
                 item_artist.setText(song.getArtist());
