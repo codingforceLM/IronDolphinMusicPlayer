@@ -1,9 +1,11 @@
 package de.codingforcelm.idmp.fragment.adapter;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,21 +26,24 @@ import de.codingforcelm.idmp.local.LocalSong;
 /**
  * CardAdapter for create playlist activity list
  */
-public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCreateCardAdapter.SelectionCardViewHolder> {
+public class PlaylistAddCardAdapter extends RecyclerView.Adapter<PlaylistAddCardAdapter.SelectionCardViewHolder> {
     private static final String LOG_TAG = "PlaylistCreateCAdapter";
     private final List<PlaylistAddActivity.PlaylistSelection> selectionListCopy;
     private final List<PlaylistAddActivity.PlaylistSelection> selectionList;
     private AudioLoader audioLoader;
+    private Context context;
 
     /**
      * Default constructor
      * @param selectionList PlaylistSelection list
      * @param context context
      */
-    public PlaylistCreateCardAdapter(List<PlaylistAddActivity.PlaylistSelection> selectionList, Context context) {
+    public PlaylistAddCardAdapter(List<PlaylistAddActivity.PlaylistSelection> selectionList, Context context) {
+
         this.selectionList = selectionList;
         this.selectionListCopy = new ArrayList<>();
         this.selectionListCopy.addAll(selectionList);
+        this.context = context;
         audioLoader = new AudioLoader(context);
     }
 
@@ -61,7 +66,9 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
             if (selection.isSelected()) {
                 color = Color.GRAY;
             } else {
-                color = Color.WHITE;
+                TypedValue val = new TypedValue();
+                context.getTheme().resolveAttribute(R.attr.backgroundColor, val, true);
+                color = val.data;
             }
             v.setBackgroundColor(color);
         });
@@ -70,7 +77,9 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
         if (selection.isSelected()) {
             color = Color.GRAY;
         } else {
-            color = Color.WHITE;
+            TypedValue val = new TypedValue();
+            context.getTheme().resolveAttribute(R.attr.colorOnBackground, val, true);
+            color = val.data;
         }
         holder.itemView.setBackgroundColor(color);
 
