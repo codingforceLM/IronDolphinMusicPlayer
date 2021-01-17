@@ -37,10 +37,10 @@
                 android:id="@+id/tp_songTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:ellipsize="marquee"
                 android:gravity="center"
                 android:marqueeRepeatLimit="marquee_forever"
+                android:paddingTop="5dp"
                 android:singleLine="true"
                 android:text="@string/title" />
 
@@ -48,10 +48,11 @@
                 android:id="@+id/tp_songArtist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:ellipsize="marquee"
                 android:gravity="center"
                 android:marqueeRepeatLimit="marquee_forever"
+                android:paddingTop="2dp"
+                android:paddingBottom="5dp"
                 android:singleLine="true"
                 android:text="@string/artist" />
 
