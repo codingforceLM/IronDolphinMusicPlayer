@@ -24,7 +24,7 @@ import de.codingforcelm.idmp.local.LocalSong;
 /**
  * CardAdapter for create playlist activity list
  */
-public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCreateCardAdapter.SelectionCardViewHolder> {
+public class PlaylistAddCardAdapter extends RecyclerView.Adapter<PlaylistAddCardAdapter.SelectionCardViewHolder> {
     private static final String LOG_TAG = "PlaylistCreateCAdapter";
     private final List<PlaylistAddActivity.PlaylistSelection> selectionListCopy;
     private final List<PlaylistAddActivity.PlaylistSelection> selectionList;
@@ -35,7 +35,7 @@ public class PlaylistCreateCardAdapter extends RecyclerView.Adapter<PlaylistCrea
      * @param selectionList PlaylistSelection list
      * @param context context
      */
-    public PlaylistCreateCardAdapter(List<PlaylistAddActivity.PlaylistSelection> selectionList, Context context) {
+    public PlaylistAddCardAdapter(List<PlaylistAddActivity.PlaylistSelection> selectionList, Context context) {
         this.selectionList = selectionList;
         this.selectionListCopy = new ArrayList<>();
         this.selectionListCopy.addAll(selectionList);

@@ -22,7 +22,7 @@ import de.codingforcelm.idmp.database.entity.Playlist;
 import de.codingforcelm.idmp.database.entity.PlaylistEntry;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistEntryViewModel;
 import de.codingforcelm.idmp.database.viewmodel.PlaylistWithEntriesViewModel;
-import de.codingforcelm.idmp.fragment.adapter.PlaylistCreateCardAdapter;
+import de.codingforcelm.idmp.fragment.adapter.PlaylistAddCardAdapter;
 import de.codingforcelm.idmp.loader.AudioLoader;
 import de.codingforcelm.idmp.local.LocalSong;
 import de.codingforcelm.idmp.service.MusicService;
@@ -58,7 +58,7 @@ public class PlaylistAddActivity extends AppCompatActivity {
      */
     public static final String MODE_ADD = "de.codingforcelm.idmp.MODE_ADD";
 
-    private PlaylistCreateCardAdapter adapter;
+    private PlaylistAddCardAdapter adapter;
     private RecyclerView recyclerView;
     private SearchView searchView;
     private AudioLoader audioLoader;
@@ -111,7 +111,7 @@ public class PlaylistAddActivity extends AppCompatActivity {
         List<LocalSong> songs = audioLoader.getSongs();
         List<PlaylistSelection> selectionList = PlaylistSelection.createSelectionListFromList(songs);
 
-        adapter = new PlaylistCreateCardAdapter(selectionList, getApplicationContext());
+        adapter = new PlaylistAddCardAdapter(selectionList, getApplicationContext());
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
